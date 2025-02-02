@@ -24,7 +24,7 @@ local function displayMessages(messages)
 end
 
 if gameId == 2882332175 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/BDFS_NewUi_NO_OBF.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/BDFS_NewUi.lua"))()
     displayMessages({"Thanks for using my script", "Enjoy!"})
 elseif gameId == 537413528 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/BABFT.lua"))()
