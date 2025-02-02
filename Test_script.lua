@@ -6,7 +6,7 @@ elseif gameId == 537413528 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/BABFT.lua"))()
 else
     sendnotification({
-        Title = "Thông báo",
+        Title = "Notification",
         Text = "Script does not support game " .. gameId,
         Duration = 5
     })
