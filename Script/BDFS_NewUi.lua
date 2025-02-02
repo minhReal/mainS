@@ -87,6 +87,7 @@ Window:SetTheme(Themes.Dark)
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
       Text = "Script has been loaded successfully!",
+      Icon = "rbxassetid://14401779839"
       Duration = 10
 })
         
