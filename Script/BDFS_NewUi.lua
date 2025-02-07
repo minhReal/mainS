@@ -87,7 +87,7 @@ Window:SetTheme(Themes.Dark)
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
       Text = "Script has been loaded successfully!",
-      Icon = "rbxassetid://14401779839",
+      Icon = "rbxassetid://14401779839"
       Duration = 10
 })
         
@@ -506,7 +506,7 @@ Window:AddButton({
     Description = "",
     Tab = miscTab,
     Callback = function()
-loadstring(game:HttpGet('https://pastefy.app/FSLqOYTb/raw'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/No_blur.lua'))()
     end,
 })
 
@@ -588,7 +588,7 @@ Window:AddToggle({
     Tab = farmTab,
     Callback = function(Boolean)
         if Boolean then
-            loadstring(game:HttpGet("https://pastefy.app/YEeQZwKp/raw"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/Autofarm.lua"))()
             toggleAutofarm(true)
         else
             toggleAutofarm(false)
@@ -602,7 +602,7 @@ Window:AddToggle({
     Tab = farmTab,
     Callback = function(isEnabled)
         if isEnabled then
-            loadstring(game:HttpGet("https://pastefy.app/L7cCTMFT/raw"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/Autofarm_Movable.lua"))()
             toggleAutofarm(true)
         else
             toggleAutofarm(false)
@@ -637,7 +637,7 @@ Window:AddButton({
 	Description = "",
 	Tab = farmTab,
 	Callback = function()
-loadstring(game:HttpGet(('https://pastefy.app/nw1Z2BC3/raw'),true))()
+loadstring(game:HttpGet(('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/clean_up_deadBody.lua'),true))()
 	end,
 }) 
 
@@ -646,7 +646,7 @@ Window:AddButton({
 	Description = "",
 	Tab = farmTab,
 	Callback = function()
-loadstring(game:HttpGet(('https://pastefy.app/iXgxNLP6/raw'),true))()
+loadstring(game:HttpGet(('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/Bring_blood.lua'),true))()
 	end,
 }) 
 
@@ -655,7 +655,7 @@ Window:AddButton({
 	Description = "",
 	Tab = farmTab,
 	Callback = function() 
-loadstring(game:HttpGet("https://pastefy.app/EtjuqLrM/raw"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/Get_job.lua"))()
 	end,
 }) 
 
