@@ -5,7 +5,7 @@ local gameId = game.PlaceId
 
 local scripts = {
     [2882332175] = "BDFS_NewUi.lua",
-    [537413528] = "BABFT.lua"
+    [8122612051] = "STVSRD.lua"
 }
 
 local function load(str)
@@ -22,7 +22,7 @@ if scriptName then
     if not success then
         game:GetService("StarterGui"):SetCore("SendNotification", {
             Title = "Error",
-            Text = "The script may be having an error, can you report this error on YT to let me know.",
+            Text = "The script maybe having an error, can you report this error on YT to let me know.",
             Duration = 10,
             Icon = "rbxassetid://16061885051"
         })
@@ -31,7 +31,7 @@ if scriptName then
 else
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "Notification",
-        Text = "Script does not support game: " .. gameInfo.Name,
+        Text = "Script does not support game " .. gameInfo.Name,
         Duration = 10,
         Icon = "rbxassetid://16965361609"
     })
