@@ -35,9 +35,9 @@ local UserInputService = game:GetService("UserInputService");
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lxte/lates-lib/main/Main.lua"))()
 local Window = Library:CreateWindow({
     Title = "Be Dead Forever Simulator",
-    Theme = "Dark",
+    Theme = "Void",
     Size = UDim2.fromOffset(500, 270),
-    Transparency = 0.2,
+    Transparency = 0.3,
     Blurring = false,
     MinimizeKeybind = Enum.KeyCode.LeftAlt,
 })
@@ -82,7 +82,7 @@ local Themes = {
 }
 
 --// Set the default theme
-Window:SetTheme(Themes.Dark)
+Window:SetTheme(Themes.Void)
 
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
@@ -224,7 +224,6 @@ Window:AddSection({ Name = "Notification", Tab = Main })
 
 Window:AddButton({
     Title = "Sub To Hydro_gen!!",
-    
     Description = "Subscribe for more",
     Tab = Main,
     Callback = function() 
@@ -506,9 +505,28 @@ Window:AddButton({
     Description = "",
     Tab = miscTab,
     Callback = function()
-loadstring(game:HttpGet('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/No_blur.lua'))()
+        local lighting = game:GetService("Lighting")
+        local blurEffect = lighting:FindFirstChild("Blur")
+
+        if blurEffect then
+            if blurEffect.Enabled then
+                blurEffect.Enabled = false
+                Window:Notify({
+                    Title = "Notification",
+                    Description = "Blur is off",
+                    Duration = 10
+                })
+            else
+                Window:Notify({
+                    Title = "Notification",
+                    Description = "Blur was turned off before",
+                    Duration = 10
+                })
+            end
+        end
     end,
 })
+
 
 Window:AddButton({
     Title = "Antiafk",
