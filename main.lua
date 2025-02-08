@@ -1,6 +1,6 @@
 local marketplaceService = game:GetService("MarketplaceService")
-local gameInfo = marketplaceService:GetProductInfo(gameId)
 local gameId = game.PlaceId
+local gameInfo = marketplaceService:GetProductInfo(gameId)
 
 local scripts = {
     [2882332175] = "BDFS_NewUi.lua",
