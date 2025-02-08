@@ -1,4 +1,3 @@
--- I made this script first so that maybe I can make another game script using the script --
 local marketplaceService = game:GetService("MarketplaceService")
 local gameInfo = marketplaceService:GetProductInfo(gameId)
 local gameId = game.PlaceId
