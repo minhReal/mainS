@@ -296,7 +296,7 @@ local function teleportParts()
 
         if m:IsA("Part") then
             m.Position = k.PrimaryPart.Position + Vector3.new(0, 0, 0)
-            wait(0.5)
+            wait(0.75) -- time to get the custard, you can adjust it🔍
         end
     end
 
