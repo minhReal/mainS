@@ -136,8 +136,7 @@ Window:AddToggle({
     Description = "",
     Tab = Misc,
     Callback = function(Boolean)
-        local Lighting = game:GetService("Lighting")
-        Lighting.NightVision.Enabled = Boolean
+        game:GetService("Lighting").NightVision.Enabled = Boolean
     end,
 })
 
@@ -146,8 +145,7 @@ Window:AddToggle({
     Description = "",
     Tab = Misc,
     Callback = function(Boolean)
-        local Lighting = game:GetService("Lighting")
-        Lighting.LightningEffect.Enabled = Boolean
+        game:GetService("Lighting").LightningEffect.Enabled = Boolean
     end,
 })
 
