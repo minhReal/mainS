@@ -161,6 +161,32 @@ Window:AddSlider({
     end,
 })
 
+local AntiModsEnabled = false
+Window:AddToggle({
+    Title = "Antimod / Admin",
+    Description = "Anti high ranked players in the group. [BETA]",
+    Tab = Misc,
+    Callback = function(Value)
+        AntiModsEnabled = Value
+        if AntiModsEnabled then
+            while AntiModsEnabled do
+                for _, player in pairs(game.Players:GetPlayers()) do
+                    if player:GetRankInGroup(4630728) > 0 then
+                        game.Players.LocalPlayer:Kick("High Rank Player Detected. [ " .. player.Name .. " ]")
+                        break
+                    end
+                end
+                task.wait(0.5)
+            end
+        end
+    end,
+})
+
+game.Players.PlayerRemoving:Connect(function(player)
+if player == game.Players.LocalPlayer then
+AntiModsEnabled = false
+end
+end)
 
 Window:AddToggle({
     Title = "NightVision",
@@ -204,8 +230,8 @@ gui.Name = "12345678910111213141516171819202122"
 gui.Parent = game.CoreGui
 
 local Line = Instance.new("ImageButton")
-Line.Size = UDim2.new(0.05, 0, 0.05, 0)  -- Thay đổi kích thước để tạo hình vuông nhỏ hơn
-Line.Position = UDim2.new(0.05, 0, 0.5, -15)  -- Đặt vị trí để căn giữa
+Line.Size = UDim2.new(0.05, 0, 0.05, 0)
+Line.Position = UDim2.new(0.05, 0, 0.5, -15)
 Line.BackgroundColor3 = Color3.new(0, 0, 0)
 Line.BorderColor3 = Color3.new(1, 1, 1)
 Line.BorderSizePixel = 1
@@ -219,7 +245,7 @@ gui.Enabled = false
 
 Window:AddButton({
     Title = "Emote",
-    Description = "",
+    Description = "[Not working]",
     Tab = Misc,
     Callback = function()
         gui.Enabled = true
@@ -266,9 +292,11 @@ local e = game.Players.LocalPlayer
 
 local function updateHighlights()
     local f = workspace.game.gameCustard:GetDescendants()
-    
+    local addedParts = {}
+
     for _, g in pairs(f) do
         if g:IsA("Part") then
+            table.insert(addedParts, g)
             if b then
                 if not g:FindFirstChild("Highlight") then
                     local h = Instance.new("Highlight")
@@ -278,12 +306,6 @@ local function updateHighlights()
                     h.OutlineColor = Color3.fromRGB(255, 255, 255)
                     h.FillTransparency = 0.5
                     h.OutlineTransparency = 0.5
-
-                    local k = Instance.new("PointLight")
-                    k.Parent = g
-                    k.Color = Color3.fromRGB(232, 85, 242)
-                    k.Range = 10
-                    k.Brightness = 2
                 end
 
                 local i = g:FindFirstChild("BillboardGui")
@@ -296,7 +318,7 @@ local function updateHighlights()
                     i.StudsOffset = Vector3.new(0, 2, 0)
                     i.AlwaysOnTop = true
 
-                    j = Instance.new("TextLabel") -- Billboard TextLabel 
+                    j = Instance.new("TextLabel")
                     j.Size = UDim2.new(1, 0, 1, 0)
                     j.TextColor3 = Color3.new(1, 1, 1)
                     j.BackgroundTransparency = 1
@@ -311,17 +333,29 @@ local function updateHighlights()
                     j = i:FindFirstChild("TextLabel")
                 end
 
-                local distance = (e.Character.PrimaryPart.Position - g.Position).magnitude
-                j.Text = "Custard | Distance: " .. math.floor(distance) .. "m"
+                if e.Character and e.Character.PrimaryPart then
+                    local distance = (e.Character.PrimaryPart.Position - g.Position).magnitude
+                    j.Text = "Custard | Distance: " .. math.floor(distance) .. "m"
+                else
+                    j.Text = "Custard | Distance: N/A"
+                end
+
+                if not g:FindFirstChild("PointLight") then
+                    local light = Instance.new("PointLight")
+                    light.Parent = g
+                    light.Color = Color3.fromRGB(232, 85, 242)
+                    light.Range = 10
+                    light.Brightness = 2
+                end
             else
                 local h = g:FindFirstChild("Highlight")
                 if h then
                     h:Destroy()
                 end
 
-                local k = g:FindFirstChild("PointLight")
-                if k then
-                    k:Destroy()
+                local light = g:FindFirstChild("PointLight")
+                if light then
+                    light:Destroy()
                 end
 
                 local i = g:FindFirstChild("BillboardGui")
@@ -331,13 +365,20 @@ local function updateHighlights()
             end
         end
     end
+
+    return addedParts
 end
 
 spawn(function()
     while true do
         wait(0.01)
         if b then
-            updateHighlights()
+            local currentParts = updateHighlights()
+            for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
+                if part:IsA("Part") and not table.find(currentParts, part) then
+                    updateHighlights()
+                end
+            end
         else
             for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
                 if part:IsA("Part") then
@@ -346,9 +387,9 @@ spawn(function()
                         h:Destroy()
                     end
 
-                    local k = part:FindFirstChild("PointLight")
-                    if k then
-                        k:Destroy()
+                    local light = part:FindFirstChild("PointLight")
+                    if light then
+                        light:Destroy()
                     end
 
                     local i = part:FindFirstChild("BillboardGui")
@@ -360,6 +401,7 @@ spawn(function()
         end
     end
 end)
+
 
 
 --// Autofarm
