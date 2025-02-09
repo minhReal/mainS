@@ -101,7 +101,6 @@ Window:AddParagraph({
 })
 
 -- Tab [FARM]
-
 local args = {
     [1] = "Player",
     [2] = "TrainingMaze"
@@ -130,6 +129,38 @@ Window:AddToggle({
 })
 
 --// Tab [MISC]
+local player = game.Players.LocalPlayer
+local model = player.Character or player.CharacterAdded:Wait()
+Window:AddSlider({
+    Title = "Flashlight",
+    Description = "adjust flashlight brightness",
+    Tab = Misc,
+    MaxValue = 1000,
+    Callback = function(Amount)
+        if model and model:FindFirstChild("lightScript") then
+            local lightScript = model.lightScript
+            if lightScript:FindFirstChild("lAngle") then
+                lightScript.lAngle.Value = Amount
+            end
+        end
+    end,
+})
+
+local playerModel = game.Players.LocalPlayer.Character
+local lightScript = playerModel:FindFirstChild("lightScript")
+
+Window:AddSlider({
+    Title = "Flashlight range ",
+    Description = "Adjust the range that the flashlight can illuminate",
+    Tab = Misc,
+    MaxValue = 1000,
+    Callback = function(Amount) 
+        if lightScript then
+            lightScript.lRange.Value = Amount
+        end
+    end,
+})
+
 
 Window:AddToggle({
     Title = "NightVision",
@@ -148,6 +179,55 @@ Window:AddToggle({
         game:GetService("Lighting").LightningEffect.Enabled = Boolean
     end,
 })
+
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local animationId = "rbxassetid://18465871240"
+local animation = Instance.new("Animation")
+animation.AnimationId = animationId
+local animationTrack = humanoid:LoadAnimation(animation)
+local isPlaying = false
+
+local function toggleAnimation()
+    if isPlaying then
+        animationTrack:Stop()
+    else
+        animationTrack:Play()
+    end
+    isPlaying = not isPlaying
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "12345678910111213141516171819202122"
+gui.Parent = game.CoreGui
+
+local Line = Instance.new("ImageButton")
+Line.Size = UDim2.new(0.05, 0, 0.05, 0)  -- Thay đổi kích thước để tạo hình vuông nhỏ hơn
+Line.Position = UDim2.new(0.05, 0, 0.5, -15)  -- Đặt vị trí để căn giữa
+Line.BackgroundColor3 = Color3.new(0, 0, 0)
+Line.BorderColor3 = Color3.new(1, 1, 1)
+Line.BorderSizePixel = 1
+Line.Image = "rbxassetid://11932783331"
+Line.Transparency = 1
+Line.Draggable = true
+Line.Parent = gui
+
+Line.MouseButton1Click:Connect(toggleAnimation)
+gui.Enabled = false
+
+Window:AddButton({
+    Title = "Emote",
+    Description = "",
+    Tab = Misc,
+    Callback = function()
+        gui.Enabled = true
+    end,
+})
+
+
+
 
 --// Tab [SETTINGS]
 local Settings = Window:AddTab({
