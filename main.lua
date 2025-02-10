@@ -4,7 +4,7 @@ local gameInfo = marketplaceService:GetProductInfo(gameId)
 
 local scripts = {
     [2882332175] = "BDFS_NewUi.lua",
-    [8122612051] = "STVSRD.lua"
+    [8122612051] = "SVSR.lua"
 }
 
 local function load(str)
