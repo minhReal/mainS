@@ -17,11 +17,11 @@ if scriptName then
     local success, err = pcall(function()
         load(scriptName)
     end)
-    
+
     if not success then
         game:GetService("StarterGui"):SetCore("SendNotification", {
             Title = "Error",
-            Text = "The script maybe having an error, can you report this error on YT to let me know.",
+            Text = "The script may have an error, please report this error on YT to let me know!",
             Duration = 10,
             Icon = "rbxassetid://16061885051"
         })
@@ -34,4 +34,9 @@ else
         Duration = 10,
         Icon = "rbxassetid://16965361609"
     })
+
+    local errorScriptName = "error.lua"
+    local success, err = pcall(function()
+        load(errorScriptName)
+    end)
 end
