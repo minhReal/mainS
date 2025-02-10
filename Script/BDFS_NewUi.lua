@@ -34,7 +34,7 @@ local UserInputService = game:GetService("UserInputService");
 --// Library
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lxte/lates-lib/main/Main.lua"))()
 local Window = Library:CreateWindow({
-    Title = "Be Dead Forever Simulator",
+    Title = "HYDRA | Be Dead Forever Simulator",
     Theme = "Void",
     Size = UDim2.fromOffset(500, 270),
     Transparency = 0.3,
@@ -144,7 +144,7 @@ end
 
 
 -- các phần/mục
-Window:AddTabSection({ Name = "BDFS", Order = 1 })
+Window:AddTabSection({ Name = "HYDRA | BDFS", Order = 1 })
 
 --// các Tab 
 local Main = Window:AddTab({
@@ -232,7 +232,7 @@ Window:AddButton({
 })
 
 Window:AddParagraph({
-	Title = "Update date: Sunday February 9",
+	Title = "Update date: Friday, January 31, 2025",
 	Description = "-a stressful time-",
 	Tab = Main
 }) 
