@@ -55,7 +55,7 @@ local Themes = {
 Window:SetTheme(Themes.Void)
 
 --// Sections
-Window:AddTabSection({ Name = "SVSR", Order = 1 })
+Window:AddTabSection({ Name = "HYDRA | SVSR", Order = 1 })
 
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
@@ -101,14 +101,9 @@ Window:AddParagraph({
 })
 
 -- Tab [FARM]
-local args = {
-    [1] = "Player",
-    [2] = "TrainingMaze"
-}
-
+local args = { [1] = "Player", [2] = "TrainingMaze" }
 local a = false
 local b = false
-
 Window:AddToggle({
     Title = "Autofarm",
     Description = "[Beta]",
