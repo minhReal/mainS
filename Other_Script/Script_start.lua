@@ -21,7 +21,6 @@ for i, label in ipairs(labels) do
 end
 
 tweens[1]:Play()
-wait(0.15)
 tweens[2]:Play()
 
 wait(2.5)
