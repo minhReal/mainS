@@ -1,3 +1,7 @@
+--// Script Start #1
+loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Script_start.lua"))()
+
+--// Toggle 
 local gui = Instance.new("ScreenGui")
 gui.Name = "12345678910111213141516171819202122"
 gui.Parent = game.CoreGui
@@ -42,48 +46,16 @@ local Window = Library:CreateWindow({
     MinimizeKeybind = Enum.KeyCode.LeftAlt,
 })
 
-local Themes = {
-    Light = {
-        Primary = Color3.fromRGB(232, 232, 232),
-        Secondary = Color3.fromRGB(255, 255, 255),
-        Component = Color3.fromRGB(245, 245, 245),
-        Interactables = Color3.fromRGB(235, 235, 235),
-        Tab = Color3.fromRGB(50, 50, 50),
-        Title = Color3.fromRGB(0, 0, 0),
-        Description = Color3.fromRGB(100, 100, 100),
-        Shadow = Color3.fromRGB(255, 255, 255),
-        Outline = Color3.fromRGB(210, 210, 210),
-        Icon = Color3.fromRGB(100, 100, 100),
-    },
-    Dark = {
-        Primary = Color3.fromRGB(30, 30, 30),
-        Secondary = Color3.fromRGB(35, 35, 35),
-        Component = Color3.fromRGB(40, 40, 40),
-        Interactables = Color3.fromRGB(45, 45, 45),
-        Tab = Color3.fromRGB(200, 200, 200),
-        Title = Color3.fromRGB(240,240,240),
-        Description = Color3.fromRGB(200,200,200),
-        Shadow = Color3.fromRGB(0, 0, 0),
-        Outline = Color3.fromRGB(40, 40, 40),
-        Icon = Color3.fromRGB(220, 220, 220),
-    },
-    Void = {
-        Primary = Color3.fromRGB(15, 15, 15),
-        Secondary = Color3.fromRGB(20, 20, 20),
-        Component = Color3.fromRGB(25, 25, 25),
-        Interactables = Color3.fromRGB(30, 30, 30),
-        Tab = Color3.fromRGB(200, 200, 200),
-        Title = Color3.fromRGB(240,240,240),
-        Description = Color3.fromRGB(200,200,200),
-        Shadow = Color3.fromRGB(0, 0, 0),
-        Outline = Color3.fromRGB(40, 40, 40),
-        Icon = Color3.fromRGB(220, 220, 220),
-    },
+local Themes = { 
+    Light = { Primary = Color3.fromRGB(232, 232, 232), Secondary = Color3.fromRGB(255, 255, 255), Component = Color3.fromRGB(245, 245, 245), Interactables = Color3.fromRGB(235, 235, 235), Tab = Color3.fromRGB(50, 50, 50), Title = Color3.fromRGB(0, 0, 0), Description = Color3.fromRGB(100, 100, 100), Shadow = Color3.fromRGB(255, 255, 255), Outline = Color3.fromRGB(210, 210, 210), Icon = Color3.fromRGB(100, 100, 100), },
+    Dark = { Primary = Color3.fromRGB(30, 30, 30), Secondary = Color3.fromRGB(35, 35, 35), Component = Color3.fromRGB(40, 40, 40), Interactables = Color3.fromRGB(45, 45, 45), Tab = Color3.fromRGB(200, 200, 200), Title = Color3.fromRGB(240,240,240), Description = Color3.fromRGB(200,200,200), Shadow = Color3.fromRGB(0, 0, 0), Outline = Color3.fromRGB(40, 40, 40), Icon = Color3.fromRGB(220, 220, 220), }, 
+    Void = { Primary = Color3.fromRGB(15, 15, 15), Secondary = Color3.fromRGB(20, 20, 20), Component = Color3.fromRGB(25, 25, 25), Interactables = Color3.fromRGB(30, 30, 30), Tab = Color3.fromRGB(200, 200, 200), Title = Color3.fromRGB(240,240,240), Description = Color3.fromRGB(200,200,200), Shadow = Color3.fromRGB(0, 0, 0), Outline = Color3.fromRGB(40, 40, 40), Icon = Color3.fromRGB(220, 220, 220), }, 
 }
 
 --// Set the default theme
 Window:SetTheme(Themes.Void)
 
+--// Script Start #2
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
       Text = "Script has been loaded successfully!",
@@ -143,10 +115,10 @@ local function playAnimation(animationId)
 end
 
 
--- các phần/mục
+--// Các phần/Thư mục
 Window:AddTabSection({ Name = "HYDRA | BDFS", Order = 1 })
 
---// các Tab 
+--// Các Tab
 local Main = Window:AddTab({
     Title = "Main",
     Section = "BDFS",
