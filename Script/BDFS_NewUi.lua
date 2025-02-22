@@ -509,21 +509,49 @@ Window:AddButton({
     end,
 })
 
+Window:AddToggle({
+    Title = "Fullbright",
+    Description = "",
+    Tab = Main,
+    Callback = function(Boolean)
+        getgenv().loopbright = Boolean
+        local lighting = game:GetService("Lighting")
+        
+        if Boolean then
+            while getgenv().loopbright do
+                lighting.Brightness = 2
+                lighting.ClockTime = 12
+                lighting.FogEnd = 1e5
+                lighting.GlobalShadows = false
+                lighting.Ambient = Color3.new(1, 1, 1)
+                task.wait()
+            end
+        else
+            lighting.Brightness = 1
+            lighting.ClockTime = 14
+            lighting.FogEnd = 1000
+            lighting.GlobalShadows = true
+            lighting.Ambient = Color3.new(0.5, 0.5, 0.5)
+        end
+    end,
+})
+
 Window:AddButton({
     Title = "Teleport tool",
     Description = "",
     Tab = miscTab,
     Callback = function()
-        loadstring(game:HttpGet("https://pastefy.app/Urr0ZArX/raw"))()
-    end,
-})
+	mouse = game.Players.LocalPlayer:GetMouse()
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = "Teleport Tool"
+tool.Activated:connect(function()
+local pos = mouse.Hit+Vector3.new(0,2.5,0)
+pos = CFrame.new(pos.X,pos.Y,pos.Z)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
 
-Window:AddButton({
-    Title = "Fullbright",
-    Description = "",
-    Tab = miscTab,
-    Callback = function()
-        loadstring(game:HttpGet("https://pastefy.app/bUT6Ec1s/raw"))()
     end,
 })
 
@@ -532,16 +560,17 @@ Window:AddButton({
     Description = "",
     Tab = miscTab,
     Callback = function()
-        loadstring(game:HttpGet("https://pastefy.app/7bETyrzO/raw"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Spectator.lua"))()
     end,
 })
+
 
 Window:AddButton({
     Title = "Shiftlock",
     Description = "",
     Tab = miscTab,
     Callback = function()
-        loadstring(game:HttpGet("https://pastefy.app/GCnYtXlr/raw"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Shiftlock.lua"))()
     end,
 })
 
@@ -550,7 +579,7 @@ Window:AddButton({
     Description = "",
     Tab = miscTab,
     Callback = function()
-        loadstring(game:HttpGet("https://pastefy.app/7nvhyNkx/raw"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Telekinesis.lua"))()
     end,
 })
 
