@@ -560,7 +560,7 @@ Window:AddButton({
     Description = "",
     Tab = miscTab,
     Callback = function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Spectator.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Spectator_ByHydro_gen.lua"))()
     end,
 })
 
