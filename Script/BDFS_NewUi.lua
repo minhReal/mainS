@@ -204,7 +204,7 @@ Window:AddButton({
 })
 
 Window:AddParagraph({
-	Title = "Update date: Friday, January 31, 2025",
+	Title = "Update date: Monday February 24, 2019(joke)",
 	Description = "-a stressful time-",
 	Tab = Main
 }) 
@@ -274,59 +274,68 @@ Window:AddSlider({
     end,
 })
 
+
+
 --// Tools [TAB]
-Window:AddSection({ Name = "Tools", Tab = toolTab }) 
+local function autoBuy()
+    wait(0.1)
+    local player = game:GetService("Players").LocalPlayer
+    local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
+    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
+
+    if buyButton and buyButton:IsA("RemoteEvent") then
+        buyButton:FireServer()
+    end
+end
+
+Window:AddParagraph({ Title = "WARNING", Description = "If you click on a tool, the script will automatically buy that tool!", Tab = toolTab }) 
+
+Window:AddSection({ Name = "Food", Tab = toolTab }) 
 
 Window:AddButton({
-    Title = "Get Medik",
-    Description = "2 lives",
+    Title = "Dead burger is 30$",
+    Description = "deadville economic inflation",
     Tab = toolTab,
     Callback = function()
-        fireclickdetector(workspace["Meshes/Medkit"].ClickDetector)
+        fireclickdetector(workspace.Buyables.Tools.burgre.ClickDetector)
+        autoBuy()
     end,
 })
 
 Window:AddButton({
-    Title = "Get a dead burger",
-    Description = "Buy a dead burger for $30",
+    Title = "Coffee is 20$",
+    Description = "cup of Joe",
     Tab = toolTab,
     Callback = function()
-        local burgerDetector = workspace.Buildings:FindFirstChild("DeadBurger") and workspace.Buildings.DeadBurger.burgre:FindFirstChild("ClickDetector")
-        if burgerDetector then
-            fireclickdetector(burgerDetector)
-        end
+        fireclickdetector(workspace.Buyables.Tools.coffee.ClickDetector)
+        autoBuy()
     end,
 })
 
 Window:AddButton({
-    Title = "Get Key card",
-    Description = "Key card.",
+    Title = "Pizza is 30$",
+    Description = "your loss is our sauce!",
     Tab = toolTab,
     Callback = function()
-        fireclickdetector(workspace.Buildings.DeadBurger.Level1Keycard.ClickDetector)
+        fireclickdetector(workspace.Buyables.Tools.Pizza.ClickDetector)
+        autoBuy()
     end,
 })
 
 Window:AddButton({
-    Title = "Get New paper",
-    Description = "What's new",
+    Title = "Cola is 15$",
+    Description = "with two new flavors just in time for summer, nothing beats bloxy cola!",
     Tab = toolTab,
     Callback = function()
-        local targetCFrame = CFrame.new(-16.954525, 17.9250011, 160.480621, 0.953241706, -0.3022089, 6.66081905e-06, -6.66081905e-06, -4.30345535e-05, -1, 0.3022089, 0.953241706, -4.30345535e-05)
-        for _, item in pairs(workspace:GetDescendants()) do
-            if item:IsA("Part") and item.Name == "Handle" and item.CFrame == targetCFrame then
-                local clickDetector = item:FindFirstChildOfClass("ClickDetector")
-                if clickDetector then
-                    fireclickdetector(clickDetector)
-                end
-                return
-            end
-        end
+        fireclickdetector(workspace.Buyables.Tools.cola.ClickDetector)
+        autoBuy()
     end,
 })
 
+Window:AddSection({ Name = "Weapon", Tab = toolTab })
+
 Window:AddButton({
-    Title = "Get PlayerDestroy9000",
+    Title = "PlayerDestroy9000 is FREE",
     Description = "Destroy",
     Tab = toolTab,
     Callback = function()
@@ -338,44 +347,95 @@ Window:AddButton({
 })
 
 Window:AddButton({
-    Title = "Get Knife",
-    Description = "Knife.",
-    Tab = toolTab,
-    Callback = function()
-        local knifeClickDetector = workspace:FindFirstChild("Knife") and workspace.Knife:FindFirstChild("ClickDetector")
-        if knifeClickDetector then
-            fireclickdetector(knifeClickDetector)
-        end
+    Title = "C4 is FREE",
+    Description = "dead co brand explosives!",
+    Tab = Main,
+    Callback = function() 
+        fireclickdetector(workspace.Buyables.Tools.c4.ClickDetector)
+        autoBuy()
     end,
 })
 
 Window:AddButton({
-    Title = "Get AWP",
-    Description = "Sniper ",
+    Title = "Knife is FREE",
+    Description = "right behind you",
     Tab = toolTab,
     Callback = function()
-        local targetCFrame = CFrame.new(127.603859, 99.1851883, -63.2750053, 0.921245217, 4.82797623e-06, 0.388982356, 0.388982356, -2.38418579e-05, -0.921245158, 4.82797623e-06, 0.99999994, -2.38418579e-05)
-        for _, item in pairs(workspace:GetDescendants()) do
-            if item:IsA("MeshPart") and item.Name == "Handle" and item.CFrame == targetCFrame then
-                local clickDetector = item:FindFirstChildOfClass("ClickDetector")
-                if clickDetector then
-                    fireclickdetector(clickDetector)
-                end
-                return
-            end
-        end
+        fireclickdetector(workspace.Buyables.Tools.Knife.ClickDetector)
+        autoBuy()
     end,
 })
 
 Window:AddButton({
-    Title = "Get Shotgun",
-    Description = "Buckshot",
+    Title = "AWP is FREE",
+    Description = "boom! headshot!",
     Tab = toolTab,
     Callback = function()
-        fireclickdetector(workspace.shotgun.ClickDetector)
+        fireclickdetector(workspace.Buyables.Tools.awp.ClickDetector)
+        autoBuy()
     end,
 })
 
+Window:AddButton({
+    Title = "Shotgun is FREE",
+    Description = "produced from dead co. quality assured*!",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.shotgun.ClickDetector)
+        autoBuy()
+    end,
+})
+
+Window:AddSection({ Name = "Other", Tab = toolTab }) 
+
+Window:AddButton({
+    Title = "Medkit is 5$",
+    Description = "patch yourself up",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.medkit.ClickDetector)
+        autoBuy()
+    end,
+})
+
+Window:AddButton({
+    Title = "Key card is FREE",
+    Description = "Key. card.",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buildings.DeadBurger.Level1Keycard.ClickDetector)
+    end,
+})
+
+Window:AddButton({
+    Title = "New paper is FREE",
+    Description = "only the latest",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.NewsPaper.ClickDetector)
+        autoBuy()
+    end,
+})
+
+Window:AddButton({
+    Title = "Dread is 40$",
+    Description = "one review says a friend tuned into this one and claimed they \"never wanted to be alone again\".",
+    Tab = Main,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.dread.ClickDetector)
+        autoBuy()
+    end,
+})
+
+Window:AddButton({
+    Title = "Glee is 40$",
+    Description = "recent reviews say the experience left them wanting for more.",
+    Tab = Main,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.glee.ClickDetector)
+        autoBuy()
+    end,
+})
 
 --// Misc [TAB]
 Window:AddSection({ Name = "Animation", Tab = miscTab }) 
@@ -400,7 +460,6 @@ Window:AddButton({
 
 
 Window:AddSection({ Name = "Utilities", Tab = miscTab }) 
-
 
 local toggled = false
 Window:AddToggle({
@@ -512,7 +571,7 @@ Window:AddButton({
 Window:AddToggle({
     Title = "Fullbright",
     Description = "",
-    Tab = Main,
+    Tab = miscTab,
     Callback = function(Boolean)
         getgenv().loopbright = Boolean
         local lighting = game:GetService("Lighting")
