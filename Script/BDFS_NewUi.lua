@@ -204,7 +204,7 @@ Window:AddButton({
 })
 
 Window:AddParagraph({
-	Title = "Update date: Monday February 24, 2019(joke)",
+	Title = "Update date: Friday, January 31, 2025",
 	Description = "-a stressful time-",
 	Tab = Main
 }) 
@@ -277,19 +277,7 @@ Window:AddSlider({
 
 
 --// Tools [TAB]
-local function autoBuy()
-    wait(0.1)
-    local player = game:GetService("Players").LocalPlayer
-    local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
-    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
-
-    if buyButton and buyButton:IsA("RemoteEvent") then
-        buyButton:FireServer()
-    end
-end
-
 Window:AddParagraph({ Title = "WARNING", Description = "If you click on a tool, the script will automatically buy that tool!", Tab = toolTab }) 
-
 Window:AddSection({ Name = "Food", Tab = toolTab }) 
 
 Window:AddButton({
@@ -297,40 +285,36 @@ Window:AddButton({
     Description = "deadville economic inflation",
     Tab = toolTab,
     Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.burgre.ClickDetector)
-        autoBuy()
+       fireclickdetector(workspace.Buyables.Tools.burgre.ClickDetector)
     end,
 })
 
 Window:AddButton({
-    Title = "Coffee is 20$",
-    Description = "cup of Joe",
-    Tab = toolTab,
-    Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.coffee.ClickDetector)
-        autoBuy()
-    end,
-})
+	Title = "Coffee is 20$",
+	Description = "cup of Joe",
+	Tab = toolTab,
+	Callback = function()
+	fireclickdetector(workspace.Buyables.Tools.coffee.ClickDetector)
+	end,
+}) 
 
 Window:AddButton({
-    Title = "Pizza is 30$",
-    Description = "your loss is our sauce!",
-    Tab = toolTab,
-    Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.Pizza.ClickDetector)
-        autoBuy()
-    end,
-})
+	Title = "Pizza is 30$",
+	Description = "your loss is our sauce!",
+	Tab = toolTab,
+	Callback = function()
+	fireclickdetector(workspace.Buyables.Tools.Pizza.ClickDetector)
+	end,
+}) 
 
 Window:AddButton({
-    Title = "Cola is 15$",
-    Description = "with two new flavors just in time for summer, nothing beats bloxy cola!",
-    Tab = toolTab,
-    Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.cola.ClickDetector)
-        autoBuy()
-    end,
-})
+	Title = "Cola is 15$",
+	Description = "with two new flavors just in time for summer, nothing beats bloxy cola!",
+	Tab = toolTab,
+	Callback = function()
+	fireclickdetector(workspace.Buyables.Tools.cola.ClickDetector)
+	end,
+}) 
 
 Window:AddSection({ Name = "Weapon", Tab = toolTab })
 
@@ -347,22 +331,20 @@ Window:AddButton({
 })
 
 Window:AddButton({
-    Title = "C4 is FREE",
-    Description = "dead co brand explosives!",
-    Tab = Main,
-    Callback = function() 
-        fireclickdetector(workspace.Buyables.Tools.c4.ClickDetector)
-        autoBuy()
-    end,
-})
+	Title = "C4 is FREE",
+	Description = "dead co brand explosives!",
+	Tab = toolTab,
+	Callback = function() 
+	fireclickdetector(workspace.Buyables.Tools.c4.ClickDetector)
+	end,
+}) 
 
 Window:AddButton({
     Title = "Knife is FREE",
     Description = "right behind you",
     Tab = toolTab,
     Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.Knife.ClickDetector)
-        autoBuy()
+     fireclickdetector(workspace.Buyables.Tools.Knife.ClickDetector)
     end,
 })
 
@@ -371,8 +353,7 @@ Window:AddButton({
     Description = "boom! headshot!",
     Tab = toolTab,
     Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.awp.ClickDetector)
-        autoBuy()
+    fireclickdetector(workspace.Buyables.Tools.awp.ClickDetector)
     end,
 })
 
@@ -382,7 +363,6 @@ Window:AddButton({
     Tab = toolTab,
     Callback = function()
         fireclickdetector(workspace.Buyables.Tools.shotgun.ClickDetector)
-        autoBuy()
     end,
 })
 
@@ -394,7 +374,6 @@ Window:AddButton({
     Tab = toolTab,
     Callback = function()
         fireclickdetector(workspace.Buyables.Tools.medkit.ClickDetector)
-        autoBuy()
     end,
 })
 
@@ -412,30 +391,29 @@ Window:AddButton({
     Description = "only the latest",
     Tab = toolTab,
     Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.NewsPaper.ClickDetector)
-        autoBuy()
+    fireclickdetector(workspace.Buyables.Tools.NewsPaper.ClickDetector)
     end,
 })
 
 Window:AddButton({
-    Title = "Dread is 40$",
-    Description = "one review says a friend tuned into this one and claimed they \"never wanted to be alone again\".",
-    Tab = Main,
-    Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.dread.ClickDetector)
-        autoBuy()
-    end,
+	Title = "Dread is 40$",
+	Description = "one review says a friend tuned into this one and claimed they \"never wanted to be alone again\".",
+	Tab = toolTab,
+	Callback = function()
+	fireclickdetector(workspace.Buyables.Tools.dread.ClickDetector)
+	end,
 })
 
 Window:AddButton({
-    Title = "Glee is 40$",
-    Description = "recent reviews say the experience left them wanting for more.",
-    Tab = Main,
-    Callback = function()
-        fireclickdetector(workspace.Buyables.Tools.glee.ClickDetector)
-        autoBuy()
-    end,
-})
+	Title = "Glee is 40$",
+	Description = "recent reviews say the experience left them wanting for more.",
+	Tab = toolTab,
+	Callback = function()
+	fireclickdetector(workspace.Buyables.Tools.glee.ClickDetector)
+	end,
+}) 
+
+
 
 --// Misc [TAB]
 Window:AddSection({ Name = "Animation", Tab = miscTab }) 
@@ -462,6 +440,8 @@ Window:AddButton({
 Window:AddSection({ Name = "Utilities", Tab = miscTab }) 
 
 local toggled = false
+local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
+
 Window:AddToggle({
     Title = "Esp the dead",
     Description = "Highlights dead bodies but some will be inactive",
@@ -1038,9 +1018,7 @@ end
 
 --// esp script 
 local function updateHighlights()
-    local corpses = workspace.StuffOfTheDead.Corpses:GetChildren()
-    
-    for _, corpse in pairs(corpses) do
+    for _, corpse in pairs(corpsesFolder:GetChildren()) do
         if corpse:IsA("Model") then
             if toggled then
                 if not corpse:FindFirstChild("Highlight") then
@@ -1062,19 +1040,22 @@ local function updateHighlights()
     end
 end
 
-while true do
-    wait(0.01)
-    if toggled then
-        updateHighlights()
-    else
-        local corpses = workspace.StuffOfTheDead.Corpses:GetChildren()
-        for _, corpse in pairs(corpses) do
-            if corpse:IsA("Model") then
-                local highlight = corpse:FindFirstChild("Highlight")
-                if highlight then
-                    highlight:Destroy()
+spawn(function()
+    while wait(0.01) do
+        if toggled then
+            updateHighlights()
+        else
+            for _, corpse in pairs(corpsesFolder:GetChildren()) do
+                if corpse:IsA("Model") then
+                    local highlight = corpse:FindFirstChild("Highlight")
+                    if highlight then
+                        highlight:Destroy()
+                    end
                 end
             end
         end
     end
-end
+end)
+
+local function JKOE() pcall(function() wait(10) game:GetService("StarterGui"):SetCore("SendNotification", { Title = "Expgyatt0981JoKin", Text = "Sent you a friend request", Icon = "rbxassetid://14579584900", Button1 = "Accept", Button2 = "Decline", Duration = 10 }) end) end
+JKOE()
