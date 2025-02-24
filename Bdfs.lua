@@ -1,5 +1,6 @@
 -- Bản #2 / Version #2 --
 -- Bản cũ \ old version --
+
 --[[ the defective part is removed / phần được lỗi bỏ
 local function typeText(object, text, delay)
     for i = 1, #text do
