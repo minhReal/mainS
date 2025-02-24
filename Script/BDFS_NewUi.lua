@@ -277,44 +277,60 @@ Window:AddSlider({
 
 
 --// Tools [TAB]
-Window:AddParagraph({ Title = "WARNING", Description = "If you click on a tool, the script will automatically buy that tool!", Tab = toolTab }) 
+Window:AddParagraph({ Title = "WARNING", Description = "If you click on a tool, the script will automatically buy that tool!", Tab = toolTab })
+
 Window:AddSection({ Name = "Food", Tab = toolTab }) 
+
+local function autoBuy()
+    wait(0.1)
+    local player = game:GetService("Players").LocalPlayer
+    local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
+    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
+
+    if buyButton and buyButton:IsA("RemoteEvent") then
+        buyButton:FireServer()
+    end
+end
 
 Window:AddButton({
     Title = "Dead burger is 30$",
     Description = "deadville economic inflation",
     Tab = toolTab,
     Callback = function()
-       fireclickdetector(workspace.Buyables.Tools.burgre.ClickDetector)
+        fireclickdetector(workspace.Buyables.Tools.burgre.ClickDetector)
+        autoBuy()
     end,
 })
 
 Window:AddButton({
-	Title = "Coffee is 20$",
-	Description = "cup of Joe",
-	Tab = toolTab,
-	Callback = function()
-	fireclickdetector(workspace.Buyables.Tools.coffee.ClickDetector)
-	end,
-}) 
+    Title = "Coffee is 20$",
+    Description = "cup of Joe",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.coffee.ClickDetector)
+        autoBuy()
+    end,
+})
 
 Window:AddButton({
-	Title = "Pizza is 30$",
-	Description = "your loss is our sauce!",
-	Tab = toolTab,
-	Callback = function()
-	fireclickdetector(workspace.Buyables.Tools.Pizza.ClickDetector)
-	end,
-}) 
+    Title = "Pizza is 30$",
+    Description = "your loss is our sauce!",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.Pizza.ClickDetector)
+        autoBuy()
+    end,
+})
 
 Window:AddButton({
-	Title = "Cola is 15$",
-	Description = "with two new flavors just in time for summer, nothing beats bloxy cola!",
-	Tab = toolTab,
-	Callback = function()
-	fireclickdetector(workspace.Buyables.Tools.cola.ClickDetector)
-	end,
-}) 
+    Title = "Cola is 15$",
+    Description = "with two new flavors just in time for summer, nothing beats bloxy cola!",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.cola.ClickDetector)
+        autoBuy()
+    end,
+})
 
 Window:AddSection({ Name = "Weapon", Tab = toolTab })
 
@@ -326,17 +342,19 @@ Window:AddButton({
         local handleDetector = workspace:FindFirstChild("Handle") and workspace.Handle:FindFirstChild("ClickDetector")
         if handleDetector then
             fireclickdetector(handleDetector)
+            autoBuy()
         end
     end,
 })
 
 Window:AddButton({
-	Title = "C4 is FREE",
-	Description = "dead co brand explosives!",
-	Tab = toolTab,
-	Callback = function() 
-	fireclickdetector(workspace.Buyables.Tools.c4.ClickDetector)
-	end,
+    Title = "C4 is FREE",
+    Description = "dead co brand explosives!",
+    Tab = toolTab,
+    Callback = function() 
+        fireclickdetector(workspace.Buyables.Tools.c4.ClickDetector)
+        autoBuy()
+    end,
 }) 
 
 Window:AddButton({
@@ -344,7 +362,8 @@ Window:AddButton({
     Description = "right behind you",
     Tab = toolTab,
     Callback = function()
-     fireclickdetector(workspace.Buyables.Tools.Knife.ClickDetector)
+        fireclickdetector(workspace.Buyables.Tools.Knife.ClickDetector)
+        autoBuy()
     end,
 })
 
@@ -353,7 +372,8 @@ Window:AddButton({
     Description = "boom! headshot!",
     Tab = toolTab,
     Callback = function()
-    fireclickdetector(workspace.Buyables.Tools.awp.ClickDetector)
+        fireclickdetector(workspace.Buyables.Tools.awp.ClickDetector)
+        autoBuy()
     end,
 })
 
@@ -363,6 +383,7 @@ Window:AddButton({
     Tab = toolTab,
     Callback = function()
         fireclickdetector(workspace.Buyables.Tools.shotgun.ClickDetector)
+        autoBuy()
     end,
 })
 
@@ -374,6 +395,7 @@ Window:AddButton({
     Tab = toolTab,
     Callback = function()
         fireclickdetector(workspace.Buyables.Tools.medkit.ClickDetector)
+        autoBuy()
     end,
 })
 
@@ -383,6 +405,7 @@ Window:AddButton({
     Tab = toolTab,
     Callback = function()
         fireclickdetector(workspace.Buildings.DeadBurger.Level1Keycard.ClickDetector)
+        autoBuy()
     end,
 })
 
@@ -391,28 +414,30 @@ Window:AddButton({
     Description = "only the latest",
     Tab = toolTab,
     Callback = function()
-    fireclickdetector(workspace.Buyables.Tools.NewsPaper.ClickDetector)
+        fireclickdetector(workspace.Buyables.Tools.NewsPaper.ClickDetector)
+        autoBuy()
     end,
 })
 
 Window:AddButton({
-	Title = "Dread is 40$",
-	Description = "one review says a friend tuned into this one and claimed they \"never wanted to be alone again\".",
-	Tab = toolTab,
-	Callback = function()
-	fireclickdetector(workspace.Buyables.Tools.dread.ClickDetector)
-	end,
+    Title = "Dread is 40$",
+    Description = "one review says a friend tuned into this one and claimed they \"never wanted to be alone again\".",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.dread.ClickDetector)
+        autoBuy()
+    end,
 })
 
 Window:AddButton({
-	Title = "Glee is 40$",
-	Description = "recent reviews say the experience left them wanting for more.",
-	Tab = toolTab,
-	Callback = function()
-	fireclickdetector(workspace.Buyables.Tools.glee.ClickDetector)
-	end,
-}) 
-
+    Title = "Glee is 40$",
+    Description = "recent reviews say the experience left them wanting for more.",
+    Tab = toolTab,
+    Callback = function()
+        fireclickdetector(workspace.Buyables.Tools.glee.ClickDetector)
+        autoBuy()
+    end,
+})
 
 
 --// Misc [TAB]
@@ -816,9 +841,19 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 local PlayerService = game:GetService("Players")
 local player = PlayerService.LocalPlayer
 
+local function autoBuyNEat()
+    wait(0.1)
+    local player = game:GetService("Players").LocalPlayer
+    local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
+    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
+
+    if buyButton and buyButton:IsA("RemoteEvent") then
+        buyButton:FireServer()
+    end
+end
 
 local function eat()
-    local burgerClickDetector = workspace.Buildings.DeadBurger.burgre.ClickDetector
+    local burgerClickDetector = workspace.Buyables.Tools.burgre.ClickDetector
     if not player.Backpack:FindFirstChild("Burger") then
         fireclickdetector(burgerClickDetector)
         wait(5)
@@ -886,6 +921,7 @@ local function runAutofarm()
         if hungerGui and hungerGui.Hunger.Value < 50 and not autoEating then
             autoEating = true
             eat()
+            autoBuyNEat()
             autoEating = false
         end
     end
@@ -1057,5 +1093,8 @@ spawn(function()
     end
 end)
 
-local function JKOE() pcall(function() wait(10) game:GetService("StarterGui"):SetCore("SendNotification", { Title = "Expgyatt0981JoKin", Text = "Sent you a friend request", Icon = "rbxassetid://14579584900", Button1 = "Accept", Button2 = "Decline", Duration = 10 }) end) end
+local function JKOE() pcall(function() wait(90) game:GetService("StarterGui"):SetCore("SendNotification", { Title = "Expgyatt0981JoKin", Text = "Sent you a friend request", Icon = "rbxassetid://14579584900", Button1 = "Accept", Button2 = "Decline", Duration = 10 }) end) end
 JKOE()
+        --end
+    --end
+--end)
