@@ -1,8 +1,6 @@
 local PlayerService = game:GetService("Players")
 local WorkspaceService = game:GetService("Workspace")
 local player = PlayerService.LocalPlayer
-local hungerGui = player.PlayerGui:WaitForChild("Hunger")
-local burgerDetector = WorkspaceService.Buildings.DeadBurger.burgre.ClickDetector
 local moneyBox = WorkspaceService.Buildings.DeadBurger.DumpsterMoneyMaker.MoneyHitbox
 
 local isAutofarming = false
@@ -21,21 +19,9 @@ function cleanTrashCans()
     end
 end
 
-local function consumeFood()
-    if not player.Backpack:FindFirstChild("Burger") then
-        fireclickdetector(burgerDetector)
-    end
-    wait(0.2)
-
-    local burger = player.Backpack:WaitForChild("Burger")
-    burger.Parent = player.Character
-    burger:Activate()
-    wait(1.5)
-end
-
 local function startComputerAutofarm()
     while isAutofarming do
-        wait(0.02)
+        wait(0.01)
         fireclickdetector(WorkspaceService.Buildings["Green House"].Computer.Monitor.Part.ClickDetector)
     end
 end
