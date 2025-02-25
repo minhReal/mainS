@@ -1,6 +1,4 @@
-     end
-    end
-end)--// Script Start #1
+--// Script Start #1
 loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
 
 --// Toggle 
