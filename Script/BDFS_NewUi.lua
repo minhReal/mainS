@@ -2,9 +2,7 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
 
 --// Toggle 
-local gui = Instance.new("ScreenGui")
-gui.Name = "12345678910111213141516171819202122"
-gui.Parent = game.CoreGui
+local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
 
 local Line = Instance.new("ImageButton")
 Line.Size = UDim2.new(0.075, 0, 0.2, 0)
@@ -204,8 +202,8 @@ Window:AddButton({
 })
 
 Window:AddParagraph({
-	Title = "Update date: Tuesday, February 25, 2025",
-	Description = "-HOT FIX-",
+	Title = "Update date: Friday, January 31, 2025",
+	Description = "-a stressful time-",
 	Tab = Main
 }) 
 
@@ -666,7 +664,7 @@ Window:AddParagraph({
 }) 
 
 Window:AddToggle({
-    Title = "Autofarm",
+    Title = "Autofarm [AFK, WIP]",
     Description = "Auto farm + monitor",
     Tab = farmTab,
     Callback = function(Boolean)
@@ -698,7 +696,7 @@ local autoEatEnabled = false
 
 Window:AddToggle({
     Title = "Auto eat",
-    Description = "If you have less than 385 hunger, the script will run",
+    Description = "If you have less than 50 hunger, the script will run",
     Tab = farmTab,
     Callback = function(Value)
         autoEatEnabled = Value
