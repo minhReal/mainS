@@ -206,8 +206,8 @@ Window:AddButton({
 })
 
 Window:AddParagraph({
-	Title = "Update date: Friday, January 31, 2025",
-	Description = "-a stressful time-",
+	Title = "Update date: Tuesday, February 25, 2025",
+	Description = "-HOT FIX-",
 	Tab = Main
 }) 
 
