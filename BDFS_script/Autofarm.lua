@@ -32,7 +32,7 @@ local function runAutofarm()
     spawn(function()
         while autofarmActive do
             wait(0.01)
-          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0, 2.5, 0)
+          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0, 3, 0)
         end
     end)
 
@@ -52,7 +52,7 @@ local function runAutofarm()
 
         cleanUpTrashcans()
 
-        moneyHitbox.CFrame = player.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 0) -- Đặt moneyHitbox tại vị trí của người chơi
+        moneyHitbox.CFrame = player.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 0)
         wait(0.01)
 
         moneyHitbox.CFrame = originalCFrame
