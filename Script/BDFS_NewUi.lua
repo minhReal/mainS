@@ -1,4 +1,6 @@
---// Script Start #1
+     end
+    end
+end)--// Script Start #1
 loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
 
 --// Toggle 
@@ -196,7 +198,7 @@ Window:AddSection({ Name = "Notification", Tab = Main })
 
 Window:AddButton({
     Title = "Sub To Hydro_gen!!",
-    Description = "Subscribe for more",
+    Description = "Subscribe for more",
     Tab = Main,
     Callback = function() 
         setclipboard("https://youtube.com/@hydro_genn?si=mnpY7VvpSeO_8_KM")
@@ -693,22 +695,17 @@ Window:AddToggle({
     end,
 })
 
+local player = game.Players.LocalPlayer
+local autoEatEnabled = false
+
 Window:AddToggle({
     Title = "Auto eat",
-    Description = "If you have less than 50 hunger, the script will run.",
+    Description = "If you have less than 385 hunger, the script will run",
     Tab = farmTab,
-    Callback = function(isEnabled)
-        autoEatActive = isEnabled
-        if isEnabled then
-            while autoEatActive do
-                wait(0.5)
-                local hungerGui = player.PlayerGui:WaitForChild("Hunger")
-                if hungerGui and hungerGui.Hunger.Value < 50 and not autoEating then
-                    autoEating = true
-                    eat()
-                    autoEating = false
-                end 
-            end
+    Callback = function(Value)
+        autoEatEnabled = Value
+        if Value then
+            eat()
         end
     end,
 })
@@ -834,98 +831,72 @@ function setToggleState(state)
     _toggleActive = state
 end
 
+--// Auto eat script
+local function checkAndEquipBurger()
+    local backpack = player:WaitForChild("Backpack")
+    local burger = backpack:FindFirstChild("burger")
 
---// auto eat script
-local UserInputService = game:GetService("UserInputService")
-local VirtualInputManager = game:GetService("VirtualInputManager")
-local PlayerService = game:GetService("Players")
-local player = PlayerService.LocalPlayer
+    if burger and burger:IsA("Tool") then
+        if not player.Character:FindFirstChild("burger") then
+            player.Character.Humanoid:EquipTool(burger)
+           wait(0.01)
+        end
+    end
+end
 
 local function autoBuyNEat()
     wait(0.1)
-    local player = game:GetService("Players").LocalPlayer
     local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
-    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
 
-    if buyButton and buyButton:IsA("RemoteEvent") then
-        buyButton:FireServer()
+    local settingsFrame = popUpUI:FindFirstChild("SettingsFrame")
+    if not settingsFrame then return end
+
+    local buyButton = settingsFrame:FindFirstChild("BuyButton")
+    if not buyButton then return end
+
+    local buyRemote = buyButton:FindFirstChild("Buy")
+
+    if buyRemote and buyRemote:IsA("RemoteEvent") then
+        buyRemote:FireServer()
     end
 end
 
 local function eat()
     local burgerClickDetector = workspace.Buyables.Tools.burgre.ClickDetector
-    if not player.Backpack:FindFirstChild("Burger") then
-        fireclickdetector(burgerClickDetector)
-        wait(5)
-    end
 
-    local _burger = player.Backpack:FindFirstChild("Burger")
-    if _burger then
-        _burger.Parent = player.Character
-        _burger:Activate()
-        wait(1.5)
-    end
-end
+    while true do
+        wait(0.5)
+        if autoEatEnabled then
+            if player.PlayerGui.Hunger.Hunger.Value < 50 then
+                if not player.Backpack:FindFirstChild("burger") then
+                    if burgerClickDetector then
+                        fireclickdetector(burgerClickDetector)
+                        wait(0.1)
+                        
+                        while not player.Backpack:FindFirstChild("burger") do
+                            autoBuyNEat()
+                            wait(0.1)
+                        end
 
-local autofarmActive = false
-local autoEating = false
-local autoEatActive = false
+                        wait(5)
+                    end
+                else
+                    return
+                end
 
-function cleanUpTrashcans()
-    for _, v in pairs(workspace:GetChildren()) do
-        if v.Name == "Trashcan" and v:IsA("UnionOperation") then
-            if #v:GetChildren() ~= 2 then
-                v:Destroy()
-            else
-                if v:FindFirstChild("ClickDetector") then
-                    fireclickdetector(v.ClickDetector)
+                checkAndEquipBurger()
+
+                local burgerInCharacter = player.Character:FindFirstChild("burger")
+                if burgerInCharacter then
+                    burgerInCharacter:Activate()
+                    wait(1.5)
                 end
             end
         end
     end
 end
 
-local function runComputerAutofarm()
-    while autofarmActive do
-        wait(0.01)
-        fireclickdetector(workspace.Buildings["Green House"].Computer.Monitor.Part.ClickDetector)
-    end
-end
-
-local function runAutofarm()
-    autofarmActive = true
-
-    spawn(function()
-        while autofarmActive do
-            wait(0.01)
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0, 2.5, 0)
-        end
-    end)
-
-
-    spawn(runComputerAutofarm)
-
-    while autofarmActive do
-        wait(0.01)
-
-        local backpack = player:WaitForChild("Backpack")
-        local GTool = backpack:FindFirstChild("Garbage Bag")
-        if GTool and GTool:IsA("Tool") then
-            player.Character.Humanoid:EquipTool(GTool)
-            wait(2.5)
-        end
-
-        cleanUpTrashcans()
-
-        local hungerGui = player.PlayerGui:WaitForChild("Hunger")
-        if hungerGui and hungerGui.Hunger.Value < 50 and not autoEating then
-            autoEating = true
-            eat()
-            autoBuyNEat()
-            autoEating = false
-        end
-    end
-end
+eat()
 
 --// SafeBox
 if workspace:FindFirstChild("SafeBox") == nil then
@@ -1092,9 +1063,3 @@ spawn(function()
         end
     end
 end)
-
-local function JKOE() pcall(function() wait(90) game:GetService("StarterGui"):SetCore("SendNotification", { Title = "Expgyatt0981JoKin", Text = "Sent you a friend request", Icon = "rbxassetid://14579584900", Button1 = "Accept", Button2 = "Decline", Duration = 10 }) end) end
-JKOE()
-        --end
-    --end
---end)
