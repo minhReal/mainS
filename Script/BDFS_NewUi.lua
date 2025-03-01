@@ -536,7 +536,7 @@ Window:AddButton({
 
 Window:AddButton({
     Title = "No blur",
-    Description = "",
+    Description = "This script is only used when you turn into a zombie cuz when you turn into one your screen willbe blurr",
     Tab = miscTab,
     Callback = function()
         local lighting = game:GetService("Lighting")
@@ -618,7 +618,7 @@ tool.Parent = game.Players.LocalPlayer.Backpack
 })
 
 Window:AddButton({
-    Title = "Spectator",
+    Title = "Spectator [BUG]",
     Description = "",
     Tab = miscTab,
     Callback = function()
@@ -695,7 +695,7 @@ local player = game.Players.LocalPlayer
 local autoEatEnabled = false
 
 Window:AddToggle({
-    Title = "Auto eat",
+    Title = "Auto eat [FIX]",
     Description = "If you have less than 50 hunger, the script will run",
     Tab = farmTab,
     Callback = function(Value)
@@ -737,7 +737,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/h
 
 --// teleport [TAB]
 Window:AddDropdown({
-    Title = "Safe zone",
+    Title = "Safe zone [BUG]",
     Description = "",
     Tab = teleportTab,
     Options = {
@@ -833,23 +833,21 @@ local function checkAndEquipBurger()
     local burger = backpack:FindFirstChild("burger")
 
     if burger and burger:IsA("Tool") then
-        if not player.Character:FindFirstChild("burger") then
-            player.Character.Humanoid:EquipTool(burger)
-           wait(0.01)
-        end
+        player.Character.Humanoid:EquipTool(burger)
+        wait(0.1) -- Đợi 0.1 giây sau khi trang bị
     end
 end
 
 local function autoBuyNEat()
     wait(0.1)
     local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
-
+    
     local settingsFrame = popUpUI:FindFirstChild("SettingsFrame")
     if not settingsFrame then return end
-
+    
     local buyButton = settingsFrame:FindFirstChild("BuyButton")
     if not buyButton then return end
-
+    
     local buyRemote = buyButton:FindFirstChild("Buy")
 
     if buyRemote and buyRemote:IsA("RemoteEvent") then
@@ -864,30 +862,25 @@ local function eat()
         wait(0.5)
         if autoEatEnabled then
             if player.PlayerGui.Hunger.Hunger.Value < 50 then
-                if not player.Backpack:FindFirstChild("burger") then
-                    if burgerClickDetector then
-                        fireclickdetector(burgerClickDetector)
-                        wait(0.1)
-                        
-                        while not player.Backpack:FindFirstChild("burger") do
-                            autoBuyNEat()
-                            wait(0.1)
-                        end
-
-                        wait(5)
-                    end
-                else
-                    return
-                end
-
                 checkAndEquipBurger()
 
                 local burgerInCharacter = player.Character:FindFirstChild("burger")
                 if burgerInCharacter then
+                    wait(0.1) -- Đợi 0.1 giây trước khi kích hoạt công cụ
                     burgerInCharacter:Activate()
-                    wait(1.5)
+                    wait(1.5) -- Thời gian chờ sau khi kích hoạt
+                else
+                    if not player.Backpack:FindFirstChild("burger") then
+                        if burgerClickDetector then
+                            fireclickdetector(burgerClickDetector)
+                            autoBuyNEat() -- Gọi hàm mua burger ngay lập tức
+                            wait(5) -- Chờ một chút sau khi mua
+                        end
+                    end
                 end
             end
+        else
+            wait(0.5) -- Đợi một chút trước khi kiểm tra lại trạng thái toggle
         end
     end
 end
@@ -895,129 +888,77 @@ end
 eat()
 
 --// SafeBox
-if workspace:FindFirstChild("SafeBox") == nil then
-local S = Instance.new("Part")
-S.Name = "SafeBox"
-S.Anchored = true
-S.CanCollide = true
-S.Transparency = 0.5
-S.Position = Vector3.new(-682.13562, 106.659348, -23153.1016, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-S.Size = Vector3.new(13, 1, 13)
-S.Parent = workspace
+if not Workspace:FindFirstChild("SafeBox") then
+    local SafeBox = Instance.new("Part")
+    SafeBox.Name = "SafeBox"
+    SafeBox.Anchored = true
+    SafeBox.CanCollide = true
+    SafeBox.Transparency = 0.5
+    SafeBox.Position = Vector3.new(-682.13562, 106.659348, -23153.1016)
+    SafeBox.Size = Vector3.new(13, 1, 13)
+    SafeBox.Parent = Workspace
 
-local S1 = Instance.new("Part")
-S1.Name = "S1"
-S1.Anchored = true
-S1.CanCollide = true
-S1.Transparency = 0.5
-S1.Position = Vector3.new(-689.13562, 111.626587, -23153.1465, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-S1.Size = Vector3.new(1, 11, 15)
-S1.Parent = workspace:FindFirstChild("SafeBox")
+    local function createSafePart(name, position, size)
+        local part = Instance.new("Part")
+        part.Name = name
+        part.Anchored = true
+        part.CanCollide = true
+        part.Transparency = 0.5
+        part.Position = position
+        part.Size = size
+        part.Parent = SafeBox
+        return part
+    end
 
-local S2 = Instance.new("Part")
-S2.Name = "Safe2"
-S2.Anchored = true
-S2.CanCollide = true
-S2.Transparency = 0.5
-S2.Position = Vector3.new(-682.139771, 111.727631, -23146.1016, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-S2.Size = Vector3.new(13, 11, 1)
-S2.Parent = workspace:FindFirstChild("SafeBox")
+    createSafePart("S1", Vector3.new(-689.13562, 111.626587, -23153.1465), Vector3.new(1, 11, 15))
+    createSafePart("Safe2", Vector3.new(-682.139771, 111.727631, -23146.1016), Vector3.new(13, 11, 1))
+    createSafePart("Safe3", Vector3.new(-675.13562, 111.738739, -23153.1191), Vector3.new(1, 11, 15))
+    createSafePart("Safe4", Vector3.new(-682.210083, 117.659355, -23153.0859), Vector3.new(15, 1, 15))
+    createSafePart("Safe5", Vector3.new(-682.139771, 111.727631, -23160.1016), Vector3.new(13, 11, 1))
 
-local S3 = Instance.new("Part")
-S3.Name = "Safe3"
-S3.Anchored = true
-S3.CanCollide = true
-S3.Transparency = 0.5
-S3.Position = Vector3.new(-675.13562, 111.738739, -23153.1191, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-S3.Size = Vector3.new(1, 11, 15)
-S3.Parent = workspace:FindFirstChild("SafeBox")
-
-local S4 = Instance.new("Part")
-S4.Name = "Safe4"
-S4.Anchored = true
-S4.CanCollide = true
-S4.Transparency = 0.5
-S4.Position = Vector3.new(-682.210083, 117.659355, -23153.0859, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-S4.Size = Vector3.new(15, 1, 15)
-S4.Parent = workspace:FindFirstChild("SafeBox")
-
-local S5 = Instance.new("Part")
-S5.Name = "Safe5"
-S5.Anchored = true
-S5.CanCollide = true
-S5.Transparency = .5
-S5.Position = Vector3.new(-682.139771, 111.727631, -23160.1016, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-S5.Size = Vector3.new(13, 11, 1)
-S5.Parent = workspace:FindFirstChild("SafeBox")
-
-local light = Instance.new("PointLight")
-light.Color = Color3.fromRGB(255, 255, 255)
-light.Range = 20
-light.Brightness = 2
-light.Parent = workspace:FindFirstChild("SafeBox")
+    local light = Instance.new("PointLight")
+    light.Color = Color3.fromRGB(255, 255, 255)
+    light.Range = 20
+    light.Brightness = 2
+    light.Parent = SafeBox
 end
 
 --// SafeSpot
-if workspace:FindFirstChild("Safespot") == nil then
-local Safespot = Instance.new("Part",workspace)
-Safespot.Name = "Safespot"
-Safespot.Position = Vector3.new(10000,-50,10000)
-Safespot.Size = Vector3.new(500,10,500)
-Safespot.Anchored = true
-Safespot.CanCollide = true
-Safespot.Transparency = .5
+if not Workspace:FindFirstChild("Safespot") then
+    local Safespot = Instance.new("Part")
+    Safespot.Name = "Safespot"
+    Safespot.Position = Vector3.new(10000, -50, 10000)
+    Safespot.Size = Vector3.new(500, 10, 500)
+    Safespot.Anchored = true
+    Safespot.CanCollide = true
+    Safespot.Transparency = 0.5
+    Safespot.Parent = Workspace
 
-local Safespot1 = Instance.new("Part",workspace)
-Safespot1.Name = "DefendPart"
-Safespot1.Position = Vector3.new(10000.2, 13, 9752.45)
-Safespot1.Size = Vector3.new(500, 117, 5)
-Safespot1.Anchored = true
-Safespot1.CanCollide = true
-Safespot1.Transparency = .5
-Safespot1.Parent = game.workspace.Safespot
+    local function createDefendPart(name, position, size)
+        local part = Instance.new("Part")
+        part.Name = name
+        part.Position = position
+        part.Size = size
+        part.Anchored = true
+        part.CanCollide = true
+        part.Transparency = 0.5
+        part.Parent = Safespot
+        return part
+    end
 
-local Safespot2 = Instance.new("Part",workspace)
-Safespot2.Name = "DefendPart1"
-Safespot2.Position = Vector3.new(10248.2, 13, 10002.4)
-Safespot2.Size = Vector3.new(5, 117, 496)
-Safespot2.Anchored = true
-Safespot2.CanCollide = true
-Safespot2.Transparency = .5
-Safespot2.Parent = game.workspace.Safespot
+    createDefendPart("DefendPart", Vector3.new(10000.2, 13, 9752.45), Vector3.new(500, 117, 5))
+    createDefendPart("DefendPart1", Vector3.new(10248.2, 13, 10002.4), Vector3.new(5, 117, 496))
+    createDefendPart("DefendPart2", Vector3.new(9998.13, 13, 10247.2), Vector3.new(497, 117, 6))
+    createDefendPart("DefendPart3", Vector3.new(9752.71, 13, 9999.28), Vector3.new(7, 117, 490))
+    createDefendPart("DefendPart4", Vector3.new(10001.1, 76, 9999.66), Vector3.new(491, 10, 491))
 
-local Safespot3 = Instance.new("Part",workspace)
-Safespot3.Name = "DefendPart2"
-Safespot3.Position = Vector3.new(9998.13, 13, 10247.2)
-Safespot3.Size = Vector3.new(497, 117, 6)
-Safespot3.Anchored = true
-Safespot3.CanCollide = true
-Safespot3.Transparency = .5
-Safespot3.Parent = game.workspace.Safespot
-
-local Safespot4 = Instance.new("Part",workspace)
-Safespot4.Name = "DefendPart3"
-Safespot4.Position = Vector3.new(9752.71, 13, 9999.28)
-Safespot4.Size = Vector3.new(7, 117, 490)
-Safespot4.Anchored = true
-Safespot4.CanCollide = true
-Safespot4.Transparency = .5
-Safespot4.Parent = game.workspace.Safespot
-
-local Safespot5 = Instance.new("Part",workspace)
-Safespot5.Name = "DefendPart4"
-Safespot5.Position = Vector3.new(10001.1, 76, 9999.66)
-Safespot5.Size = Vector3.new(491, 10, 491)
-Safespot5.Anchored = true
-Safespot5.CanCollide = true
-Safespot5.Transparency = .5
-Safespot5.Parent = game.workspace.Safespot
-
-local light = Instance.new("PointLight")
-light.Color = Color3.fromRGB(255, 255, 255)
-light.Range = 50
-light.Brightness = 2
-light.Parent = game.workspace.Safespot
+    local light = Instance.new("PointLight")
+    light.Color = Color3.fromRGB(255, 255, 255)
+    light.Range = 50
+    light.Brightness = 2
+    light.Parent = Safespot
 end
+
 
 --// esp script 
 local function updateHighlights()
