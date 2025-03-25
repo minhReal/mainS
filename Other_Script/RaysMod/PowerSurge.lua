@@ -1,3 +1,4 @@
+-- By hydro_gen
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 
