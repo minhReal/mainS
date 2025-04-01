@@ -33,8 +33,6 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
     end
 end)
 
-
-
 --// Services
 local UserInputService = game:GetService("UserInputService");
 
@@ -58,7 +56,7 @@ local Themes = {
 --// Set the default theme
 Window:SetTheme(Themes.Void)
 
---// Script Start #2
+--// Script Loaded Successfully  #2
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
       Text = "Script has been loaded successfully!",
@@ -73,17 +71,18 @@ Line.MouseButton1Click:Connect(function()
     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.LeftAlt, false, player.Character and player.Character:FindFirstChild("Humanoid"))
 end)
 
+--// Delete something
 local S = game.Workspace.Spawns:FindFirstChild("Spawn15")
 if S then
     S:Destroy()
 end
 
+--// DDVC noclip
 local targetCFrame = CFrame.new(216.000015, 72.5999985, 830.499939, 1, 0, 0, 0, 1, 0, 0, 0, 1)
 local targetSize = Vector3.new(14.40000057220459, 10.199999809265137, 12.40000057220459)
 
 local foundPart = nil
-
-for _, part in pairs(workspace:GetChildren()) do
+ for _, part in pairs(workspace:GetChildren()) do
     if part:IsA("Part") and part.CFrame == targetCFrame and part.Size == targetSize then
         foundPart = part
         break
@@ -97,9 +96,9 @@ end
 local player = game.Players.LocalPlayer
 local moneyHitbox = workspace.Buildings.DeadBurger.DumpsterMoneyMaker.MoneyHitbox
 
+--// Animation Script 
 local currentAnimation
 local isAnimating = false
-
 local function playAnimation(animationId)
     local character = player.Character or player.CharacterAdded:Wait()
     if character then
@@ -117,11 +116,10 @@ local function playAnimation(animationId)
     end
 end
 
-
 --// Các phần/Thư mục
 Window:AddTabSection({ Name = "HYDRA | BDFS", Order = 1 })
 
---// Các Tab
+--// Các TAB
 local Main = Window:AddTab({
     Title = "Main",
     Section = "BDFS",
