@@ -1,3 +1,8 @@
+--[[
+  _Bản #2 / Version #2_
+      _4/1/2025_
+]]
+
 --// Script Start #1
 loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
 
@@ -191,6 +196,12 @@ Window:AddButton({
 
 --// Main [TAB]
 Window:AddSection({ Name = "Notification", Tab = Main }) 
+
+Window:AddParagraph({
+	Title = "🫩",
+	Description = "The update will take longer because the banwave is very danger",
+	Tab = Main
+}) 
 
 Window:AddButton({
     Title = "Sub To Hydro_gen!!",
