@@ -1,7 +1,6 @@
---[[
-  _Bản #2 / Version #2_
-      _4/1/2025_
-]]
+--      _By-Hydro_gen_
+--   _Bản #2 / Version #2_
+--        _4/1/2025_
 
 --// Script Start #1
 loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
