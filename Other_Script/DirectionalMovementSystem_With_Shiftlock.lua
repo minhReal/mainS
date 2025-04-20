@@ -1,3 +1,5 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
+
 local gui = Instance.new("ScreenGui")
 gui.Name = "Ask"
 gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
