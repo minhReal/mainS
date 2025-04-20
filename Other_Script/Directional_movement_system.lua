@@ -1,3 +1,5 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
+
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 
