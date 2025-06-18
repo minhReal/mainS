@@ -1,4 +1,4 @@
--- By hydro_gen
+-- By owner --
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "workspace.boulder TP..",
     Text = "Wait a few seconds ",
