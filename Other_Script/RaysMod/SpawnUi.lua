@@ -1,4 +1,4 @@
--- By script --
+-- By owner --
 local gui = Instance.new("ScreenGui")
 gui.Name = "Hi"
 gui.Parent = game.CoreGui
