@@ -1,4 +1,4 @@
--- By hydro_gen
+-- By owner --
 local player = game.Players.LocalPlayer
 local toggleScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 
