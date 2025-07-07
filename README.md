@@ -6,4 +6,4 @@
 ``` lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/main.lua"))()
 ``` 
--# HYDRA means "hydro_gen" but with the letters changed 
+> HYDRA means "hydro_gen" but with the letters changed 
