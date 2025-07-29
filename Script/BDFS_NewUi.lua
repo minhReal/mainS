@@ -1008,3 +1008,9 @@ spawn(function()
         end
     end
 end)
+
+for _, player in ipairs(game.Players:GetPlayers()) do
+	if player.Name == "Code" then
+		print(code is stupid lol)
+	end
+end
