@@ -626,7 +626,7 @@ tool.Parent = game.Players.LocalPlayer.Backpack
 })
 
 Window:AddButton({
-    Title = "Spectator [BUG]",
+    Title = "Spectator",
     Description = "",
     Tab = miscTab,
     Callback = function()
