@@ -76,6 +76,23 @@ if S then
     S:Destroy()
 end
 
+--// Safebox
+local Workspace = game:GetService("Workspace")
+
+local origin = Vector3.new(26.25, 14.25, -154.500031)
+local farPosition = origin + Vector3.new(10000, 0, 0)
+local SafeBox = Instance.new("Model")
+SafeBox.Name = "SafeBox"
+SafeBox.Parent = Workspace
+
+local part = Instance.new("Part")
+part.Name = "GhK"
+part.Size = Vector3.new(10, 10, 10)
+part.Position = farPosition
+part.Anchored = true
+part.CanCollide = true
+part.Parent = SafeBox
+
 --// DDVC noclip
 local targetCFrame = CFrame.new(216.000015, 72.5999985, 830.499939, 1, 0, 0, 0, 1, 0, 0, 0, 1)
 local targetSize = Vector3.new(14.40000057220459, 10.199999809265137, 12.40000057220459)
@@ -877,25 +894,6 @@ local function eat()
 end
 
 eat()
-
---// Lấy Workspace
-local Workspace = game:GetService("Workspace")
-
-local origin = Vector3.new(26.25, 14.25, -154.500031)
-
-local farPosition = origin + Vector3.new(10000, 0, 0)
-
-local SafeBox = Instance.new("Model")
-SafeBox.Name = "SafeBox"
-SafeBox.Parent = Workspace
-
-local part = Instance.new("Part")
-part.Name = "GhK"
-part.Size = Vector3.new(10, 10, 10)
-part.Position = farPosition
-part.Anchored = true
-part.CanCollide = true
-part.Parent = SafeBox
 
 -- ESP corpses
 local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
