@@ -494,7 +494,7 @@ Window:AddButton({
     Description = "idk",
     Tab = miscTab,
     Callback = function()
-        playAnimation("rbxassetid://8830424363")
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/First.lua'))()
     end,
 })
 
