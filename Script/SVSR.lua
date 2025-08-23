@@ -208,6 +208,7 @@ Window:AddSlider({
 
 --// Highlight
 local e = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
 
 local function updateHighlights()
     local f = workspace.game.gameCustard:GetDescendants()
@@ -217,16 +218,18 @@ local function updateHighlights()
         if g:IsA("Part") then
             table.insert(addedParts, g)
             if b then
+                -- Highlight
                 if not g:FindFirstChild("Highlight") then
                     local h = Instance.new("Highlight")
                     h.Name = "Highlight"
                     h.Parent = g
-                    h.FillColor = Color3.fromRGB(235, 52, 219)
-                    h.OutlineColor = Color3.fromRGB(255, 255, 255)
+                    h.FillColor = Color3.fromRGB(255, 192, 203)
+                    h.OutlineColor = Color3.fromRGB(255, 192, 203)
                     h.FillTransparency = 0.5
                     h.OutlineTransparency = 0.5
                 end
 
+                -- BillboardGui
                 local i = g:FindFirstChild("BillboardGui")
                 local j
                 if not i then
@@ -239,13 +242,13 @@ local function updateHighlights()
 
                     j = Instance.new("TextLabel")
                     j.Size = UDim2.new(1, 0, 1, 0)
-                    j.TextColor3 = Color3.new(1, 1, 1)
+                    j.TextColor3 = Color3.fromRGB(255, 192, 203)
                     j.BackgroundTransparency = 1
                     j.TextScaled = false
                     j.TextSize = 10
-                    j.TextTransparency = 0.5
+                    j.TextTransparency = 0
                     j.TextStrokeTransparency = 0.5
-                    j.TextStrokeColor3 = Color3.new(0, 0, 0)
+                    j.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
                     i.Parent = g
                     j.Parent = i
                 else
@@ -259,28 +262,39 @@ local function updateHighlights()
                     j.Text = "Custard | Distance: N/A"
                 end
 
+                -- PointLight
                 if not g:FindFirstChild("PointLight") then
                     local light = Instance.new("PointLight")
                     light.Parent = g
-                    light.Color = Color3.fromRGB(232, 85, 242)
+                    light.Color = Color3.fromRGB(255, 192, 203)
                     light.Range = 10
                     light.Brightness = 2
                 end
+
+                -- Tracer / Line
+                if not g:FindFirstChild("Tracer") then
+                    local line = Instance.new("Beam")
+                    local attachment0 = Instance.new("Attachment", camera)
+                    local attachment1 = Instance.new("Attachment", g)
+                    line.Attachment0 = attachment0
+                    line.Attachment1 = attachment1
+                    line.FaceCamera = true
+                    line.Color = ColorSequence.new(Color3.fromRGB(255, 192, 203))
+                    line.Width0 = 0.05
+                    line.Width1 = 0.05
+                    line.Parent = g
+                    line.Name = "Tracer"
+                end
             else
+                -- Xoá highlight, light, gui, tracer
                 local h = g:FindFirstChild("Highlight")
-                if h then
-                    h:Destroy()
-                end
-
+                if h then h:Destroy() end
                 local light = g:FindFirstChild("PointLight")
-                if light then
-                    light:Destroy()
-                end
-
+                if light then light:Destroy() end
                 local i = g:FindFirstChild("BillboardGui")
-                if i then
-                    i:Destroy()
-                end
+                if i then i:Destroy() end
+                local tracer = g:FindFirstChild("Tracer")
+                if tracer then tracer:Destroy() end
             end
         end
     end
@@ -302,19 +316,13 @@ spawn(function()
             for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
                 if part:IsA("Part") then
                     local h = part:FindFirstChild("Highlight")
-                    if h then
-                        h:Destroy()
-                    end
-
+                    if h then h:Destroy() end
                     local light = part:FindFirstChild("PointLight")
-                    if light then
-                        light:Destroy()
-                    end
-
+                    if light then light:Destroy() end
                     local i = part:FindFirstChild("BillboardGui")
-                    if i then
-                        i:Destroy()
-                    end
+                    if i then i:Destroy() end
+                    local tracer = part:FindFirstChild("Tracer")
+                    if tracer then tracer:Destroy() end
                 end
             end
         end
