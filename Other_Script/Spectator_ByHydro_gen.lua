@@ -73,7 +73,7 @@ k.Parent = b
 -- Vars
 local g = {}
 local h = 1
-local viewOn = true  -- m
+local viewOn = true
 local l = { c.Position, d.Position, e.Position, f.Position }
 
 local function setCameraToLocal()
@@ -91,7 +91,7 @@ local function i()
     if not target then return end
 
     c.Image = "https://www.roblox.com/headshot-thumbnail/image?userId="
-    .. target.UserId .. "&width=420&height=420&format=png"
+        .. target.UserId .. "&width=420&height=420&format=png"
     d.Text = target.DisplayName .. " (@" .. target.Name .. ")"
 
     local cam = workspace.CurrentCamera
@@ -104,29 +104,28 @@ local function i()
         local hum = target.Character:FindFirstChildOfClass("Humanoid")
         local hrp = target.Character:FindFirstChild("HumanoidRootPart")
         if hum then cam.CameraSubject = hum end
-        if hrp then cam.CFrame = CFrame.new(hrp.Position + Vector3.new(0, 2, -5), hrp.Position) end
+        if hrp then
+            cam.CFrame = CFrame.new(hrp.Position + Vector3.new(0, 2, -5), hrp.Position)
+        end
     end
 end
 
--- Refresh list (không ép i() khi đã tắt)
+-- Refresh list (KHÔNG auto nhảy sang player khác)
 local function j()
     g = Players:GetPlayers()
     h = math.clamp(h, 1, #g)
-    if viewOn then i() end
 end
 
--- Buttons: bỏ qua khi tắt
+-- Buttons
 e.MouseButton1Click:Connect(function()
     if #g == 0 then return end
     h = (h % #g) + 1
-    if not viewOn then return end
     i()
 end)
 
 f.MouseButton1Click:Connect(function()
     if #g == 0 then return end
     h = (h - 2) % #g + 1
-    if not viewOn then return end
     i()
 end)
 
@@ -151,8 +150,8 @@ Players.PlayerAdded:Connect(j)
 Players.PlayerRemoving:Connect(function(rem)
     local was = g[h]
     j()
-    -- nếu người đang xem rời khỏi và đang bật, trả camera về local để tránh nhảy lung tung
-    if viewOn and was and not table.find(g, was) then
+    if was == rem then
+        -- Nếu người đang xem rời → trả về local, KHÔNG auto nhảy sang player khác
         setCameraToLocal()
     end
 end)
