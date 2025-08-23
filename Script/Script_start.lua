@@ -10,66 +10,63 @@ local function newInstance(className, props)
     return inst
 end
 
--- Tạo ScreenGui
 local v3 = newInstance("ScreenGui", {Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")})
 
--- Frame chính
 local v5 = newInstance("Frame", {
-    Size = UDim2.new(0.5, 0, 0.5, 0),
-    Position = UDim2.new(0.5, 0, 0.5, 0),
+    Size = UDim2.new(0.5, 931 - (857 + 74), 0.5, 0),
+    Position = UDim2.new(568.25 - (367 + 201), 927 - (214 + 713), 0.5, 0),
     BackgroundColor3 = Color3.new(1, 1, 1),
-    BorderSizePixel = 0,
-    BackgroundTransparency = 0.1,
+    BorderColor3 = Color3.new(0, 0, 0),
+    BorderSizePixel = 878 - (282 + 595),
+    Active = true,
+    BackgroundTransparency = 1638 - (1523 + 114),
+    Draggable = false,
     Parent = v3
 })
 
--- Label icon random
 local v15 = newInstance("TextLabel", {
-    Size = UDim2.new(0.3, 0, 0.2, 0),
-    Position = UDim2.new(0.35, 0, 0, 0),
+    Size = UDim2.new(0.3, 0, 0.2, 1065 - (68 + 997)),
+    Position = UDim2.new(1270.35 - (226 + 1044), 0, 119 - (32 + 85), 0),
     BackgroundColor3 = Color3.new(0, 0, 0),
+    BorderColor3 = Color3.new(957 - (892 + 65), 0, 0),
     BorderSizePixel = 1,
     Text = v2,
-    TextSize = 23,
-    BackgroundTransparency = 0.3,
-    TextColor3 = Color3.fromRGB(255, 255, 255),
+    TextSize = 373 - (87 + 263),
+    BackgroundTransparency = 181 - (67 + 113),
+    TextColor3 = Color3.fromRGB(187 + 68, 255, 626 - 371),
     Font = Enum.Font.Code,
     Parent = v5
 })
 
--- Label credit
 local v28 = newInstance("TextLabel", {
-    Size = UDim2.new(0.3, 0, 0.2, 0),
-    Position = UDim2.new(0.35, 0, 1, 0),
-    BackgroundColor3 = Color3.new(0, 0, 0),
-    BorderSizePixel = 1,
+    Size = UDim2.new(0.3, 0, 0.2, 952 - (802 + 150)),
+    Position = UDim2.new(0.35, 0, 3 - 1, 0),
+    BackgroundColor3 = Color3.new(0, 997 - (915 + 82), 0),
+    BorderColor3 = Color3.new(0, 0, 1187 - (1069 + 118)),
+    BorderSizePixel = 2 - 1,
     Text = "Script by Hydro(MinhReal)",
-    TextSize = 23,
+    TextSize = 50 - 27,
     BackgroundTransparency = 1,
-    TextColor3 = Color3.fromRGB(255, 255, 255),
+    TextColor3 = Color3.fromRGB(45 + 210, 453 - 198, 253 + 2),
     Font = Enum.Font.Code,
     Parent = v5
 })
 
--- Tween 1
-local v40 = v0:Create(v15, TweenInfo.new(1), {Position = UDim2.new(0.35, 0, 0.2, 0)})
-local v41 = v0:Create(v28, TweenInfo.new(1), {Position = UDim2.new(0.35, 0, 0.35, 0)})
+local v40 = v0:Create(v15, TweenInfo.new(792 - (368 + 423)), {Position = UDim2.new(0.35, 18 - (10 + 8), 0.2, 0)})
+local v41 = v0:Create(v28, TweenInfo.new(443 - (416 + 26)), {Position = UDim2.new(0.35, 0, 0.35, 0)})
 
 v40:Play()
-v40.Completed:Wait()
+wait(438.15 - (145 + 293))
+v41:Play()
+wait(432.5 - (44 + 386))
+
+v41 = v0:Create(v28, TweenInfo.new(1487 - (998 + 488)), {Position = UDim2.new(0.35, 0, 774 - (201 + 571), 1138 - (116 + 1022))})
+v40 = v0:Create(v15, TweenInfo.new(4 - 3), {Position = UDim2.new(0.35, 0, 2, 0)})
 
 v41:Play()
+v40:Play()
+v40.Completed:Wait()
 v41.Completed:Wait()
 
--- Tween ra ngoài
-local v41Out = v0:Create(v28, TweenInfo.new(1), {Position = UDim2.new(0.35, 0, -1, 0)})
-local v40Out = v0:Create(v15, TweenInfo.new(1), {Position = UDim2.new(0.35, 0, 2, 0)})
-
-v41Out:Play()
-v40Out:Play()
-
-v40Out.Completed:Wait()
-v41Out.Completed:Wait()
-
--- Xoá toàn bộ GUI
-v3:Destroy()
+v15:Destroy()
+v28:Destroy()
