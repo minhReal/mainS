@@ -904,89 +904,24 @@ end
 
 eat()
 
---// SafeBox
 --// Lấy Workspace
 local Workspace = game:GetService("Workspace")
 
---// SafeBox
-if not Workspace:FindFirstChild("SafeBox") then
-    local SafeBox = Instance.new("Model")
-    SafeBox.Name = "SafeBox"
-    SafeBox.Parent = Workspace
+local origin = Vector3.new(26.25, 14.25, -154.500031)
 
-    local base = Instance.new("Part")
-    base.Name = "Base"
-    base.Anchored = true
-    base.CanCollide = true
-    base.Transparency = 0.5
-    base.Position = Vector3.new(-682.13562, 106.659348, -23153.1016)
-    base.Size = Vector3.new(13, 1, 13)
-    base.Parent = SafeBox
+local farPosition = origin + Vector3.new(10000, 0, 0)
 
-    local function createSafePart(name, position, size)
-        local part = Instance.new("Part")
-        part.Name = name
-        part.Anchored = true
-        part.CanCollide = true
-        part.Transparency = 0.5
-        part.Position = position
-        part.Size = size
-        part.Parent = SafeBox
-        return part
-    end
+local SafeBox = Instance.new("Model")
+SafeBox.Name = "SafeBox"
+SafeBox.Parent = Workspace
 
-    createSafePart("Safe1", Vector3.new(-689.13562, 111.626587, -23153.1465), Vector3.new(1, 11, 15))
-    createSafePart("Safe2", Vector3.new(-682.139771, 111.727631, -23146.1016), Vector3.new(13, 11, 1))
-    createSafePart("Safe3", Vector3.new(-675.13562, 111.738739, -23153.1191), Vector3.new(1, 11, 15))
-    createSafePart("Safe4", Vector3.new(-682.210083, 117.659355, -23153.0859), Vector3.new(15, 1, 15))
-    createSafePart("Safe5", Vector3.new(-682.139771, 111.727631, -23160.1016), Vector3.new(13, 11, 1))
-
-    local light = Instance.new("PointLight")
-    light.Color = Color3.fromRGB(255, 255, 255)
-    light.Range = 20
-    light.Brightness = 2
-    light.Parent = base
-end
-
---// SafeSpot
-if not Workspace:FindFirstChild("Safespot") then
-    local Safespot = Instance.new("Model")
-    Safespot.Name = "Safespot"
-    Safespot.Parent = Workspace
-
-    local base = Instance.new("Part")
-    base.Name = "Base"
-    base.Position = Vector3.new(10000, -50, 10000)
-    base.Size = Vector3.new(500, 10, 500)
-    base.Anchored = true
-    base.CanCollide = true
-    base.Transparency = 0.5
-    base.Parent = Safespot
-
-    local function createDefendPart(name, position, size)
-        local part = Instance.new("Part")
-        part.Name = name
-        part.Position = position
-        part.Size = size
-        part.Anchored = true
-        part.CanCollide = true
-        part.Transparency = 0.5
-        part.Parent = Safespot
-        return part
-    end
-
-    createDefendPart("DefendPart1", Vector3.new(10000.2, 13, 9752.45), Vector3.new(500, 117, 5))
-    createDefendPart("DefendPart2", Vector3.new(10248.2, 13, 10002.4), Vector3.new(5, 117, 496))
-    createDefendPart("DefendPart3", Vector3.new(9998.13, 13, 10247.2), Vector3.new(497, 117, 6))
-    createDefendPart("DefendPart4", Vector3.new(9752.71, 13, 9999.28), Vector3.new(7, 117, 490))
-    createDefendPart("DefendPart5", Vector3.new(10001.1, 76, 9999.66), Vector3.new(491, 10, 491))
-
-    local light = Instance.new("PointLight")
-    light.Color = Color3.fromRGB(255, 255, 255)
-    light.Range = 50
-    light.Brightness = 2
-    light.Parent = base
-end
+local part = Instance.new("Part")
+part.Name = "GhK"
+part.Size = Vector3.new(10, 10, 10)
+part.Position = farPosition
+part.Anchored = true
+part.CanCollide = true
+part.Parent = SafeBox
 
 -- ESP corpses
 local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
