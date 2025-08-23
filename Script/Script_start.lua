@@ -68,5 +68,6 @@ v40:Play()
 v40.Completed:Wait()
 v41.Completed:Wait()
 
--- Xoá hết GUI sau khi chạy xong
+v15:Destroy()
+v28:Destroy()
 v3:Destroy()
