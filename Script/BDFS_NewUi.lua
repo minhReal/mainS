@@ -65,10 +65,25 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
         
 local player = game.Players.LocalPlayer
 local VirtualInputManager = game:GetService("VirtualInputManager")
-
 Line.MouseButton1Click:Connect(function()
     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.LeftAlt, false, player.Character and player.Character:FindFirstChild("Humanoid"))
 end)
+
+
+local Workspace = game:GetService("Workspace")
+local origin = Vector3.new(26.25, 14.25, -154.500031)
+local farPosition = origin + Vector3.new(10000, 0, 0)
+local SafeBox = Instance.new("Model")
+SafeBox.Name = "SafeBox"
+SafeBox.Parent = Workspace
+
+local part = Instance.new("Part")
+part.Name = "GhK"
+part.Size = Vector3.new(10, 10, 10)
+part.Position = farPosition
+part.Anchored = true
+part.CanCollide = true
+part.Parent = SafeBox
 
 --// Delete something
 local S = game.Workspace.Spawns:FindFirstChild("Spawn15")
@@ -877,25 +892,6 @@ local function eat()
 end
 
 eat()
-
---// Lấy Workspace
-local Workspace = game:GetService("Workspace")
-
-local origin = Vector3.new(26.25, 14.25, -154.500031)
-
-local farPosition = origin + Vector3.new(10000, 0, 0)
-
-local SafeBox = Instance.new("Model")
-SafeBox.Name = "SafeBox"
-SafeBox.Parent = Workspace
-
-local part = Instance.new("Part")
-part.Name = "GhK"
-part.Size = Vector3.new(10, 10, 10)
-part.Position = farPosition
-part.Anchored = true
-part.CanCollide = true
-part.Parent = SafeBox
 
 -- ESP corpses
 local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
