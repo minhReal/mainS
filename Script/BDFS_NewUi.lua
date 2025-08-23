@@ -71,18 +71,15 @@ Line.MouseButton1Click:Connect(function()
 end)
 
 --// Delete something
-local S = game.Workspace.Spawns:FindFirstChild("Spawn15")
-if S then
-    S:Destroy()
+local Sk = game.Workspace.Spawns:FindFirstChild("Spawn15")
+if Sk then
+    Sk:Destroy()
 end
 
 --// Safebox
 local Workspace = game:GetService("Workspace")
-
 local origin = Vector3.new(26.25, 14.25, -154.500031)
-
 local farPosition = origin + Vector3.new(10000, 0, 0)
-
 local SafeBox = Instance.new("Model")
 SafeBox.Name = "SafeBox"
 SafeBox.Parent = Workspace
@@ -691,13 +688,13 @@ end,
 Window:AddSection({ Name = "Dead burger", Tab = farmTab }) 
 
 Window:AddParagraph({
-	Title = "IMPORTANT NOTICE",
+	Title = "❗IMPORTANT NOTICE❗",
 	Description = "Don't turn it on and off constantly because of bugs",
 	Tab = farmTab,
 }) 
 
 Window:AddToggle({
-    Title = "Autofarm [AFK, WIP]",
+    Title = "Autofarm [with Safebox]",
     Description = "Auto farm + monitor",
     Tab = farmTab,
     Callback = function(Boolean)
@@ -711,7 +708,7 @@ Window:AddToggle({
 })
 
 Window:AddToggle({
-    Title = "Autofarm (movable)",
+    Title = "Autofarm [without Safebox],
     Description = "Auto farm + monitor",
     Tab = farmTab,
     Callback = function(isEnabled)
