@@ -5,78 +5,95 @@ local moneyHitbox = workspace.Buildings.DeadBurger.DumpsterMoneyMaker.MoneyHitbo
 
 local autofarmActive = false
 
-function cleanUpTrashcans()
+-- Xử lý Trashcan
+local function cleanUpTrashcans()
     for _, v in pairs(workspace:GetChildren()) do
         if v.Name == "Trashcan" and v:IsA("UnionOperation") then
             if #v:GetChildren() ~= 2 then
                 v:Destroy()
-            else
-                if v:FindFirstChild("ClickDetector") then
-                    fireclickdetector(v.ClickDetector)
-                end
+            elseif v:FindFirstChild("ClickDetector") then
+                fireclickdetector(v.ClickDetector)
             end
         end
     end
 end
 
+-- Autofarm Computer
 local function runComputerAutofarm()
     while autofarmActive do
-        wait(0.01)
-        fireclickdetector(workspace.Buildings["Green House"].Computer.Monitor.Part.ClickDetector)
-        wait(0.01)
-        fireclickdetector(workspace.Buildings["Red House"].Computer.Monitor.Part.ClickDetector)
-        wait(0.01)
-        fireclickdetector(workspace.Buildings.CleaningServices:GetChildren()[23].Monitor.Part.ClickDetector)
+        task.wait(0.1)
+        local buildings = workspace.Buildings
+
+        local function clickIfExists(path)
+            local ok, part = pcall(function() return path end)
+            if ok and part and part:FindFirstChild("ClickDetector") then
+                fireclickdetector(part.ClickDetector)
+            end
+        end
+
+        clickIfExists(buildings["Green House"].Computer.Monitor.Part)
+        clickIfExists(buildings["Red House"].Computer.Monitor.Part)
+        clickIfExists(buildings.CleaningServices:GetChildren()[23].Monitor.Part)
     end
 end
 
+-- Autofarm chính
 local function runAutofarm()
     autofarmActive = true
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
 
-    spawn(function()
+    local safeBox = workspace:FindFirstChild("SafeBox")
+    local safeBase = safeBox and safeBox:FindFirstChild("Base")
+
+    task.spawn(function()
         while autofarmActive do
-            wait(0.01)
-          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace["SafeBox"].CFrame * CFrame.new(0, 3, 0)
+            task.wait(0.5)
+            if safeBase then
+                hrp.CFrame = safeBase.CFrame * CFrame.new(0, 3, 0)
+            end
         end
     end)
 
-    spawn(runComputerAutofarm)
+    task.spawn(runComputerAutofarm)
 
     local originalCFrame = moneyHitbox.CFrame
 
     while autofarmActive do
-        wait(0.01)
+        task.wait(0.1)
 
         local backpack = player:WaitForChild("Backpack")
         local GTool = backpack:FindFirstChild("Garbage Bag")
         if GTool and GTool:IsA("Tool") then
             player.Character.Humanoid:EquipTool(GTool)
-            wait(2.5)
+            task.wait(2.5)
         end
 
         cleanUpTrashcans()
 
-        moneyHitbox.CFrame = player.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 0)
-        wait(0.01)
+        -- Di chuyển moneyHitbox đến người chơi
+        moneyHitbox.CFrame = hrp.CFrame
+        task.wait(0.05)
 
         moneyHitbox.CFrame = originalCFrame
-
-        wait(0.01)
     end
 
     moneyHitbox.CFrame = originalCFrame
 end
 
+-- Bật / tắt autofarm
 function toggleAutofarm(toggle)
     autofarmActive = toggle
     if autofarmActive then
         runAutofarm()
     else
-        local spawns = workspace.Spawns:GetChildren()
-        if #spawns > 0 then
-            local randomSpawn = spawns[math.random(1, #spawns)]
-            wait(0.5)
-            player.Character.HumanoidRootPart.CFrame = randomSpawn.CFrame
+        local spawns = workspace:FindFirstChild("Spawns")
+        if spawns and #spawns:GetChildren() > 0 then
+            local randomSpawn = spawns:GetChildren()[math.random(1, #spawns:GetChildren())]
+            task.wait(0.5)
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart")
+            hrp.CFrame = randomSpawn.CFrame
         end
     end
 end
