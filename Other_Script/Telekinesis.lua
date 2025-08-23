@@ -1,4 +1,4 @@
-p-- Press a block to pick it (ignores anchored blocks) (there is a thing called network ownership so you cannot pick it but works on games sometimes like da hood)
+-- Press a block to pick it (ignores anchored blocks) (there is a thing called network ownership so you cannot pick it but works on games sometimes like da hood)
 -- Long Press - Flings a block (power is customizable at line 19)
 -- Unequip  - Releases a block
 
