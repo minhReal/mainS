@@ -80,7 +80,9 @@ end
 local Workspace = game:GetService("Workspace")
 
 local origin = Vector3.new(26.25, 14.25, -154.500031)
+
 local farPosition = origin + Vector3.new(10000, 0, 0)
+
 local SafeBox = Instance.new("Model")
 SafeBox.Name = "SafeBox"
 SafeBox.Parent = Workspace
@@ -92,6 +94,12 @@ part.Position = farPosition
 part.Anchored = true
 part.CanCollide = true
 part.Parent = SafeBox
+
+local light = Instance.new("PointLight")
+light.Color = Color3.fromRGB(255, 255, 200)
+light.Brightness = 2
+light.Range = 20
+light.Parent = part
 
 --// DDVC noclip
 local targetCFrame = CFrame.new(216.000015, 72.5999985, 830.499939, 1, 0, 0, 0, 1, 0, 0, 0, 1)
