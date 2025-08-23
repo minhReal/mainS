@@ -44,13 +44,13 @@ local function runAutofarm()
     local hrp = char:WaitForChild("HumanoidRootPart")
 
     local safeBox = workspace:FindFirstChild("SafeBox")
-    local safeBase = safeBox and safeBox:FindFirstChild("Base")
+    local safePart = safeBox and safeBox:FindFirstChild("GhK") -- ✅ fix: dùng GhK thay vì Base
 
     task.spawn(function()
         while autofarmActive do
             task.wait(0.5)
-            if safeBase then
-                hrp.CFrame = safeBase.CFrame * CFrame.new(0, 3, 0)
+            if safePart then
+                hrp.CFrame = safePart.CFrame * CFrame.new(0, 5, 0) -- teleport lên trên GhK
             end
         end
     end)
