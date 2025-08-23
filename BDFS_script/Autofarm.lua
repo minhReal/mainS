@@ -43,17 +43,14 @@ local function runAutofarm()
     local char = player.Character or player.CharacterAdded:Wait()
     local hrp = char:WaitForChild("HumanoidRootPart")
 
-    local safeBox = workspace:FindFirstChild("SafeBox")
-    local safePart = safeBox and safeBox:FindFirstChild("GhK") -- ✅ fix: dùng GhK thay vì Base
+    -- ✅ Chờ SafeBox và GhK tồn tại
+    local safeBox = workspace:WaitForChild("SafeBox")
+    local safePart = safeBox:WaitForChild("GhK")
 
-    task.spawn(function()
-        while autofarmActive do
-            task.wait(0.5)
-            if safePart then
-                hrp.CFrame = safePart.CFrame * CFrame.new(0, 5, 0) -- teleport lên trên GhK
-            end
-        end
-    end)
+    -- Teleport nhân vật vào SafeBox 1 lần khi bắt đầu
+    if safePart and safePart:IsA("Part") then
+        hrp.CFrame = safePart.CFrame * CFrame.new(0, 5, 0)
+    end
 
     task.spawn(runComputerAutofarm)
 
@@ -78,6 +75,7 @@ local function runAutofarm()
         moneyHitbox.CFrame = originalCFrame
     end
 
+    -- Reset lại moneyHitbox
     moneyHitbox.CFrame = originalCFrame
 end
 
