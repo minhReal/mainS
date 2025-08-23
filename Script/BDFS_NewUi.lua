@@ -717,7 +717,7 @@ Window:AddToggle({
 })
 
 Window:AddToggle({
-    Title = "Autofarm [without Safebox],
+    Title = "Autofarm [without Safebox]",
     Description = "Auto farm + monitor",
     Tab = farmTab,
     Callback = function(isEnabled)
