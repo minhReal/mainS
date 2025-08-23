@@ -969,39 +969,38 @@ end
 
 
 --// esp script
+-- ESP corpses fix
 local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
-
-local toggled = false
 
 local function updateHighlights()
     for _, corpse in pairs(corpsesFolder:GetChildren()) do
         if corpse:IsA("Model") then
+            local existing = corpse:FindFirstChild("Highlight")
             if toggled then
-                if not corpse:FindFirstChild("Highlight") then
+                if not existing then
                     local highlight = Instance.new("Highlight")
                     highlight.Name = "Highlight"
                     highlight.Parent = corpse
-                    highlight.FillColor = Color3.fromRGB(255, 0, 0)       -- Màu đỏ
-                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255) -- Viền trắng
+                    highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
                     highlight.FillTransparency = 0.85
                     highlight.OutlineTransparency = 0.35
                 end
             else
-                local highlight = corpse:FindFirstChild("Highlight")
-                if highlight then
-                    highlight:Destroy()
-                end
+                if existing then existing:Destroy() end
             end
         end
     end
 end
 
-corpsesFolder.ChildAdded:Connect(function(corpse)
-    if corpse:IsA("Model") and toggled then
+-- Khi có corpse mới spawn thì highlight ngay nếu đang bật
+corpsesFolder.ChildAdded:Connect(function(child)
+    if child:IsA("Model") and toggled then
         updateHighlights()
     end
 end)
 
+-- Vòng lặp nhẹ để giữ cho highlight đồng bộ
 task.spawn(function()
     while task.wait(0.5) do
         updateHighlights()
