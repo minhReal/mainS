@@ -532,12 +532,12 @@ Window:AddToggle({
 
 Window:AddToggle({
     Title = "No Car",
-    Description = "[Not working]",
+    Description = "[]",
     Tab = miscTab,
     Callback = function(Boolean) 
         if Boolean then
             removalRunning = true
-            loadstring(game:HttpGet("https://pastefy.app/kCnixnXg/raw"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/no_cars.lua"))()
         else
             removalRunning = false
         end
