@@ -297,23 +297,24 @@ table.insert(
                 end
             end
             function onEquipped(B)
+                function onEquipped(B)
+    touched = false
+    uneq = false
+    keymouse = B
+    local I = tool.Parent
+    human = I.Humanoid
+    human.Changed:connect(
+        function()
+            if human.Health == 0 then
+                mousedown = false
+                uneq = true
                 touched = false
-                uneq = false
-                keymouse = B
-                local I = tool.Parent
-                human = I.Humanoid
-                human.Changed:connect(
-                    function()
-                        if human.Health == 0 then
-                            mousedown = false
-                            uneq = true
-                            touched = false
-                            BP:remove()
-                            point:remove()
-                            tool:remove()
-                        end
-                    end
-                )
+                BP:remove()
+                point:remove()
+                tool:remove()
+            end
+        end
+                    )
                 usrinput.TouchTapInWorld:connect(
                     function()
                         if uneq == false then
