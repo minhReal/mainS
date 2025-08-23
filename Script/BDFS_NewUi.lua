@@ -600,16 +600,6 @@ Window:AddButton({
     end,
 })
 
-
-Window:AddButton({
-    Title = "Antiafk",
-    Description = "",
-    Tab = miscTab,
-    Callback = function()
-        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-AntiAFK-script-18076"))()
-    end,
-})
-
 Window:AddToggle({
     Title = "Fullbright",
     Description = "",
@@ -634,6 +624,24 @@ Window:AddToggle({
             lighting.GlobalShadows = true
             lighting.Ambient = Color3.new(0.5, 0.5, 0.5)
         end
+    end,
+})
+
+Window:AddButton({
+    Title = "Antiafk",
+    Description = "",
+    Tab = miscTab,
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-AntiAFK-script-18076"))()
+    end,
+})
+
+Window:AddButton({
+    Title = "Freecam",
+    Description = "",
+    Tab = miscTab,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/freecam.lua"))()
     end,
 })
 
