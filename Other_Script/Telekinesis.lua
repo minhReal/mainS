@@ -1,4 +1,4 @@
--- Press a block to pick it (ignores anchored blocks) (there is a thing called network ownership so you cannot pick it but works on games sometimes like da hood)
+p-- Press a block to pick it (ignores anchored blocks) (there is a thing called network ownership so you cannot pick it but works on games sometimes like da hood)
 -- Long Press - Flings a block (power is customizable at line 19)
 -- Unequip  - Releases a block
 
@@ -52,6 +52,8 @@ local l = Instance.new("LocalScript")
 local m = sethiddenproperty or set_hidden_property
 i.Name = "Telekinesis"
 i.Parent = h
+i.RequiresHandle = false
+i.CanBeDropped = false
 i.Grip = CFrame.new(0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 i.GripForward = Vector3.new(-0, -1, -0)
 i.GripRight = Vector3.new(0, 0, 1)
