@@ -209,6 +209,7 @@ Window:AddSlider({
 --// Highlight
 local e = game.Players.LocalPlayer
 local camera = workspace.CurrentCamera
+local b = false
 
 local function updateHighlights()
     local f = workspace.game.gameCustard:GetDescendants()
@@ -217,14 +218,14 @@ local function updateHighlights()
     for _, g in pairs(f) do
         if g:IsA("Part") then
             table.insert(addedParts, g)
+
             if b then
-                -- Highlight
                 if not g:FindFirstChild("Highlight") then
                     local h = Instance.new("Highlight")
                     h.Name = "Highlight"
                     h.Parent = g
-                    h.FillColor = Color3.fromRGB(255, 192, 203)
-                    h.OutlineColor = Color3.fromRGB(255, 192, 203)
+                    h.FillColor = Color3.fromRGB(0, 255, 255)
+                    h.OutlineColor = Color3.fromRGB(0, 255, 255)
                     h.FillTransparency = 0.5
                     h.OutlineTransparency = 0.5
                 end
@@ -242,51 +243,59 @@ local function updateHighlights()
 
                     j = Instance.new("TextLabel")
                     j.Size = UDim2.new(1, 0, 1, 0)
-                    j.TextColor3 = Color3.fromRGB(255, 192, 203)
+                    j.TextColor3 = Color3.fromRGB(0, 255, 255)
                     j.BackgroundTransparency = 1
-                    j.TextScaled = false
+                    j.TextScaled = true
                     j.TextSize = 10
-                    j.TextTransparency = 0
                     j.TextStrokeTransparency = 0.5
                     j.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-                    i.Parent = g
                     j.Parent = i
+                    i.Parent = g
                 else
                     j = i:FindFirstChild("TextLabel")
                 end
 
-                if e.Character and e.Character.PrimaryPart then
-                    local distance = (e.Character.PrimaryPart.Position - g.Position).magnitude
-                    j.Text = "Custard | Distance: " .. math.floor(distance) .. "m"
+                if e.Character and e.Character:FindFirstChild("HumanoidRootPart") then
+                    local distance = (e.Character.HumanoidRootPart.Position - g.Position).Magnitude
+                    j.Text = "Custard [" .. math.floor(distance) .. "m]"
                 else
-                    j.Text = "Custard | Distance: N/A"
+                    j.Text = "Custard [N/A]"
                 end
 
-                -- PointLight
                 if not g:FindFirstChild("PointLight") then
                     local light = Instance.new("PointLight")
                     light.Parent = g
-                    light.Color = Color3.fromRGB(255, 192, 203)
+                    light.Color = Color3.fromRGB(0, 255, 255)
                     light.Range = 10
                     light.Brightness = 2
                 end
 
-                -- Tracer / Line
                 if not g:FindFirstChild("Tracer") then
-                    local line = Instance.new("Beam")
-                    local attachment0 = Instance.new("Attachment", camera)
-                    local attachment1 = Instance.new("Attachment", g)
-                    line.Attachment0 = attachment0
-                    line.Attachment1 = attachment1
-                    line.FaceCamera = true
-                    line.Color = ColorSequence.new(Color3.fromRGB(255, 192, 203))
-                    line.Width0 = 0.05
-                    line.Width1 = 0.05
-                    line.Parent = g
-                    line.Name = "Tracer"
+                    local root = e.Character and e.Character:FindFirstChild("HumanoidRootPart")
+                    if root then
+                        local line = Instance.new("Beam")
+                        line.Name = "Tracer"
+
+                        local a0 = root:FindFirstChild("TracerAttachment")
+                        if not a0 then
+                            a0 = Instance.new("Attachment")
+                            a0.Name = "TracerAttachment"
+                            a0.Parent = root
+                        end
+
+                        local a1 = Instance.new("Attachment", g)
+
+                        line.Attachment0 = a0
+                        line.Attachment1 = a1
+                        line.FaceCamera = true
+                        line.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255))
+                        line.Width0 = 0.05
+                        line.Width1 = 0.05
+                        line.Transparency = NumberSequence.new(0)
+                        line.Parent = g
+                    end
                 end
-            else
-                -- Xoá highlight, light, gui, tracer
+			else
                 local h = g:FindFirstChild("Highlight")
                 if h then h:Destroy() end
                 local light = g:FindFirstChild("PointLight")
@@ -304,7 +313,7 @@ end
 
 spawn(function()
     while true do
-        wait(0.01)
+        wait(0.1)
         if b then
             local currentParts = updateHighlights()
             for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
@@ -328,6 +337,7 @@ spawn(function()
         end
     end
 end)
+
 
 
 
