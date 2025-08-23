@@ -1,56 +1,84 @@
--- anim zombie for BDFS--
-     --// BETA //--
-local UserInputService = game:GetService("UserInputService")
+-- anim zombie for BDFS --
+-- // FIXED FULL VERSION // --
+
 local RunService = game:GetService("RunService")
-local Players = game.Players
+local Players = game:GetService("Players")
+
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local Humanoid = Character:FindFirstChild("Humanoid")
+local Humanoid = Character:WaitForChild("Humanoid")
+local HRP = Character:WaitForChild("HumanoidRootPart")
 
--- Dừng các animation không cần thiết
-local animations = Humanoid:GetPlayingAnimationTracks()
-for _, track in pairs(animations) do
-    if track.Name ~= "Run" and track.Name ~= "RunBack" then
-        track:Stop()
+-- Animator
+local Animator = Humanoid:FindFirstChildOfClass("Animator")
+if not Animator then
+    Animator = Instance.new("Animator")
+    Animator.Parent = Humanoid
+end
+
+-- Xoá anim mặc định
+for _, track in pairs(Humanoid:GetPlayingAnimationTracks()) do
+    track:Stop()
+end
+
+-- Animation assets
+local runAnim = Instance.new("Animation")
+runAnim.AnimationId = "rbxassetid://6280356164" -- Run Forward
+
+local runBackAnim = Instance.new("Animation")
+runBackAnim.AnimationId = "rbxassetid://7622527104" -- Run Back
+
+local runRightAnim = Instance.new("Animation")
+runRightAnim.AnimationId = "rbxassetid://7622638623" -- Run Right
+
+local runLeftAnim = Instance.new("Animation")
+runLeftAnim.AnimationId = "rbxassetid://7622624472" -- Run Left
+
+local idleAnim = Instance.new("Animation")
+idleAnim.AnimationId = "rbxassetid://6450315401" -- Idle
+
+-- Load Animations
+local loadedRunAnim = Animator:LoadAnimation(runAnim)
+local loadedRunBackAnim = Animator:LoadAnimation(runBackAnim)
+local loadedRunRightAnim = Animator:LoadAnimation(runRightAnim)
+local loadedRunLeftAnim = Animator:LoadAnimation(runLeftAnim)
+local loadedIdleAnim = Animator:LoadAnimation(idleAnim)
+
+-- Hàm đổi anim
+local function playAnim(anim)
+    for _, track in pairs(Animator:GetPlayingAnimationTracks()) do
+        if track ~= anim then
+            track:Stop()
+        end
+    end
+    if not anim.IsPlaying then
+        anim:Play()
     end
 end
 
--- Tải các animation với ID đã cung cấp
-local runAnim = Instance.new("Animation")
-runAnim.AnimationId = "rbxassetid://6280356164"
-local runBackAnim = Instance.new("Animation")
-runBackAnim.AnimationId = "rbxassetid://7622527104"
-local idleAnim = Instance.new("Animation")
-idleAnim.AnimationId = "rbxassetid://6450315401"
-
--- Tải animation vào Humanoid
-local loadedRunAnim = Humanoid:LoadAnimation(runAnim)
-local loadedRunBackAnim = Humanoid:LoadAnimation(runBackAnim)
-local loadedIdleAnim = Humanoid:LoadAnimation(idleAnim)
-
--- Lấy HumanoidRootPart
-local humanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
-
+-- Update animation theo velocity
 RunService.RenderStepped:Connect(function()
-    local velocity = humanoidRootPart.Velocity
+    local velocity = HRP.Velocity * Vector3.new(1,0,1) -- bỏ Y
     local speed = velocity.Magnitude
 
-    if speed < 15 then
-        -- Dừng tất cả các animation chạy
-        loadedRunAnim:Stop()
-        loadedRunBackAnim:Stop()
-        
-        if not loadedIdleAnim.IsPlaying then
-            loadedIdleAnim:Play() -- Chạy animation đứng im
-        end
+    if speed < 2 then
+        playAnim(loadedIdleAnim)
     else
-        if velocity.Z > 0 then
-            if not loadedRunAnim.IsPlaying then
-                loadedRunAnim:Play() -- Chạy về phía trước
+        -- Tính hướng chuyển động so với nhân vật
+        local moveDir = HRP.CFrame:VectorToObjectSpace(velocity.Unit)
+
+        -- Chia hướng dựa theo Z (trước/sau) và X (trái/phải)
+        if math.abs(moveDir.Z) > math.abs(moveDir.X) then
+            if moveDir.Z < 0 then
+                playAnim(loadedRunAnim) -- đi tới
+            else
+                playAnim(loadedRunBackAnim) -- đi lùi
             end
-        elseif velocity.Z < 0 then
-            if not loadedRunBackAnim.IsPlaying then
-                loadedRunBackAnim:Play() -- Chạy lùi
+        else
+            if moveDir.X > 0 then
+                playAnim(loadedRunRightAnim) -- đi phải
+            else
+                playAnim(loadedRunLeftAnim) -- đi trái
             end
         end
     end
