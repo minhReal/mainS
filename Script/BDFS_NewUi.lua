@@ -744,32 +744,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/h
 }) 
 
 --// teleport [TAB]
-Window:AddDropdown({
-    Title = "Safe zone [BUG]",
-    Description = "",
-    Tab = teleportTab,
-    Options = {
-        ["SafeBox"] = "S",
-        ["SafeSpot"] = "F",
-    },
-    Callback = function(selectedOption)
-        local char = game.Players.LocalPlayer.Character
-        if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-
-        if selectedOption == "S" then
-            local safeBox = workspace:FindFirstChild("SafeBox")
-            if safeBox and safeBox:FindFirstChild("Base") then
-                char.HumanoidRootPart.CFrame = safeBox.Base.CFrame * CFrame.new(0, 2.5, 0)
-            end
-        elseif selectedOption == "F" then
-            local safeSpot = workspace:FindFirstChild("Safespot")
-            if safeSpot and safeSpot:FindFirstChild("Base") then
-                char.HumanoidRootPart.CFrame = safeSpot.Base.CFrame * CFrame.new(0, 10, 0)
-            end
-        end
-    end,
-})
-
 Window:AddButton({
     Title = "Tp to DVSC",
     Description = "",
@@ -799,7 +773,7 @@ character:SetPrimaryPartCFrame(CFrame.new(-25.858579635620117, 16.99999618530273
 
 
 --// Scripts
---// antimods / admin
+--// antimods / admin (maybe)
 local playersToBlock = {
     "mad_hhhh", "Maxim_L1111", "mmmax1", "Electr0nic_Person", "ElectroMotiveDev",
     "TheRealJ4YD3N", "Sk3tchYT", "Jayingee", "KenvinEdwardsJr", "forstaken",
