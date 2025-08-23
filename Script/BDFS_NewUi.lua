@@ -489,6 +489,15 @@ Window:AddButton({
     end,
 })
 
+Window:AddButton({
+    Title = "Animation(human pack)",
+    Description = "idk",
+    Tab = miscTab,
+    Callback = function()
+        playAnimation("rbxassetid://8830424363")
+    end,
+})
+
 
 Window:AddSection({ Name = "Utilities", Tab = miscTab }) 
 
