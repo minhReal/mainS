@@ -968,17 +968,16 @@ if not Workspace:FindFirstChild("Safespot") then
 end
 
 
---// esp script
--- ESP corpses fix
+-- ESP corpses
 local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
 
-local function updateHighlights()
+function updateHighlights()
     for _, corpse in pairs(corpsesFolder:GetChildren()) do
         if corpse:IsA("Model") then
-            local existing = corpse:FindFirstChild("Highlight")
+            local highlight = corpse:FindFirstChild("Highlight")
             if toggled then
-                if not existing then
-                    local highlight = Instance.new("Highlight")
+                if not highlight then
+                    highlight = Instance.new("Highlight")
                     highlight.Name = "Highlight"
                     highlight.Parent = corpse
                     highlight.FillColor = Color3.fromRGB(255, 0, 0)
@@ -986,21 +985,21 @@ local function updateHighlights()
                     highlight.FillTransparency = 0.85
                     highlight.OutlineTransparency = 0.35
                 end
-            else
-                if existing then existing:Destroy() end
+            elseif highlight then
+                highlight:Destroy()
             end
         end
     end
 end
 
--- Khi có corpse mới spawn thì highlight ngay nếu đang bật
+-- Highlight khi có corpse mới spawn
 corpsesFolder.ChildAdded:Connect(function(child)
     if child:IsA("Model") and toggled then
         updateHighlights()
     end
 end)
 
--- Vòng lặp nhẹ để giữ cho highlight đồng bộ
+-- Cập nhật định kỳ (nhẹ)
 task.spawn(function()
     while task.wait(0.5) do
         updateHighlights()
