@@ -43,7 +43,7 @@ local Main = Window:AddTab({
 })
 
 local Farm = Window:AddTab({
-    Title = "Farm",
+    Title = "AutoFarm",
     Section = "STVSRD",
     Icon = "rbxassetid://11963373994"
 })
