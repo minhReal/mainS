@@ -68,6 +68,5 @@ v40:Play()
 v40.Completed:Wait()
 v41.Completed:Wait()
 
-v15:Destroy()
-v28:Destroy()
+
 v3:Destroy()
