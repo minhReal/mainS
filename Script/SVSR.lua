@@ -208,6 +208,90 @@ Window:AddSlider({
 
 --// Highlight
 
+local e = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local b = false -- bật/tắt highlight (tuỳ bạn set)
+
+local function updateHighlights()
+    for _, g in pairs(workspace.game.gameCustard:GetDescendants()) do
+        if g:IsA("Part") then
+            if b then
+                -- Highlight
+                if not g:FindFirstChild("Highlight") then
+                    local h = Instance.new("Highlight")
+                    h.Name = "Highlight"
+                    h.Parent = g
+                    h.FillColor = Color3.fromRGB(255, 192, 203) -- hồng
+                    h.OutlineColor = Color3.fromRGB(255, 192, 203)
+                    h.FillTransparency = 0.5
+                    h.OutlineTransparency = 0.5
+                end
+
+                -- BillboardGui
+                if not g:FindFirstChild("BillboardGui") then
+                    local i = Instance.new("BillboardGui")
+                    i.Name = "BillboardGui"
+                    i.Adornee = g
+                    i.Size = UDim2.new(0, 100, 0, 20)
+                    i.AlwaysOnTop = true
+                    i.StudsOffset = Vector3.new(0, 2, 0)
+                    i.Parent = g
+
+                    local j = Instance.new("TextLabel")
+                    j.Size = UDim2.new(1, 0, 1, 0)
+                    j.TextColor3 = Color3.fromRGB(255, 192, 203) -- chữ hồng
+                    j.BackgroundTransparency = 1
+                    j.TextScaled = true
+                    j.Text = "Custard | Distance: N/A"
+                    j.Parent = i
+                else
+                    local j = g.BillboardGui:FindFirstChildOfClass("TextLabel")
+                    if j then
+                        local dist = (e.Character.HumanoidRootPart.Position - g.Position).Magnitude
+                        j.Text = ("Custard | Distance: %d"):format(dist)
+                    end
+                end
+
+                -- PointLight
+                if not g:FindFirstChild("PointLight") then
+                    local light = Instance.new("PointLight")
+                    light.Parent = g
+                    light.Color = Color3.fromRGB(255, 192, 203)
+                    light.Range = 10
+                    light.Brightness = 2
+                end
+
+                -- Tracer
+                if not g:FindFirstChild("Tracer") then
+                    local line = Instance.new("Beam")
+                    local a0 = Instance.new("Attachment", camera)
+                    local a1 = Instance.new("Attachment", g)
+                    line.Attachment0 = a0
+                    line.Attachment1 = a1
+                    line.FaceCamera = true
+                    line.Color = ColorSequence.new(Color3.fromRGB(255, 192, 203))
+                    line.Width0 = 0.05
+                    line.Width1 = 0.05
+                    line.Parent = g
+                    line.Name = "Tracer"
+                end
+            else
+                -- Xoá nếu b = false
+                for _, child in ipairs({"Highlight", "BillboardGui", "PointLight", "Tracer"}) do
+                    local obj = g:FindFirstChild(child)
+                    if obj then obj:Destroy() end
+                end
+            end
+        end
+    end
+end
+
+-- Loop update
+spawn(function()
+    while task.wait(1) do
+        updateHighlights()
+    end
+end)
 
 
 
