@@ -788,6 +788,9 @@ local targetPart = workspace:FindFirstChild("GhK")
 if targetPart and character:FindFirstChild("HumanoidRootPart") then
     character.HumanoidRootPart.CFrame = targetPart.CFrame
 			end
+		end,
+})
+
 Window:AddButton({
     Title = "Tp to DVSC",
     Description = "",
