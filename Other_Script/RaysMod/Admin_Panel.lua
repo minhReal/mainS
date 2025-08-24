@@ -189,12 +189,13 @@ Nuke.MouseButton1Click:Connect(function()
     game:GetService("ReplicatedStorage").SpawnObject:FireServer("Nuke")
 end)
 
--- Weather (Tornado, Meteors, Flood)
+-- Weather (Tornado, Meteors, Flood, Blackhole)
 Weather.MouseButton1Click:Connect(function()
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     ReplicatedStorage.SpawnObject:FireServer("Tornado")
     ReplicatedStorage.SpawnObject:FireServer("Meteors")
     ReplicatedStorage.SpawnObject:FireServer("Flood")
+    ReplicatedStorage.SpawnObject:FireServer("Blackhole")
 end)
 
 -- Telekinesis
