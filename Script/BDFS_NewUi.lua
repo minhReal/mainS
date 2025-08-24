@@ -501,6 +501,8 @@ Window:AddButton({
 
 Window:AddSection({ Name = "Utilities", Tab = miscTab }) 
 
+local toggled = false
+local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
 Window:AddToggle({
     Title = "Esp the dead",
     Description = "Highlights dead bodies but some will be inactive",
@@ -526,6 +528,32 @@ Window:AddToggle({
     end,
 })
 
+Window:AddToggle({
+    Title = "Fullbright",
+    Description = "",
+    Tab = miscTab,
+    Callback = function(Boolean)
+        getgenv().loopbright = Boolean
+        local lighting = game:GetService("Lighting")
+        
+        if Boolean then
+            while getgenv().loopbright do
+                lighting.Brightness = 2
+                lighting.ClockTime = 12
+                lighting.FogEnd = 1e5
+                lighting.GlobalShadows = false
+                lighting.Ambient = Color3.new(1, 1, 1)
+                task.wait()
+            end
+        else
+            lighting.Brightness = 1
+            lighting.ClockTime = 14
+            lighting.FogEnd = 1000
+            lighting.GlobalShadows = true
+            lighting.Ambient = Color3.new(0.5, 0.5, 0.5)
+        end
+    end,
+})
 
 Window:AddToggle({
     Title = "No Car",
@@ -593,33 +621,6 @@ Window:AddButton({
                     Duration = 10
                 })
             end
-        end
-    end,
-})
-
-Window:AddToggle({
-    Title = "Fullbright",
-    Description = "",
-    Tab = miscTab,
-    Callback = function(Boolean)
-        getgenv().loopbright = Boolean
-        local lighting = game:GetService("Lighting")
-        
-        if Boolean then
-            while getgenv().loopbright do
-                lighting.Brightness = 2
-                lighting.ClockTime = 12
-                lighting.FogEnd = 1e5
-                lighting.GlobalShadows = false
-                lighting.Ambient = Color3.new(1, 1, 1)
-                task.wait()
-            end
-        else
-            lighting.Brightness = 1
-            lighting.ClockTime = 14
-            lighting.FogEnd = 1000
-            lighting.GlobalShadows = true
-            lighting.Ambient = Color3.new(0.5, 0.5, 0.5)
         end
     end,
 })
@@ -915,9 +916,6 @@ end
 eat()
 
 -- ESP corpses
-local toggled = false
-local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
-
 local function addHighlight(model)
     if not model:FindFirstChild("Highlight") then
         local highlight = Instance.new("Highlight")
