@@ -86,7 +86,7 @@ SafeBox.Parent = Workspace
 
 local part = Instance.new("Part")
 part.Name = "GhK"
-part.Size = Vector3.new(10, 10, 10)
+part.Size = Vector3.new(1000, 10, 1000)
 part.Position = farPosition
 part.Anchored = true
 part.CanCollide = true
@@ -215,12 +215,6 @@ Window:AddButton({
 
 --// Main [TAB]
 Window:AddSection({ Name = "Notification", Tab = Main }) 
-
-Window:AddParagraph({
-	Title = "🫩",
-	Description = "The update will take longer because the banwave is very danger",
-	Tab = Main
-}) 
 
 Window:AddButton({
     Title = "Sub To Hydro_gen!!",
@@ -504,7 +498,7 @@ Window:AddSection({ Name = "Utilities", Tab = miscTab })
 local toggled = false
 local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
 Window:AddToggle({
-    Title = "Esp the dead",
+    Title = "Esp the dead [BUG]",
     Description = "Highlights dead bodies but some will be inactive",
     Tab = miscTab,
     Callback = function(Boolean)
@@ -781,6 +775,18 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/h
 }) 
 
 --// teleport [TAB]
+Window:AddButton({
+    Title = "Tp to SafePlace",
+    Description = "",
+    Tab = teleportTab,
+    Callback = function()
+			local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local targetPart = workspace:FindFirstChild("GhK")
+
+if targetPart and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = targetPart.CFrame
+			end
 Window:AddButton({
     Title = "Tp to DVSC",
     Description = "",
