@@ -207,7 +207,6 @@ Window:AddSlider({
 })
 
 --// Highlight
-hãy cho chữ và màu highlight là màu hồng
 local e = game.Players.LocalPlayer
 
 local function updateHighlights()
