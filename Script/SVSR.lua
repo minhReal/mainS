@@ -207,119 +207,123 @@ Window:AddSlider({
 })
 
 --// Highlight
+hãy cho chữ và màu highlight là màu hồng
 local e = game.Players.LocalPlayer
 
 local function updateHighlights()
-    local f = workspace.game.gameCustard:GetDescendants()
-    local addedParts = {}
+local f = workspace.game.gameCustard:GetDescendants()
+local addedParts = {}
 
-    for _, g in pairs(f) do
-        if g:IsA("Part") then
-            table.insert(addedParts, g)
-            if b then
-                if not g:FindFirstChild("Highlight") then
-                    local h = Instance.new("Highlight")
-                    h.Name = "Highlight"
-                    h.Parent = g
-                    h.FillColor = Color3.fromRGB(255, 192, 203) -- màu hồng
-                    h.OutlineColor = Color3.fromRGB(255, 192, 203) -- màu hồng
-                    h.FillTransparency = 0.5
-                    h.OutlineTransparency = 0.5
-                end
+for _, g in pairs(f) do  
+    if g:IsA("Part") then  
+        table.insert(addedParts, g)  
+        if b then  
+            if not g:FindFirstChild("Highlight") then  
+                local h = Instance.new("Highlight")  
+                h.Name = "Highlight"  
+                h.Parent = g  
+                h.FillColor = Color3.fromRGB(235, 52, 219)  
+                h.OutlineColor = Color3.fromRGB(255, 255, 255)  
+                h.FillTransparency = 0.5  
+                h.OutlineTransparency = 0.5  
+            end  
 
-                local i = g:FindFirstChild("BillboardGui")
-                local j
-                if not i then
-                    i = Instance.new("BillboardGui")
-                    i.Name = "BillboardGui"
-                    i.Adornee = g
-                    i.Size = UDim2.new(0, 200, 0, 50)
-                    i.StudsOffset = Vector3.new(0, 2, 0)
-                    i.AlwaysOnTop = true
+            local i = g:FindFirstChild("BillboardGui")  
+            local j  
+            if not i then  
+                i = Instance.new("BillboardGui")  
+                i.Name = "BillboardGui"  
+                i.Adornee = g  
+                i.Size = UDim2.new(0, 200, 0, 50)  
+                i.StudsOffset = Vector3.new(0, 2, 0)  
+                i.AlwaysOnTop = true  
 
-                    j = Instance.new("TextLabel")
-                    j.Size = UDim2.new(1, 0, 1, 0)
-                    j.TextColor3 = Color3.fromRGB(255, 192, 203) -- chữ màu hồng
-                    j.BackgroundTransparency = 1
-                    j.TextScaled = false
-                    j.TextSize = 10
-                    j.TextTransparency = 0
-                    j.TextStrokeTransparency = 0.5
-                    j.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-                    i.Parent = g
-                    j.Parent = i
-                else
-                    j = i:FindFirstChild("TextLabel")
-                end
+                j = Instance.new("TextLabel")  
+                j.Size = UDim2.new(1, 0, 1, 0)  
+                j.TextColor3 = Color3.new(1, 1, 1)  
+                j.BackgroundTransparency = 1  
+                j.TextScaled = false  
+                j.TextSize = 10  
+                j.TextTransparency = 0.5  
+                j.TextStrokeTransparency = 0.5  
+                j.TextStrokeColor3 = Color3.new(0, 0, 0)  
+                i.Parent = g  
+                j.Parent = i  
+            else  
+                j = i:FindFirstChild("TextLabel")  
+            end  
 
-                if e.Character and e.Character.PrimaryPart then
-                    local distance = (e.Character.PrimaryPart.Position - g.Position).magnitude
-                    j.Text = "Custard | Distance: " .. math.floor(distance) .. "m"
-                else
-                    j.Text = "Custard | Distance: N/A"
-                end
+            if e.Character and e.Character.PrimaryPart then  
+                local distance = (e.Character.PrimaryPart.Position - g.Position).magnitude  
+                j.Text = "Custard | Distance: " .. math.floor(distance) .. "m"  
+            else  
+                j.Text = "Custard | Distance: N/A"  
+            end  
 
-                if not g:FindFirstChild("PointLight") then
-                    local light = Instance.new("PointLight")
-                    light.Parent = g
-                    light.Color = Color3.fromRGB(255, 192, 203) -- ánh sáng hồng
-                    light.Range = 10
-                    light.Brightness = 2
-                end
-            else
-                local h = g:FindFirstChild("Highlight")
-                if h then
-                    h:Destroy()
-                end
+            if not g:FindFirstChild("PointLight") then  
+                local light = Instance.new("PointLight")  
+                light.Parent = g  
+                light.Color = Color3.fromRGB(232, 85, 242)  
+                light.Range = 10  
+                light.Brightness = 2  
+            end  
+        else  
+            local h = g:FindFirstChild("Highlight")  
+            if h then  
+                h:Destroy()  
+            end  
 
-                local light = g:FindFirstChild("PointLight")
-                if light then
-                    light:Destroy()
-                end
+            local light = g:FindFirstChild("PointLight")  
+            if light then  
+                light:Destroy()  
+            end  
 
-                local i = g:FindFirstChild("BillboardGui")
-                if i then
-                    i:Destroy()
-                end
-            end
-        end
-    end
+            local i = g:FindFirstChild("BillboardGui")  
+            if i then  
+                i:Destroy()  
+            end  
+        end  
+    end  
+end  
 
-    return addedParts
+return addedParts
+
 end
 
 spawn(function()
-    while true do
-        wait(0.01)
-        if b then
-            local currentParts = updateHighlights()
-            for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
-                if part:IsA("Part") and not table.find(currentParts, part) then
-                    updateHighlights()
-                end
-            end
-        else
-            for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
-                if part:IsA("Part") then
-                    local h = part:FindFirstChild("Highlight")
-                    if h then
-                        h:Destroy()
-                    end
+while true do
+wait(0.01)
+if b then
+local currentParts = updateHighlights()
+for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
+if part:IsA("Part") and not table.find(currentParts, part) then
+updateHighlights()
+end
+end
+else
+for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
+if part:IsA("Part") then
+local h = part:FindFirstChild("Highlight")
+if h then
+h:Destroy()
+end
 
-                    local light = part:FindFirstChild("PointLight")
-                    if light then
-                        light:Destroy()
-                    end
+local light = part:FindFirstChild("PointLight")  
+                if light then  
+                    light:Destroy()  
+                end  
 
-                    local i = part:FindFirstChild("BillboardGui")
-                    if i then
-                        i:Destroy()
-                    end
-                end
-            end
-        end
-    end
+                local i = part:FindFirstChild("BillboardGui")  
+                if i then  
+                    i:Destroy()  
+                end  
+            end  
+        end  
+    end  
+end
+
 end)
+
 
 
 
