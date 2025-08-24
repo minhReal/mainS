@@ -300,9 +300,9 @@ Window:AddSlider({
 
 --// Tools [TAB]
 Window:AddParagraph({ Title = "WARNING", Description = "If you click on a tool, the script will automatically buy that tool!", Tab = toolTab })
-
 Window:AddSection({ Name = "Food", Tab = toolTab }) 
 
+-- script autoBuy
 local function autoBuy()
     wait(0.1)
     local player = game:GetService("Players").LocalPlayer
@@ -313,6 +313,7 @@ local function autoBuy()
         buyButton:FireServer()
     end
 end
+
 
 Window:AddButton({
     Title = "Dead burger is 30$",
