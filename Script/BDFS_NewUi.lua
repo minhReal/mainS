@@ -501,9 +501,6 @@ Window:AddButton({
 
 Window:AddSection({ Name = "Utilities", Tab = miscTab }) 
 
-local toggled = false
-local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
-
 Window:AddToggle({
     Title = "Esp the dead",
     Description = "Highlights dead bodies but some will be inactive",
@@ -918,39 +915,51 @@ end
 eat()
 
 -- ESP corpses
+local toggled = false
 local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
 
-function updateHighlights()
+local function addHighlight(model)
+    if not model:FindFirstChild("Highlight") then
+        local highlight = Instance.new("Highlight")
+        highlight.Name = "Highlight"
+        highlight.FillColor = Color3.fromRGB(255, 0, 0)
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.FillTransparency = 0.85
+        highlight.OutlineTransparency = 0.35
+        highlight.Parent = model
+    end
+end
+
+local function removeHighlight(model)
+    local highlight = model:FindFirstChild("Highlight")
+    if highlight then
+        highlight:Destroy()
+    end
+end
+
+local function updateHighlights()
     for _, corpse in pairs(corpsesFolder:GetChildren()) do
         if corpse:IsA("Model") then
-            local highlight = corpse:FindFirstChild("Highlight")
             if toggled then
-                if not highlight then
-                    highlight = Instance.new("Highlight")
-                    highlight.Name = "Highlight"
-                    highlight.Parent = corpse
-                    highlight.FillColor = Color3.fromRGB(255, 0, 0)
-                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                    highlight.FillTransparency = 0.85
-                    highlight.OutlineTransparency = 0.35
-                end
-            elseif highlight then
-                highlight:Destroy()
+                addHighlight(corpse)
+            else
+                removeHighlight(corpse)
             end
         end
     end
 end
 
--- Highlight khi có corpse mới spawn
 corpsesFolder.ChildAdded:Connect(function(child)
-    if child:IsA("Model") and toggled then
-        updateHighlights()
+    if toggled and child:IsA("Model") then
+        addHighlight(child)
     end
 end)
 
--- Cập nhật định kỳ (nhẹ)
 task.spawn(function()
-    while task.wait(0.5) do
-        updateHighlights()
+    while true do
+        task.wait(1)
+        if toggled then
+            updateHighlights()
+        end
     end
 end)
