@@ -207,123 +207,98 @@ Window:AddSlider({
 })
 
 --// Highlight
-local e = game.Players.LocalPlayer
+local Player = game.Players.LocalPlayer
+local b = false -- biến toggle ESP
+
+-- Đảm bảo các folder tồn tại trước khi dùng
+local gameFolder = workspace:WaitForChild("game")
+local custardFolder = gameFolder:WaitForChild("gameCustard")
 
 local function updateHighlights()
-local f = workspace.game.gameCustard:GetDescendants()
-local addedParts = {}
+    local addedParts = {}
 
-for _, g in pairs(f) do  
-    if g:IsA("Part") then  
-        table.insert(addedParts, g)  
-        if b then  
-            if not g:FindFirstChild("Highlight") then  
-                local h = Instance.new("Highlight")  
-                h.Name = "Highlight"  
-                h.Parent = g  
-                h.FillColor = Color3.fromRGB(235, 52, 219)  
-                h.OutlineColor = Color3.fromRGB(255, 255, 255)  
-                h.FillTransparency = 0.5  
-                h.OutlineTransparency = 0.5  
-            end  
+    for _, part in pairs(custardFolder:GetDescendants()) do
+        if part:IsA("Part") then
+            table.insert(addedParts, part)
 
-            local i = g:FindFirstChild("BillboardGui")  
-            local j  
-            if not i then  
-                i = Instance.new("BillboardGui")  
-                i.Name = "BillboardGui"  
-                i.Adornee = g  
-                i.Size = UDim2.new(0, 200, 0, 50)  
-                i.StudsOffset = Vector3.new(0, 2, 0)  
-                i.AlwaysOnTop = true  
+            if b then
+                -- Highlight
+                if not part:FindFirstChild("Highlight") then
+                    local h = Instance.new("Highlight")
+                    h.Name = "Highlight"
+                    h.Parent = part
+                    h.FillColor = Color3.fromRGB(235, 52, 219)
+                    h.OutlineColor = Color3.fromRGB(255, 255, 255)
+                    h.FillTransparency = 0.5
+                    h.OutlineTransparency = 0.5
+                end
 
-                j = Instance.new("TextLabel")  
-                j.Size = UDim2.new(1, 0, 1, 0)  
-                j.TextColor3 = Color3.new(1, 1, 1)  
-                j.BackgroundTransparency = 1  
-                j.TextScaled = false  
-                j.TextSize = 10  
-                j.TextTransparency = 0.5  
-                j.TextStrokeTransparency = 0.5  
-                j.TextStrokeColor3 = Color3.new(0, 0, 0)  
-                i.Parent = g  
-                j.Parent = i  
-            else  
-                j = i:FindFirstChild("TextLabel")  
-            end  
+                -- BillboardGui
+                local gui = part:FindFirstChild("BillboardGui")
+                local label
+                if not gui then
+                    gui = Instance.new("BillboardGui")
+                    gui.Name = "BillboardGui"
+                    gui.Adornee = part
+                    gui.Size = UDim2.new(0, 200, 0, 50)
+                    gui.StudsOffset = Vector3.new(0, 2, 0)
+                    gui.AlwaysOnTop = true
 
-            if e.Character and e.Character.PrimaryPart then  
-                local distance = (e.Character.PrimaryPart.Position - g.Position).magnitude  
-                j.Text = "Custard | Distance: " .. math.floor(distance) .. "m"  
-            else  
-                j.Text = "Custard | Distance: N/A"  
-            end  
+                    label = Instance.new("TextLabel")
+                    label.Size = UDim2.new(1,0,1,0)
+                    label.BackgroundTransparency = 1
+                    label.TextColor3 = Color3.new(1,1,1)
+                    label.TextSize = 10
+                    label.TextTransparency = 0.5
+                    label.TextStrokeTransparency = 0.5
+                    label.TextStrokeColor3 = Color3.new(0,0,0)
+                    label.Parent = gui
 
-            if not g:FindFirstChild("PointLight") then  
-                local light = Instance.new("PointLight")  
-                light.Parent = g  
-                light.Color = Color3.fromRGB(232, 85, 242)  
-                light.Range = 10  
-                light.Brightness = 2  
-            end  
-        else  
-            local h = g:FindFirstChild("Highlight")  
-            if h then  
-                h:Destroy()  
-            end  
+                    gui.Parent = part
+                else
+                    label = gui:FindFirstChild("TextLabel")
+                end
 
-            local light = g:FindFirstChild("PointLight")  
-            if light then  
-                light:Destroy()  
-            end  
+                -- Khoảng cách
+                if Player.Character and Player.Character.PrimaryPart then
+                    local distance = (Player.Character.PrimaryPart.Position - part.Position).Magnitude
+                    label.Text = "Custard | Distance: " .. math.floor(distance) .. "m"
+                else
+                    label.Text = "Custard | Distance: N/A"
+                end
 
-            local i = g:FindFirstChild("BillboardGui")  
-            if i then  
-                i:Destroy()  
-            end  
-        end  
-    end  
-end  
+                -- PointLight
+                if not part:FindFirstChild("PointLight") then
+                    local light = Instance.new("PointLight")
+                    light.Color = Color3.fromRGB(232,85,242)
+                    light.Range = 10
+                    light.Brightness = 2
+                    light.Parent = part
+                end
+            else
+                -- Xóa highlight khi tắt ESP
+                local h = part:FindFirstChild("Highlight")
+                if h then h:Destroy() end
 
-return addedParts
+                local light = part:FindFirstChild("PointLight")
+                if light then light:Destroy() end
 
+                local gui = part:FindFirstChild("BillboardGui")
+                if gui then gui:Destroy() end
+            end
+        end
+    end
+
+    return addedParts
 end
 
+-- Loop ESP tối ưu
 spawn(function()
-while true do
-wait(0.01)
-if b then
-local currentParts = updateHighlights()
-for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
-if part:IsA("Part") and not table.find(currentParts, part) then
-updateHighlights()
-end
-end
-else
-for _, part in pairs(workspace.game.gameCustard:GetDescendants()) do
-if part:IsA("Part") then
-local h = part:FindFirstChild("Highlight")
-if h then
-h:Destroy()
-end
-
-local light = part:FindFirstChild("PointLight")  
-                if light then  
-                    light:Destroy()  
-                end  
-
-                local i = part:FindFirstChild("BillboardGui")  
-                if i then  
-                    i:Destroy()  
-                end  
-            end  
-        end  
-    end  
-end
-
+    while true do
+        task.wait(0.1) -- giảm lag
+        updateHighlights()
+    end
 end)
-
-
 
 
 
