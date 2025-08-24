@@ -122,8 +122,8 @@ end
 -- Các nút
 local Votekick = createButton("Vote Kick")
 local Vote = createButton("+2 Voter")
-local HP = createButton("Golden Gun")
 local G = createButton("+100 HP")
+local HP = createButton("Golden Gun")
 
 -- Toggle (P)
 local To = Instance.new("TextButton")
@@ -198,11 +198,6 @@ Vote.MouseButton1Click:Connect(function()
     print("Added votes")
 end)
 
--- Golden Gun
-HP.MouseButton1Click:Connect(function()
-    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Golden Gun")
-end)
-
 -- +100 HP
 G.MouseButton1Click:Connect(function()
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -220,4 +215,9 @@ G.MouseButton1Click:Connect(function()
         task.wait(1)
     end
     inProgress = false
+end)
+
+-- Golden Gun
+HP.MouseButton1Click:Connect(function()
+    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Golden Gun")
 end)
