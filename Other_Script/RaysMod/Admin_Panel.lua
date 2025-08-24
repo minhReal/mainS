@@ -119,11 +119,16 @@ local function createButton(text)
     return btn
 end
 
--- Các nút
+-- Các nút (chỉ tạo giao diện)
 local Votekick = createButton("Vote Kick")
 local Vote = createButton("+2 Voter")
-local G = createButton("+100 HP")
 local HP = createButton("Golden Gun")
+local G = createButton("+100 HP")
+local AK = createButton("Golden AK-47")
+local Tele = createButton("Telekinesis")
+local MNL = createButton("M.N Launcher")
+local Nuke = createButton("Nuke")
+local Weather = createButton("Weather (All)")
 
 -- Toggle (P)
 local To = Instance.new("TextButton")
@@ -146,7 +151,8 @@ To.MouseButton1Click:Connect(function()
     header.Visible = isVisible
 end)
 
---// FUNCTION BINDINGS //-- 
+
+-- SCRIPT CHỨC NĂNG (dán hết ở dưới cùng)
 
 -- VoteKick Script
 Votekick.MouseButton1Click:Connect(function()
@@ -217,7 +223,35 @@ G.MouseButton1Click:Connect(function()
     inProgress = false
 end)
 
+-- Nuke
+Nuke.MouseButton1Click:Connect(function()
+    game:GetService("ReplicatedStorage").SpawnObject:FireServer("Nuke")
+end)
+
+-- Weather (Tornado, Meteors, Flood)
+Weather.MouseButton1Click:Connect(function()
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    ReplicatedStorage.SpawnObject:FireServer("Tornado")
+    ReplicatedStorage.SpawnObject:FireServer("Meteors")
+    ReplicatedStorage.SpawnObject:FireServer("Flood")
+end)
+
 -- Golden Gun
 HP.MouseButton1Click:Connect(function()
     game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Golden Gun")
+end)
+
+-- Golden AK-47
+AK.MouseButton1Click:Connect(function()
+    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Golden AK-47")
+end)
+
+-- Telekinesis
+Tele.MouseButton1Click:Connect(function()
+    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Telekinesis")
+end)
+
+-- Mini Nuke Launcher
+MNL.MouseButton1Click:Connect(function()
+    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Mini Nuke Launcher")
 end)
