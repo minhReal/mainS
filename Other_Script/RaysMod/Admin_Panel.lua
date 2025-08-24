@@ -2,7 +2,7 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "fuck you"
 gui.Parent = game.CoreGui
 
--- Header chứa AD
+-- Header for AD
 local header = Instance.new("Frame")
 header.Size = UDim2.new(0.2, 0, 0.07, 0)
 header.Position = UDim2.new(0.15, 0, 0.1, 0)
@@ -21,7 +21,7 @@ AD.TextColor3 = Color3.new(1, 1, 1)
 AD.Font = Enum.Font.Code
 AD.Parent = header
 
--- Main ScrollingFrame
+-- Main
 local main = Instance.new("ScrollingFrame")
 main.Size = UDim2.new(0.2, 0, 0.63, 0)
 main.Position = UDim2.new(0.15, 0, 0.17, 0) 
@@ -34,50 +34,11 @@ main.Parent = gui
 main.CanvasSize = UDim2.new(0, 0, 2, 0) 
 main.ScrollBarThickness = 10
 
-local UserInputService = game:GetService("UserInputService")
-
-local dragging = false
-local dragStart, startPos
-
-header.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = header.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-header.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        if dragging then
-            local delta = input.Position - dragStart
-            header.Position = UDim2.new(
-                startPos.X.Scale,
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale,
-                startPos.Y.Offset + delta.Y
-            )
-            -- cho main đi theo header
-            main.Position = UDim2.new(
-                main.Position.X.Scale,
-                main.Position.X.Offset + delta.X,
-                main.Position.Y.Scale,
-                main.Position.Y.Offset + delta.Y
-            )
-        end
-    end
-end)
-
 local Ee = Instance.new("UICorner")
 Ee.CornerRadius = UDim.new(0, 10)
 Ee.Parent = main
 
--- Layout cho nút
+-- Layout
 local layout = Instance.new("UIListLayout")
 layout.Padding = UDim.new(0, 7)
 layout.FillDirection = Enum.FillDirection.Vertical
@@ -87,7 +48,7 @@ layout.Parent = main
 
 local TweenService = game:GetService("TweenService")
 
--- Tạo nhanh function để làm button
+-- Quickly create a function to make a button
 local function createButton(text)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0.8, 0, 0.08, 0) 
@@ -103,7 +64,6 @@ local function createButton(text)
     corner.CornerRadius = UDim.new(0, 10)
     corner.Parent = btn
 
-    -- Tween hover
     btn.MouseEnter:Connect(function()
         TweenService:Create(btn, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
             BackgroundColor3 = Color3.fromRGB(40, 40, 40)
@@ -119,16 +79,17 @@ local function createButton(text)
     return btn
 end
 
--- Các nút (chỉ tạo giao diện)
+-- Buttons
 local Votekick = createButton("Vote Kick")
 local Vote = createButton("+2 Voter")
-local HP = createButton("Golden Gun")
 local G = createButton("+100 HP")
-local AK = createButton("Golden AK-47")
-local Tele = createButton("Telekinesis")
-local MNL = createButton("M.N Launcher")
 local Nuke = createButton("Nuke")
-local Weather = createButton("Weather (All)")
+local Weather = createButton("Weather")
+local Tele = createButton("Telekinesis")
+local HP = createButton("Golden Gun")
+local AK = createButton("Golden AK-47")
+local MNL = createButton("M.N Launcher")
+
 
 -- Toggle (P)
 local To = Instance.new("TextButton")
@@ -152,7 +113,7 @@ To.MouseButton1Click:Connect(function()
 end)
 
 
--- SCRIPT CHỨC NĂNG (dán hết ở dưới cùng)
+--// FUNCTION BINDINGS //--  
 
 -- VoteKick Script
 Votekick.MouseButton1Click:Connect(function()
@@ -236,6 +197,11 @@ Weather.MouseButton1Click:Connect(function()
     ReplicatedStorage.SpawnObject:FireServer("Flood")
 end)
 
+-- Telekinesis
+Tele.MouseButton1Click:Connect(function()
+    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Telekinesis")
+end)
+
 -- Golden Gun
 HP.MouseButton1Click:Connect(function()
     game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Golden Gun")
@@ -244,11 +210,6 @@ end)
 -- Golden AK-47
 AK.MouseButton1Click:Connect(function()
     game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Golden AK-47")
-end)
-
--- Telekinesis
-Tele.MouseButton1Click:Connect(function()
-    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Telekinesis")
 end)
 
 -- Mini Nuke Launcher
