@@ -54,18 +54,6 @@ Vote.TextColor3 = Color3.new(1, 1, 1)
 Vote.Font = Enum.Font.Code
 Vote.Parent = main
 
--- Button Inf HP
-local HP = Instance.new("TextButton")
-HP.Size = UDim2.new(0.8, 0, 0.2, 0)
-HP.Position = UDim2.new(0.1, 0, 0.56, 0)
-HP.BackgroundColor3 = Color3.new(0, 0, 0)
-HP.BorderColor3 = Color3.new(0, 0, 0)
-HP.Text = " Inf HP (ig)"
-HP.TextSize = 24
-HP.TextColor3 = Color3.new(1, 1, 1)
-HP.Font = Enum.Font.Code
-HP.Parent = main
-
 -- Button +100 HP
 local G = Instance.new("TextButton")
 G.Size = UDim2.new(0.8, 0, 0.18, 0)
@@ -78,6 +66,17 @@ G.TextColor3 = Color3.new(1, 1, 1)
 G.Font = Enum.Font.Code
 G.Parent = main
 
+-- Button Gun
+local HP = Instance.new("TextButton")
+HP.Size = UDim2.new(0.8, 0, 0.2, 0)
+HP.Position = UDim2.new(0.1, 0, 0.56, 0)
+HP.BackgroundColor3 = Color3.new(0, 0, 0)
+HP.BorderColor3 = Color3.new(0, 0, 0)
+HP.Text = "Golden Gun"
+HP.TextSize = 24
+HP.TextColor3 = Color3.new(1, 1, 1)
+HP.Font = Enum.Font.Code
+HP.Parent = main
 
 --// FUNCTION BINDINGS //--
 
@@ -131,11 +130,9 @@ Vote.MouseButton1Click:Connect(function()
     print("Added votes")
 end)
 
--- Infinite HP
+-- Golden Gun
 HP.MouseButton1Click:Connect(function()
-    local Event = game:GetService("Players").LocalPlayer.Character.FallDamage.RemoteEvent
-    Event:FireServer(-math.huge)
-    print("Infinite HP activated")
+    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Golden Gun")
 end)
 
 -- +100 HP
