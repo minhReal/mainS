@@ -1,4 +1,3 @@
---// Spectator + Teleport Script
 local Players = game:GetService("Players")
 local a = Players.LocalPlayer
 
@@ -103,7 +102,7 @@ local function i()
     local target = g[h]
     if not target then return end
 
-    c.Image = "http://www.roblox.com/asset/?id=15873828549"
+    c.Image = "https://www.roblox.com/avatar-thumbnail/image?userId=" .. target.UserId .. "&width=420&height=420&format=png"
     d.Text = target.DisplayName .. " (@" .. target.Name .. ")"
 
     local cam = workspace.CurrentCamera
