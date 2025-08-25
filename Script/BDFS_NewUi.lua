@@ -767,13 +767,58 @@ local player = game.Players.LocalPlayer
 local autoEatEnabled = false
 
 Window:AddToggle({
-    Title = "Auto eat [FIX]",
+    Title = "Auto eat",
     Description = "If you have less than 50 hunger, the script will run",
     Tab = farmTab,
     Callback = function(Value)
         autoEatEnabled = Value
         if Value then
             eat()
+        end
+    end,
+})
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local running = false
+
+-- model trong workspace (thường trùng tên player)
+local model = workspace:WaitForChild(player.Name)
+local joyValue = model:WaitForChild("Values"):WaitForChild("Joy")
+
+local function equipAndUseGlee()
+    local backpack = player:WaitForChild("Backpack")
+    local glee = backpack:FindFirstChild("glee")
+    if glee and glee:IsA("Tool") then
+        player.Character.Humanoid:EquipTool(glee)
+        task.wait(0.2)
+        if glee.Activate then
+            glee:Activate()
+        else
+            warn("Tool 'glee' không có hàm Activate()")
+        end
+    end
+end
+
+Window:AddToggle({
+    Title = "Auto Glee",
+    Description = "Tự động mua + dùng glee khi Joy < 30",
+    Tab = farmTab,
+    Callback = function(Boolean) 
+        running = Boolean
+        warn("Auto Glee: ", running)
+
+        if running then
+            task.spawn(function()
+                while running do
+                    if joyValue.Value < 30 then
+                        autoBuy() -- bạn đã có sẵn hàm này
+                        task.wait(1)
+                        equipAndUseGlee()
+                    end
+                    task.wait(0.5) -- check mỗi nửa giây
+                end
+            end)
         end
     end,
 })
