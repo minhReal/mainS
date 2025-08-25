@@ -96,7 +96,8 @@ local Tele = createButton("Telekinesis")
 local HP = createButton("Golden Gun")
 local AK = createButton("Golden AK-47")
 local MNL = createButton("M.N Launcher")
-local HR = createButton("Halloween Roped")
+local HR = createButton("🎃 Roped")
+local CP = createButton("Classic Pack")
 
 
 
@@ -231,3 +232,11 @@ end)
 HR.MouseButton1Click:Connect(function()
     game:GetService("ReplicatedStorage").WeaponEvent:FireServer("HalloweenRoped")
 end)
+
+-- Classic Pack
+CP.MouseButton1Click:Connect(function()
+      game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Slingshot")
+      game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Superball")
+      game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic Rocket Laucher")
+      game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic M9")
+      end)
