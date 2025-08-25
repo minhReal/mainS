@@ -704,8 +704,8 @@ Window:AddParagraph({
 }) 
 
 Window:AddToggle({
-    Title = "Autofarm [with Safebox]",
-    Description = "Auto farm + monitor",
+    Title = "Autofarm ",
+    Description = "With Safebox",
     Tab = farmTab,
     Callback = function(Boolean)
         if Boolean then
@@ -718,8 +718,8 @@ Window:AddToggle({
 })
 
 Window:AddToggle({
-    Title = "Autofarm [without Safebox]",
-    Description = "Auto farm + monitor",
+    Title = "Autofarm",
+    Description = "Without Safebox",
     Tab = farmTab,
     Callback = function(isEnabled)
         if isEnabled then
@@ -736,12 +736,10 @@ local running = false
 Window:AddToggle({
     Title = "Monitor",
     Description = "test",
-    Tab = Main,
+    Tab = farmTab,
     Callback = function(Boolean)
         running = Boolean
         warn("Auto Fire: ", running)
-
-        -- Nếu bật thì bắt đầu loop
         if running then
             task.spawn(function()
                 while running do
@@ -751,13 +749,14 @@ Window:AddToggle({
                             if part then
                                 local cd = part:FindFirstChildOfClass("ClickDetector")
                                 if cd then
+                                    print("Clicking:", cd:GetFullName())
                                     fireclickdetector(cd)
-                                    task.wait(0.1) -- delay giữa mỗi click
+                                    task.wait(0.1)
                                 end
                             end
                         end
                     end
-                    task.wait(0.5) -- delay giữa mỗi vòng loop lớn
+                    task.wait(0.5)
                 end
             end)
         end
