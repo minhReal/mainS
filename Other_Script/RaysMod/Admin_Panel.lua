@@ -5,7 +5,7 @@ gui.Parent = game.CoreGui
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
       Text = "This script is just for fun",
-      Icon = "rbxassetid://1557174355",
+      Icon = "rbxassetid://12077531181",
       Duration = 10
 })
 
