@@ -810,17 +810,21 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/h
 --// teleport [TAB]
 Window:AddButton({
     Title = "Tp to SafePlace",
-    Description = "",
+    Description = "Teleport đến GhK",
     Tab = teleportTab,
     Callback = function()
-			local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local targetPart = workspace:FindFirstChild("GhK")
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local hrp = character:WaitForChild("HumanoidRootPart")
 
-if targetPart and character:FindFirstChild("HumanoidRootPart") then
-    character.HumanoidRootPart.CFrame = targetPart.CFrame
-			end
-		end,
+        local targetPart = workspace:FindFirstChild("GhK")
+        if targetPart then
+            hrp.CFrame = targetPart.CFrame + Vector3.new(0, 5, 0)
+            warn("Teleported to GhK")
+        else
+            warn("Không tìm thấy GhK trong workspace")
+        end
+    end,
 })
 
 Window:AddButton({
