@@ -731,6 +731,39 @@ Window:AddToggle({
     end,
 })
 
+local running = false
+
+Window:AddToggle({
+    Title = "Monitor",
+    Description = "test",
+    Tab = Main,
+    Callback = function(Boolean)
+        running = Boolean
+        warn("Auto Fire: ", running)
+
+        -- Nếu bật thì bắt đầu loop
+        if running then
+            task.spawn(function()
+                while running do
+                    for _, obj in pairs(workspace:GetDescendants()) do
+                        if obj:IsA("Model") and obj.Name == "Monitor" then
+                            local part = obj:FindFirstChild("Part")
+                            if part then
+                                local cd = part:FindFirstChildOfClass("ClickDetector")
+                                if cd then
+                                    fireclickdetector(cd)
+                                    task.wait(0.1) -- delay giữa mỗi click
+                                end
+                            end
+                        end
+                    end
+                    task.wait(0.5) -- delay giữa mỗi vòng loop lớn
+                end
+            end)
+        end
+    end,
+})
+
 local player = game.Players.LocalPlayer
 local autoEatEnabled = false
 
