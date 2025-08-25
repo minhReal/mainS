@@ -26,6 +26,9 @@ d.TextColor3 = Color3.new(1, 1, 1)
 d.Font = Enum.Font.Code
 d.ClearTextOnFocus = false
 d.TextWrapped = true
+-- outline
+d.TextStrokeTransparency = 0
+d.TextStrokeColor3 = Color3.new(0,0,0)
 d.Parent = b
 
 -- Next
@@ -37,6 +40,9 @@ e.Text = ">"
 e.TextSize = 20
 e.TextColor3 = Color3.new(1, 1, 1)
 e.Font = Enum.Font.Code
+-- outline
+e.TextStrokeTransparency = 0
+e.TextStrokeColor3 = Color3.new(0,0,0)
 e.Parent = b
 
 -- Previous
@@ -48,6 +54,9 @@ f.Text = "<"
 f.TextSize = 20
 f.TextColor3 = Color3.new(1, 1, 1)
 f.Font = Enum.Font.Code
+-- outline
+f.TextStrokeTransparency = 0
+f.TextStrokeColor3 = Color3.new(0,0,0)
 f.Parent = b
 
 -- Toggle
@@ -69,6 +78,9 @@ Tele.TextSize = 24
 Tele.BackgroundTransparency = 0.5
 Tele.TextColor3 = Color3.new(1, 1, 1)
 Tele.Font = Enum.Font.Code
+-- outline
+Tele.TextStrokeTransparency = 0
+Tele.TextStrokeColor3 = Color3.new(0,0,0)
 Tele.Parent = b
 
 -- Vars
