@@ -813,17 +813,14 @@ Window:AddButton({
     Description = "",
     Tab = teleportTab,
     Callback = function()
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local hrp = character:WaitForChild("HumanoidRootPart")
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
 
-        local targetPart = workspace:FindFirstChild("SafeBox")
-        if targetPart and targetPart:FindFirstChild("GhK") then
-            hrp.CFrame = targetPart.GhK.CFrame + Vector3.new(0, 5, 0)
-            warn("Teleported to SafeBox.GhK")
-        else
-            warn("Không tìm thấy SafeBox.GhK trong workspace")
-        end
+local safeBox = workspace:FindFirstChild("SafeBox")
+if safeBox and safeBox:FindFirstChild("GhK") then
+    hrp.CFrame = safeBox.GhK.CFrame + Vector3.new(0, 5, 0)
+end
     end,
 })
 
