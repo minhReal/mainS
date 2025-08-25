@@ -1,16 +1,4 @@
--- a = player
--- b = gui
--- c = avatarImage
--- d = username
--- e = nextButton
--- f = beforeButton
--- g = players
--- h = currentIndex
--- i = updateDisplay
--- j = refreshPlayersList
--- k = toggleButton
--- l = original positions
-
+--// Spectator + Teleport Script
 local Players = game:GetService("Players")
 local a = Players.LocalPlayer
 
@@ -70,6 +58,19 @@ k.BackgroundTransparency = 0.5
 k.Image = "http://www.roblox.com/asset/?id=1137376343"
 k.Parent = b
 
+-- Teleport button
+local Tele = Instance.new("TextButton")
+Tele.Size = UDim2.new(0.1, 0, 0.1, 0)
+Tele.Position = UDim2.new(0.9, 0, 0.622, 0)
+Tele.BorderColor3 = Color3.new(0, 0, 0)
+Tele.BorderSizePixel = 1
+Tele.Text = "Teleport"
+Tele.TextSize = 24
+Tele.BackgroundTransparency = 0.5
+Tele.TextColor3 = Color3.new(1, 1, 1)
+Tele.Font = Enum.Font.Code
+Tele.Parent = b
+
 -- Vars
 local g = {}
 local h = 1
@@ -84,7 +85,7 @@ local function setCameraToLocal()
     cam.CameraSubject = hum or char
 end
 
--- Update display (chỉ đổi camera khi viewOn = true)
+-- Update display
 local function i()
     if not viewOn then return end
     local target = g[h]
@@ -110,7 +111,7 @@ local function i()
     end
 end
 
--- Refresh list (KHÔNG auto nhảy sang player khác)
+-- Refresh list
 local function j()
     g = Players:GetPlayers()
     h = math.clamp(h, 1, #g)
@@ -145,13 +146,24 @@ k.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Teleport action
+Tele.MouseButton1Click:Connect(function()
+    local target = g[h]  -- player đang xem
+    if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+        local myChar = a.Character or a.CharacterAdded:Wait()
+        local myHRP = myChar:FindFirstChild("HumanoidRootPart")
+        if myHRP then
+            myHRP.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        end
+    end
+end)
+
 -- Auto refresh
 Players.PlayerAdded:Connect(j)
 Players.PlayerRemoving:Connect(function(rem)
     local was = g[h]
     j()
     if was == rem then
-        -- Nếu người đang xem rời → trả về local, KHÔNG auto nhảy sang player khác
         setCameraToLocal()
     end
 end)
