@@ -19,21 +19,8 @@ function cleanTrashCans()
     end
 end
 
-local function startComputerAutofarm()
-    while isAutofarming do
-        wait(0.01)
-        fireclickdetector(WorkspaceService.Buildings["Green House"].Computer.Monitor.Part.ClickDetector)
-        wait(0.01)
-        fireclickdetector(workspace.Buildings["Red House"].Computer.Monitor.Part.ClickDetector)
-        wait(0.01)
-        fireclickdetector(workspace.Buildings.CleaningServices:GetChildren()[23].Monitor.Part.ClickDetector)
-    end
-end
-
 local function executeAutofarm()
     isAutofarming = true
-
-    spawn(startComputerAutofarm)
 
     local previousCFrame = moneyBox.CFrame
 
