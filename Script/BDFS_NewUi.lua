@@ -702,6 +702,22 @@ Window:AddParagraph({
 	Description = "Don't turn it on and off constantly because of bugs",
 	Tab = farmTab,
 }) 
+Window:AddButton({
+	Title = "Player status (JOY)",
+	Description = "shows player status (JOY) and whether autofarm should be used ",
+	Tab = farmTab,
+	Callback = function() 
+		local player = game.Players.LocalPlayer
+local joyValue = player.Character and player.Character.Values and player.Character.Values.Joy and player.Character.Values.Joy.Value or 0
+
+local formattedJoyValue = string.format("%.2f", joyValue)
+local statusMessage = joyValue < 50 and " | Not good" or " | Good"
+
+Window:Notify({
+    Title = "Notification",
+    Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
+    Duration = 10
+})
 
 Window:AddToggle({
     Title = "Autofarm ",
@@ -781,12 +797,11 @@ Window:AddToggle({
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local RNing = false
+local triggered = false
 
--- model trong workspace (thường trùng tên player)
 local model = workspace:WaitForChild(player.Name)
 local joyValue = model:WaitForChild("Values"):WaitForChild("Joy")
 
--- Hàm autoPay
 local function autoPay()
     task.wait(0.1)
     local popUpUI = player.PlayerGui:FindFirstChild("PopUpUI")
@@ -803,7 +818,6 @@ local function autoPay()
     end
 end
 
--- Equip + dùng glee
 local function equipAndUseGlee()
     local backpack = player:WaitForChild("Backpack")
     local glee = backpack:FindFirstChild("glee")
@@ -820,11 +834,10 @@ local function equipAndUseGlee()
     end
 end
 
--- Toggle
 Window:AddToggle({
-    Title = "Auto Glee",
-    Description = "Fire ClickDetector -> autoPay -> equip glee",
-    Tab = Main,
+    Title = "Auto happy",
+    Description = "If your Joy is under 30 it will make you happy.",
+    Tab = farmTab,
     Callback = function(Boolean) 
         RNing = Boolean
         warn("Auto Glee: ", RNing)
@@ -832,21 +845,22 @@ Window:AddToggle({
         if RNing then
             task.spawn(function()
                 while RNing do
-                    if joyValue.Value < 30 then
-                        -- 1. FireClickDetector trước
+                    if joyValue.Value < 30 and not triggered then
+                        triggered = true
+                        
                         local gleeTool = workspace:WaitForChild("Buyables"):WaitForChild("Tools"):WaitForChild("glee")
                         local detector = gleeTool:FindFirstChildOfClass("ClickDetector")
                         if detector then
                             fireclickdetector(detector)
                         end
 
-                        -- 2. Đợi PopUpUI hiện ra rồi autoPay
                         task.wait(0.5)
                         autoPay()
 
-                        -- 3. Đợi item về backpack rồi equip + dùng
                         task.wait(1)
                         equipAndUseGlee()
+                    elseif joyValue.Value >= 30 then
+                        triggered = false 
                     end
                     task.wait(0.5)
                 end
