@@ -91,8 +91,7 @@ local function i()
     local target = g[h]
     if not target then return end
 
-    c.Image = "https://www.roblox.com/headshot-thumbnail/image?userId="
-        .. target.UserId .. "&width=420&height=420&format=png"
+    c.Image = "https://www.roblox.com/avatar-thumbnail/image?userId=" .. target.UserId .. "&width=420&height=420&format=png"
     d.Text = target.DisplayName .. " (@" .. target.Name .. ")"
 
     local cam = workspace.CurrentCamera
@@ -148,7 +147,7 @@ end)
 
 -- Teleport action
 Tele.MouseButton1Click:Connect(function()
-    local target = g[h]  -- player đang xem
+    local target = g[h]
     if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
         local myChar = a.Character or a.CharacterAdded:Wait()
         local myHRP = myChar:FindFirstChild("HumanoidRootPart")
