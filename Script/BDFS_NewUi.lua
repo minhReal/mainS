@@ -780,12 +780,26 @@ Window:AddToggle({
 
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local running = false
+local RNing = false
 
 -- model trong workspace (thường trùng tên player)
 local model = workspace:WaitForChild(player.Name)
 local joyValue = model:WaitForChild("Values"):WaitForChild("Joy")
 
+-- Hàm autoPay (copy từ autoBuy nhưng đổi tên)
+local function autoPay()
+    task.wait(0.1)
+    local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
+    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
+
+    if buyButton and buyButton:IsA("RemoteEvent") then
+        buyButton:FireServer()
+    else
+        warn("Không tìm thấy BuyButton hoặc RemoteEvent!")
+    end
+end
+
+-- Equip + dùng glee
 local function equipAndUseGlee()
     local backpack = player:WaitForChild("Backpack")
     local glee = backpack:FindFirstChild("glee")
@@ -797,22 +811,25 @@ local function equipAndUseGlee()
         else
             warn("Tool 'glee' không có hàm Activate()")
         end
+    else
+        warn("Không tìm thấy tool 'glee' trong Backpack!")
     end
 end
 
+-- Toggle
 Window:AddToggle({
     Title = "Auto Glee",
-    Description = "Tự động mua + dùng glee khi Joy < 30",
-    Tab = farmTab,
+    Description = "Tự động trả tiền + dùng glee khi Joy < 30",
+    Tab = Main,
     Callback = function(Boolean) 
-        running = Boolean
-        warn("Auto Glee: ", running)
+        RNing = Boolean
+        warn("Auto Glee: ", RNing)
 
-        if running then
+        if RNing then
             task.spawn(function()
-                while running do
+                while RNing do
                     if joyValue.Value < 30 then
-                        autoBuy() -- bạn đã có sẵn hàm này
+                        autoPay()
                         task.wait(1)
                         equipAndUseGlee()
                     end
