@@ -786,12 +786,16 @@ local RNing = false
 local model = workspace:WaitForChild(player.Name)
 local joyValue = model:WaitForChild("Values"):WaitForChild("Joy")
 
--- Hàm autoPay (copy từ autoBuy nhưng đổi tên)
+-- Hàm autoPay
 local function autoPay()
     task.wait(0.1)
-    local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
-    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
+    local popUpUI = player.PlayerGui:FindFirstChild("PopUpUI")
+    if not popUpUI then
+        warn("PopUpUI chưa xuất hiện!")
+        return
+    end
 
+    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
     if buyButton and buyButton:IsA("RemoteEvent") then
         buyButton:FireServer()
     else
@@ -819,7 +823,7 @@ end
 -- Toggle
 Window:AddToggle({
     Title = "Auto Glee",
-    Description = "Tự động trả tiền + dùng glee khi Joy < 30",
+    Description = "Fire ClickDetector -> autoPay -> equip glee",
     Tab = Main,
     Callback = function(Boolean) 
         RNing = Boolean
@@ -829,11 +833,22 @@ Window:AddToggle({
             task.spawn(function()
                 while RNing do
                     if joyValue.Value < 30 then
+                        -- 1. FireClickDetector trước
+                        local gleeTool = workspace:WaitForChild("Buyables"):WaitForChild("Tools"):WaitForChild("glee")
+                        local detector = gleeTool:FindFirstChildOfClass("ClickDetector")
+                        if detector then
+                            fireclickdetector(detector)
+                        end
+
+                        -- 2. Đợi PopUpUI hiện ra rồi autoPay
+                        task.wait(0.5)
                         autoPay()
+
+                        -- 3. Đợi item về backpack rồi equip + dùng
                         task.wait(1)
                         equipAndUseGlee()
                     end
-                    task.wait(0.5) -- check mỗi nửa giây
+                    task.wait(0.5)
                 end
             end)
         end
