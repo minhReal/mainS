@@ -10,7 +10,7 @@ b.Parent = a:WaitForChild("PlayerGui")
 -- Avatar Image
 local c = Instance.new("ImageLabel")
 c.Size = UDim2.new(0.08, 0, 0.15, 0)
-c.Position = UDim2.new(0.31, 0, -0.1, 0)
+c.Position = UDim2.new(0.31, 0, -0.15, 0)
 c.BackgroundTransparency = 1
 c.Parent = b
 
@@ -103,7 +103,7 @@ local function i()
     local target = g[h]
     if not target then return end
 
-    c.Image = "https://www.roblox.com/avatar-thumbnail/image?userId=" .. target.UserId .. "&width=420&height=420&format=png"
+    c.Image = "http://www.roblox.com/asset/?id=15873828549"
     d.Text = target.DisplayName .. " (@" .. target.Name .. ")"
 
     local cam = workspace.CurrentCamera
