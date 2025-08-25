@@ -1,13 +1,75 @@
-local gui = Instance.new("ScreenGui")
-gui.Name = "fuck you"
-gui.Parent = game.CoreGui
+--// check WHITELIST
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local player = Players.LocalPlayer
+
+-- Link whitelist
+local whitelistLinks = {
+    "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/RaysMod/whitelist_1.lua",
+    "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/RaysMod/whitelist_2.lua"
+}
+
+local whitelist1, whitelist2
+
+-- Load whitelist 1
+local success1, result1 = pcall(function()
+    return loadstring(game:HttpGet(whitelistLinks[1]))()
+end)
+if success1 and type(result1) == "table" then
+    whitelist1 = result1
+end
+
+-- Load whitelist 2
+local success2, result2 = pcall(function()
+    return loadstring(game:HttpGet(whitelistLinks[2]))()
+end)
+if success2 and type(result2) == "table" then
+    whitelist2 = result2
+end
+
+if not whitelist1 or not whitelist2 then
+    StarterGui:SetCore("SendNotification", {
+        Title = "❗ERROR❗",
+        Text = "Whitelist file missing or invalid!",
+        Icon = "rbxassetid://12077529452",
+        Duration = 10
+    })
+    return
+end
+
+-- check username
+local function isWhitelisted(name)
+    for _, v in ipairs(whitelist1) do
+        if v == name then return true end
+    end
+    for _, v in ipairs(whitelist2) do
+        if v == name then return true end
+    end
+    return false
+end
+
+if not isWhitelisted(player.Name) then
+    StarterGui:SetCore("SendNotification", {
+        Title = "❗WARNING❗",
+        Text = "You are not in the whitelist!",
+        Icon = "rbxassetid://12077529452",
+        Duration = 10
+    })
+    return
+end
 
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
-      Text = "This script is just for fun",
+      Text = "Have fun!",
       Icon = "rbxassetid://12077531181",
       Duration = 10
 })
+
+
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "ADMIN GUI"
+gui.Parent = game.CoreGui
 
 -- Header for AD
 local header = Instance.new("Frame")
