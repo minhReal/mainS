@@ -2,6 +2,13 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "fuck you"
 gui.Parent = game.CoreGui
 
+game:GetService("StarterGui"):SetCore("SendNotification", {
+      Title = "Notification",
+      Text = "This script is just for fun",
+      Icon = "rbxassetid://1557174355",
+      Duration = 10
+})
+
 -- Header for AD
 local header = Instance.new("Frame")
 header.Size = UDim2.new(0.2, 0, 0.07, 0)
@@ -89,6 +96,8 @@ local Tele = createButton("Telekinesis")
 local HP = createButton("Golden Gun")
 local AK = createButton("Golden AK-47")
 local MNL = createButton("M.N Launcher")
+local HR = createButton("Halloween Roped")
+
 
 
 -- Toggle (P)
@@ -216,4 +225,9 @@ end)
 -- Mini Nuke Launcher
 MNL.MouseButton1Click:Connect(function()
     game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Mini Nuke Launcher")
+end)
+
+-- Halloween Roped
+HR.MouseButton1Click:Connect(function()
+    game:GetService("ReplicatedStorage").WeaponEvent:FireServer("HalloweenRoped")
 end)
