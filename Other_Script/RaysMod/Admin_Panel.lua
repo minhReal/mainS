@@ -1,27 +1,26 @@
---// check WHITELIST
+--// WHITELIST CHECK
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 local player = Players.LocalPlayer
 
--- Link whitelist
-local whitelistLinks = {
-    "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/RaysMod/whitelist_1.lua",
-    "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/RaysMod/whitelist_2.lua"
+local baseURL = "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/RaysMod/"
+
+local whitelistFiles = {
+    baseURL .. "whitelist_1.lua",
+    baseURL .. "whitelist_2.lua"
 }
 
 local whitelist1, whitelist2
 
--- Load whitelist 1
 local success1, result1 = pcall(function()
-    return loadstring(game:HttpGet(whitelistLinks[1]))()
+    return loadstring(game:HttpGet(whitelistFiles[1]))()
 end)
 if success1 and type(result1) == "table" then
     whitelist1 = result1
 end
 
--- Load whitelist 2
 local success2, result2 = pcall(function()
-    return loadstring(game:HttpGet(whitelistLinks[2]))()
+    return loadstring(game:HttpGet(whitelistFiles[2]))()
 end)
 if success2 and type(result2) == "table" then
     whitelist2 = result2
@@ -37,7 +36,6 @@ if not whitelist1 or not whitelist2 then
     return
 end
 
--- check username
 local function isWhitelisted(name)
     for _, v in ipairs(whitelist1) do
         if v == name then return true end
@@ -58,6 +56,7 @@ if not isWhitelisted(player.Name) then
     return
 end
 
+_G.WHITELIST_OK = true
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
       Text = "Have fun!",
@@ -302,3 +301,20 @@ CP.MouseButton1Click:Connect(function()
       game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic Rocket Launcher")
       game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic M9")
       end)
+
+local StarterGui = game:GetService("StarterGui")
+
+task.spawn(function()
+    while task.wait(5) do
+        if not _G.WHITELIST_OK then
+            StarterGui:SetCore("SendNotification", {
+                Title = "❗SECURITY❗",
+                Text = "Whitelist check missing! Script stopped.",
+                Icon = "rbxassetid://12077529452",
+                Duration = 10
+            })
+            script:Destroy()
+            return
+        end
+    end
+end)
