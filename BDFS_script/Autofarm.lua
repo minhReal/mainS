@@ -1,23 +1,32 @@
 local UserInputService = game:GetService("UserInputService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
-local player = game.Players.LocalPlayer
-local moneyHitbox = workspace.Buildings.DeadBurger.DumpsterMoneyMaker.MoneyHitbox
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Lấy MoneyHitbox an toàn
+local moneyHitbox = workspace:WaitForChild("Buildings")
+    :WaitForChild("DeadBurger")
+    :WaitForChild("DumpsterMoneyMaker")
+    :WaitForChild("MoneyHitbox")
 
 local autofarmActive = false
 
+-- Hàm dọn trashcan
 local function cleanUpTrashcans()
     for _, v in pairs(workspace:GetChildren()) do
-        if v.Name == "Trashcan" and v:IsA("UnionOperation") then
+        if v.Name == "Trashcan" and (v:IsA("UnionOperation") or v:IsA("Part") or v:IsA("Model")) then
             if #v:GetChildren() ~= 2 then
                 v:Destroy()
             elseif v:FindFirstChild("ClickDetector") then
-                fireclickdetector(v.ClickDetector)
+                pcall(function()
+                    fireclickdetector(v.ClickDetector)
+                end)
             end
         end
     end
 end
 
--- Autofarm main
+-- Autofarm chính
 local function runAutofarm()
     autofarmActive = true
     local char = player.Character or player.CharacterAdded:Wait()
@@ -29,7 +38,6 @@ local function runAutofarm()
     if safePart and safePart:IsA("Part") then
         hrp.CFrame = safePart.CFrame * CFrame.new(0, 5, 0)
     end
-
 
     local originalCFrame = moneyHitbox.CFrame
 
@@ -45,15 +53,16 @@ local function runAutofarm()
 
         cleanUpTrashcans()
 
+        -- teleport moneyHitbox
         moneyHitbox.CFrame = hrp.CFrame
         task.wait(0.05)
-
         moneyHitbox.CFrame = originalCFrame
     end
 
     moneyHitbox.CFrame = originalCFrame
 end
 
+-- Toggle bật/tắt farm
 function toggleAutofarm(toggle)
     autofarmActive = toggle
     if autofarmActive then
@@ -69,3 +78,7 @@ function toggleAutofarm(toggle)
         end
     end
 end
+
+-- Ví dụ bật autofarm:
+-- toggleAutofarm(true)
+-- toggleAutofarm(false)
