@@ -30,7 +30,6 @@ local function runAutofarm()
         hrp.CFrame = safePart.CFrame * CFrame.new(0, 5, 0)
     end
 
-    task.spawn(runComputerAutofarm)
 
     local originalCFrame = moneyHitbox.CFrame
 
