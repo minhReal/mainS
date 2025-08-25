@@ -302,19 +302,24 @@ CP.MouseButton1Click:Connect(function()
       game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic M9")
       end)
 
-local StarterGui = game:GetService("StarterGui")
-
+--// WATCHDOG - tự xoá script nếu không có whitelist
 task.spawn(function()
-    while task.wait(5) do
-        if not _G.WHITELIST_OK then
-            StarterGui:SetCore("SendNotification", {
-                Title = "❗SECURITY❗",
-                Text = "Whitelist check missing! Script stopped.",
-                Icon = "rbxassetid://12077529452",
-                Duration = 10
-            })
-            script:Destroy()
-            return
-        end
+    task.wait(1) -- chờ 1s để whitelist check chạy
+    if not _G.WHITELIST_OK then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "❗SECURITY❗",
+            Text = "Whitelist missing! Script stopped.",
+            Icon = "rbxassetid://12077529452",
+            Duration = 10
+        })
+
+        -- Xoá toàn bộ GUI
+        local coreGui = game:GetService("CoreGui")
+        local gui = coreGui:FindFirstChild("ADMIN GUI")
+        if gui then gui:Destroy() end
+
+        -- Dừng script chính
+        script:Destroy()
+        return
     end
 end)
