@@ -156,9 +156,9 @@ local Tele = createButton("Telekinesis")
 local HP = createButton("Golden Gun")
 local AK = createButton("Golden AK-47")
 local MNL = createButton("M.N Launcher")
-local HR = createButton("🎃 Roped")
+local HR = createButton("HallowenRoped")
 local CP = createButton("Classic Pack")
-
+local AS = creatButton("Get Addons")
 
 
 -- Toggle (P)
@@ -266,6 +266,7 @@ Weather.MouseButton1Click:Connect(function()
     ReplicatedStorage.SpawnObject:FireServer("Meteors")
     ReplicatedStorage.SpawnObject:FireServer("Flood")
     ReplicatedStorage.SpawnObject:FireServer("Blackhole")
+    ReplicatedStorage.SpawnObject:FireServer("bigbadblizzard")
 end)
 
 -- Telekinesis
@@ -300,3 +301,17 @@ CP.MouseButton1Click:Connect(function()
       game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic Rocket Launcher")
       game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic M9")
       end)
+
+-- Get Addons
+AS.MouseButton1Click:Connect(function()
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+local localAddons = LocalPlayer.PlayerGui.Spawner.SpawnFrame.Addons
+local RSAddons = ReplicatedStorage:WaitForChild("AddonStorage"):GetChildren()
+
+for _, addon in ipairs(RSAddons) do
+    local clonedAddon = addon:Clone()
+    clonedAddon.Parent = localAddons
+end
