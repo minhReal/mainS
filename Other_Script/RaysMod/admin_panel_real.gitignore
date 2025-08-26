@@ -64,7 +64,7 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 })
 
 
-
+--// MAIN SCRIPT
 local gui = Instance.new("ScreenGui")
 gui.Name = "ADMIN GUI"
 gui.Parent = game.CoreGui
@@ -96,7 +96,7 @@ main.BackgroundColor3 = Color3.new(0,0,0)
 main.BorderSizePixel = 0
 main.Active = true
 main.BackgroundTransparency = 0.5
-main.Draggable = true
+main.Draggable = false
 main.Parent = gui
 main.CanvasSize = UDim2.new(0, 0, 2, 0) 
 main.ScrollBarThickness = 10
@@ -157,8 +157,7 @@ local HP = createButton("Golden Gun")
 local AK = createButton("Golden AK-47")
 local MNL = createButton("M.N Launcher")
 local HR = createButton("HallowenRoped")
-local CP = createButton("Classic Pack")
-local AS = creatButton("Get Addons")
+local AS = createButton("Get Addons")
 
 
 -- Toggle (P)
@@ -181,6 +180,7 @@ To.MouseButton1Click:Connect(function()
     main.Visible = isVisible
     header.Visible = isVisible
 end)
+
 
 
 --// FUNCTION BINDINGS //--  
@@ -294,14 +294,6 @@ HR.MouseButton1Click:Connect(function()
     game:GetService("ReplicatedStorage").WeaponEvent:FireServer("HalloweenRoped")
 end)
 
--- Classic Pack
-CP.MouseButton1Click:Connect(function()
-      game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Slingshot")
-      game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Superball")
-      game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic Rocket Launcher")
-      game:GetService("ReplicatedStorage").WeaponEvent:FireServer("Classic M9")
-      end)
-
 -- Get Addons
 AS.MouseButton1Click:Connect(function()
 local Players = game:GetService("Players")
@@ -315,3 +307,4 @@ for _, addon in ipairs(RSAddons) do
     local clonedAddon = addon:Clone()
     clonedAddon.Parent = localAddons
 end
+end)
