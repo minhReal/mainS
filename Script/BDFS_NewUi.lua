@@ -32,49 +32,6 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
     end
 end)
 
---// Joy gui
-local h = Instance.new("ScreenGui")
-h.Name = "J.O.Y?"
-h.Parent = game.CoreGui
-h.Enabled = false
-
-local info = Instance.new("Frame")
-info.Size = UDim2.new(0.2, 0, 0.1, 0)
-info.Position = UDim2.new(0.17, 0, 0.9, 0)
-info.BackgroundColor3 = Color3.new(1, 1, 1)
-info.BorderSizePixel = 1
-info.BackgroundTransparency = 0.5
-info.Parent = h
-
-local joy = Instance.new("TextLabel")
-joy.Size = UDim2.new(0.9, 0, 1, 0)
-joy.Position = UDim2.new(0.05, 0, 0, 0)
-joy.BackgroundTransparency = 1
-joy.Text = "Joy: "
-joy.TextSize = 24
-joy.TextColor3 = Color3.new(1, 1, 1)
-joy.Font = Enum.Font.Code
-joy.TextXAlignment = Enum.TextXAlignment.Left
-joy.Parent = info
-
-local outline = Instance.new("UIStroke")
-outline.Thickness = 2
-outline.Color = Color3.new(0, 0, 0)
-outline.ApplyStrokeMode = Enum.ApplyStrokeMode.Outside
-outline.Parent = joy
-
-local player = game.Players.LocalPlayer
-local character = workspace:WaitForChild(player.Name)
-local valuesFolder = character:WaitForChild("Values")
-local joyValue = valuesFolder:WaitForChild("Joy")
-
-local function updateJoy(val)
-    joy.Text = "Joy: " .. string.format("%.3f", val)
-end
-
-joyValue.Changed:Connect(updateJoy)
-updateJoy(joyValue.Value)
-
 --// Services
 local UserInputService = game:GetService("UserInputService");
 
@@ -744,16 +701,6 @@ Window:AddParagraph({
 	Description = "Don't turn it on and off constantly because of bugs",
 	Tab = farmTab,
 }) 
-
-Window:AddToggle({
-    Title = "Show Joy",
-    Description = "Bật/Tắt hiển thị chỉ số Joy của bạn",
-    Tab = farmTab,
-    Callback = function(state)
-        gui.Enabled = state
-        warn("Joy GUI Visible:", state)
-    end,
-})
 
 Window:AddToggle({
     Title = "Autofarm ",
