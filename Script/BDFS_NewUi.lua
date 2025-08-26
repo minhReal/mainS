@@ -701,25 +701,16 @@ Window:AddParagraph({
 	Description = "Don't turn it on and off constantly because of bugs",
 	Tab = farmTab,
 }) 
-Window:AddButton({
-	Title = "Player status (JOY)",
-	Description = "shows player status (JOY) and whether autofarm should be used ",
-	Tab = Main,
-	Callback = function() 
-		local player = game.Players.LocalPlayer
-local joyValue = player.Character and player.Character.Values and player.Character.Values.Joy and player.Character.Values.Joy.Value or 0
 
-local formattedJoyValue = string.format("%.2f", joyValue)
-local statusMessage = joyValue < 50 and " | Not good" or " | Good"
-
-Window:Notify({
-    Title = "Notification",
-    Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
-    Duration = 10
+Window:AddToggle({
+    Title = "Show Joy",
+    Description = "idk what to say here",
+    Tab = Main,
+    Callback = function(Boolean) 
+        gui.Enabled = Boolean
+        warn("Joy GUI Visible:", Boolean)
+    end,
 })
-	end,
-}) 
-
 Window:AddToggle({
     Title = "Autofarm ",
     Description = "With Safebox",
@@ -989,6 +980,55 @@ end)
 function setToggleState(state)
     _toggleActive = state
 end
+
+--// Joy 
+local gui = Instance.new("ScreenGui")
+gui.Name = "J.O.Y?"
+gui.Parent = game.CoreGui
+gui.Enabled = false
+
+local info = Instance.new("Frame")
+info.Size = UDim2.new(0.2, 0, 0.1, 0)
+info.Position = UDim2.new(0.17, 0, 0.9, 0)
+info.BackgroundColor3 = Color3.new(1, 1, 1)
+info.BorderColor3 = Color3.new(0, 0, 0)
+info.BorderSizePixel = 1
+info.Active = true
+info.BackgroundTransparency = 0.5
+info.Draggable = false
+info.Parent = gui
+
+local joy = Instance.new("TextLabel")
+joy.Size = UDim2.new(0.3, 0, 1, 0)
+joy.Position = UDim2.new(0.1, 0, 0, 0)
+joy.BackgroundColor3 = Color3.new(0, 0, 0)
+joy.BorderColor3 = Color3.new(0, 0, 0)
+joy.BorderSizePixel = 1
+joy.Text = "Joy: "
+joy.TextSize = 24
+joy.BackgroundTransparency = 1
+joy.TextColor3 = Color3.new(1, 1, 1)
+joy.Font = Enum.Font.Code
+joy.TextXAlignment = Enum.TextXAlignment.Left
+joy.Parent = info
+
+local outline = Instance.new("UIStroke")
+outline.Thickness = 2
+outline.Color = Color3.new(0,0,0)
+outline.ApplyStrokeMode = Enum.ApplyStrokeMode.Outside
+outline.Parent = joy
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = workspace:WaitForChild(player.Name)
+local valuesFolder = character:WaitForChild("Values")
+local joyValue = valuesFolder:WaitForChild("Joy")
+
+joyValue.Changed:Connect(function(newValue)
+    local displayValue = string.format("%.3f", newValue)
+    joy.Text = "Joy: " .. displayValue
+end)
+joy.Text = "Joy: " .. string.format("%.3f", joyValue.Value)
 
 --// Auto eat script
 local function checkAndEquipBurger()
