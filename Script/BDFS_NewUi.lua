@@ -248,8 +248,7 @@ Window:Notify({
     Title = "Notification",
     Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
     Duration = 10
-})
-
+}
 
 	end,
 }) 
@@ -705,7 +704,7 @@ Window:AddParagraph({
 Window:AddButton({
 	Title = "Player status (JOY)",
 	Description = "shows player status (JOY) and whether autofarm should be used ",
-	Tab = farmTab,
+	Tab = Main,
 	Callback = function() 
 		local player = game.Players.LocalPlayer
 local joyValue = player.Character and player.Character.Values and player.Character.Values.Joy and player.Character.Values.Joy.Value or 0
@@ -718,6 +717,8 @@ Window:Notify({
     Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
     Duration = 10
 })
+	end,
+}) 
 
 Window:AddToggle({
     Title = "Autofarm ",
