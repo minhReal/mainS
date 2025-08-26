@@ -704,13 +704,14 @@ Window:AddParagraph({
 
 Window:AddToggle({
     Title = "Show Joy",
-    Description = "idk what to say here",
+    Description = "Bật/Tắt hiển thị chỉ số Joy của bạn",
     Tab = Main,
-    Callback = function(Boolean) 
-        gui.Enabled = Boolean
-        warn("Joy GUI Visible:", Boolean)
+    Callback = function(state)
+        gui.Enabled = state
+        warn("Joy GUI Visible:", state)
     end,
 })
+
 Window:AddToggle({
     Title = "Autofarm ",
     Description = "With Safebox",
@@ -991,22 +992,16 @@ local info = Instance.new("Frame")
 info.Size = UDim2.new(0.2, 0, 0.1, 0)
 info.Position = UDim2.new(0.17, 0, 0.9, 0)
 info.BackgroundColor3 = Color3.new(1, 1, 1)
-info.BorderColor3 = Color3.new(0, 0, 0)
 info.BorderSizePixel = 1
-info.Active = true
 info.BackgroundTransparency = 0.5
-info.Draggable = false
 info.Parent = gui
 
 local joy = Instance.new("TextLabel")
-joy.Size = UDim2.new(0.3, 0, 1, 0)
-joy.Position = UDim2.new(0.1, 0, 0, 0)
-joy.BackgroundColor3 = Color3.new(0, 0, 0)
-joy.BorderColor3 = Color3.new(0, 0, 0)
-joy.BorderSizePixel = 1
+joy.Size = UDim2.new(0.9, 0, 1, 0)
+joy.Position = UDim2.new(0.05, 0, 0, 0)
+joy.BackgroundTransparency = 1
 joy.Text = "Joy: "
 joy.TextSize = 24
-joy.BackgroundTransparency = 1
 joy.TextColor3 = Color3.new(1, 1, 1)
 joy.Font = Enum.Font.Code
 joy.TextXAlignment = Enum.TextXAlignment.Left
@@ -1014,21 +1009,21 @@ joy.Parent = info
 
 local outline = Instance.new("UIStroke")
 outline.Thickness = 2
-outline.Color = Color3.new(0,0,0)
+outline.Color = Color3.new(0, 0, 0)
 outline.ApplyStrokeMode = Enum.ApplyStrokeMode.Outside
 outline.Parent = joy
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+local player = game.Players.LocalPlayer
 local character = workspace:WaitForChild(player.Name)
 local valuesFolder = character:WaitForChild("Values")
 local joyValue = valuesFolder:WaitForChild("Joy")
 
-joyValue.Changed:Connect(function(newValue)
-    local displayValue = string.format("%.3f", newValue)
-    joy.Text = "Joy: " .. displayValue
-end)
-joy.Text = "Joy: " .. string.format("%.3f", joyValue.Value)
+local function updateJoy(val)
+    joy.Text = "Joy: " .. string.format("%.3f", val)
+end
+
+joyValue.Changed:Connect(updateJoy)
+updateJoy(joyValue.Value)
 
 --// Auto eat script
 local function checkAndEquipBurger()
