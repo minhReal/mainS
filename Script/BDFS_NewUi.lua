@@ -702,6 +702,26 @@ Window:AddParagraph({
 	Tab = farmTab,
 }) 
 
+Window:AddButton({
+	Title = "Player status (JOY)",
+	Description = "shows player status (JOY) and whether autofarm should be used ",
+	Tab = Main,
+	Callback = function() 
+		local player = game.Players.LocalPlayer
+local joyValue = player.Character and player.Character.Values and player.Character.Values.Joy and player.Character.Values.Joy.Value or 0
+
+local formattedJoyValue = string.format("%.2f", joyValue)
+local statusMessage = joyValue < 35 and " | Not good" or " | Good"
+
+Window:Notify({
+    Title = "Notification",
+    Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
+    Duration = 10
+})
+
+		end,
+	})
+
 Window:AddToggle({
     Title = "Autofarm ",
     Description = "With Safebox",
