@@ -248,7 +248,7 @@ Window:Notify({
     Title = "Notification",
     Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
     Duration = 10
-}
+})
 
 	end,
 }) 
