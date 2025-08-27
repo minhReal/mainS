@@ -1,3 +1,8 @@
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Text = "⚠️ teleport button is probably broken, don't use it ",
+    Duration = 20
+})
+
 local Players = game:GetService("Players")
 local a = Players.LocalPlayer
 
