@@ -321,7 +321,6 @@ local function Notify(title, text, duration)
     })
 end
 
--- Hook Kick function
 local mt = getrawmetatable(game)
 setreadonly(mt, false)
 local old = mt.__namecall
@@ -335,11 +334,6 @@ mt.__namecall = newcclosure(function(self, ...)
     return old(self, ...)
 end)
 
--- Hook trực tiếp LocalPlayer:Kick()
 LocalPlayer.Kick = function(...)
     Notify("🚫 Anti-Kick", "A direct kick command was blocked!", 5)
 end
-
--- Thông báo khi script bật
-Notify("✅ Anti-Kick", "Anti-kick script is enabled!", 5)
-
