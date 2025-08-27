@@ -63,63 +63,6 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
       Duration = 10
 })
 
---// Anti-Kick
-local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
-local LocalPlayer = Players.LocalPlayer
-
-local function Notify(title, text, duration)
-    StarterGui:SetCore("SendNotification", {
-        Title = title,
-        Text = text,
-        Duration = duration or 5
-    })
-end
-
--- Hook Kick function
-local mt = getrawmetatable(game)
-setreadonly(mt, false)
-local old = mt.__namecall
-
-mt.__namecall = newcclosure(function(self, ...)
-    local method = getnamecallmethod()
-    if self == LocalPlayer and (method == "Kick" or method == "kick") then
-        Notify("🚫 Anti-kick", "A Kick Command Blocked!", 5)
-        return nil -- Không bị kick
-    end
-    return old(self, ...)
-end)
-
--- Hook trực tiếp LocalPlayer:Kick()
-LocalPlayer.Kick = function(...)
-    Notify("🚫 Anti-Kick", "A direct kick command was blocked!", 5)
-end
-
--- Thông báo khi script bật
-Notify("✅ Anti-Kick", "Anti-kick script is enabled!", 5)
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
---// something idk
-local function checkAndChange()
-    local gui = LocalPlayer:FindFirstChild("PlayerGui")
-    if gui then
-        local voteKick = gui:FindFirstChild("VoteKickList")
-        if voteKick then
-            local textLabel = voteKick:FindFirstChildOfClass("TextLabel")
-            if textLabel then
-                textLabel.Text = "Who do you want to kick?"
-            end
-        end
-    end
-end
-
--- Kiểm tra liên tục mỗi 0.5 giây
-while true do
-    checkAndChange()
-    task.wait(0.5)
-end
 --// MAIN SCRIPT
 local gui = Instance.new("ScreenGui")
 gui.Name = "ADMIN GUI"
@@ -364,3 +307,39 @@ for _, addon in ipairs(RSAddons) do
     clonedAddon.Parent = localAddons
 end
 end)
+
+--// Anti-Kick
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local LocalPlayer = Players.LocalPlayer
+
+local function Notify(title, text, duration)
+    StarterGui:SetCore("SendNotification", {
+        Title = title,
+        Text = text,
+        Duration = duration or 5
+    })
+end
+
+-- Hook Kick function
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local old = mt.__namecall
+
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    if self == LocalPlayer and (method == "Kick" or method == "kick") then
+        Notify("🚫 Anti-kick", "A Kick Command Blocked!", 5)
+        return nil -- Không bị kick
+    end
+    return old(self, ...)
+end)
+
+-- Hook trực tiếp LocalPlayer:Kick()
+LocalPlayer.Kick = function(...)
+    Notify("🚫 Anti-Kick", "A direct kick command was blocked!", 5)
+end
+
+-- Thông báo khi script bật
+Notify("✅ Anti-Kick", "Anti-kick script is enabled!", 5)
+
