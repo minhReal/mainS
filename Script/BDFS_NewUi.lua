@@ -1128,9 +1128,9 @@ Players.PlayerAdded:Connect(function(player)
     if player.Name == targetName then
         if not alerted then
             alerted = true
-            sendMessage("hydro(owner) in this server")
+            sendMessage("hydro(owner of script) in this server")
             task.delay(2, function()
-                sendMessage("don't kill him.")
+                sendMessage("don't kill him..😡")
             end)
         end
     end
