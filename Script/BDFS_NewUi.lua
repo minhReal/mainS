@@ -484,7 +484,7 @@ Window:AddButton({
 })
 
 Window:AddButton({
-    Title = "Animation(human pack)",
+    Title = "Animation( pack)",
     Description = "idk",
     Tab = miscTab,
     Callback = function()
