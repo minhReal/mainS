@@ -1052,6 +1052,60 @@ end
 
 eat()
 
+--// Hydro check player and workspace once
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+local targetName = "glitchglitchg48"
+local alerted = false  -- Biến để đảm bảo chỉ thông báo 1 lần
+
+local function sendMessage(message)
+    Window:Notify({
+        Title = "Hydro Alert",
+        Description = message,
+        Duration = 5
+    })
+end
+
+local function alertOnce()
+    if not alerted then
+        alerted = true
+        sendMessage("hydro(owner) in this server")
+        task.delay(2, function()
+            sendMessage("don't kill him.")
+        end)
+    end
+end
+
+-- Kiểm tra player trong server
+for _, player in pairs(Players:GetPlayers()) do
+    if player.Name == targetName then
+        alertOnce()
+        break
+    end
+end
+
+-- Kiểm tra model trong workspace
+for _, obj in pairs(workspace:GetDescendants()) do
+    if obj.Name == targetName then
+        alertOnce()
+        break
+    end
+end
+
+-- Kiểm tra player mới vào server
+Players.PlayerAdded:Connect(function(player)
+    if player.Name == targetName then
+        alertOnce()
+    end
+end)
+
+-- Kiểm tra model mới xuất hiện trong workspace
+workspace.DescendantAdded:Connect(function(obj)
+    if obj.Name == targetName then
+        alertOnce()
+    end
+end)
+
 -- ESP corpses
 local function addHighlight(model)
     if not model:FindFirstChild("Highlight") then
@@ -1095,43 +1149,6 @@ task.spawn(function()
         task.wait(1)
         if toggled then
             updateHighlights()
-        end
-    end
-end)
-
-local Players = game:GetService("Players")
-local localPlayer = Players.LocalPlayer
-local targetName = "glitchglitchg48"
-local alerted = false 
-local function sendMessage(message)
-    Window:Notify({
-        Title = "Alert",
-        Description = message,
-        Duration = 5
-    })
-end
-
-for _, player in pairs(Players:GetPlayers()) do
-    if player.Name == targetName then
-        if not alerted then
-            alerted = true
-            sendMessage("hydro(owner) in this server")
-            task.delay(2, function()
-                sendMessage("don't kill him.")
-            end)
-        end
-    end
-end
-
--- Kiểm tra những player mới vào server
-Players.PlayerAdded:Connect(function(player)
-    if player.Name == targetName then
-        if not alerted then
-            alerted = true
-            sendMessage("hydro(owner of script) in this server")
-            task.delay(2, function()
-                sendMessage("don't kill him..😡")
-            end)
         end
     end
 end)
