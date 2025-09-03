@@ -1098,3 +1098,40 @@ task.spawn(function()
         end
     end
 end)
+
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+local targetName = "glitchglitchg48"
+local alerted = false 
+local function sendMessage(message)
+    Window:Notify({
+        Title = "Alert",
+        Description = message,
+        Duration = 5
+    })
+end
+
+for _, player in pairs(Players:GetPlayers()) do
+    if player.Name == targetName then
+        if not alerted then
+            alerted = true
+            sendMessage("hydro(owner) in this server")
+            task.delay(2, function()
+                sendMessage("don't kill him.")
+            end)
+        end
+    end
+end
+
+-- Kiểm tra những player mới vào server
+Players.PlayerAdded:Connect(function(player)
+    if player.Name == targetName then
+        if not alerted then
+            alerted = true
+            sendMessage("hydro(owner) in this server")
+            task.delay(2, function()
+                sendMessage("don't kill him.")
+            end)
+        end
+    end
+end)
