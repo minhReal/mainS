@@ -1,4 +1,4 @@
--- ðŸ”¹ Services
+-- Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
@@ -7,7 +7,7 @@ local lp = Players.LocalPlayer
 local char = lp.Character or lp.CharacterAdded:Wait()
 local hrp = char:WaitForChild("HumanoidRootPart")
 
--- ðŸ”¹ Clone NPC
+-- Clone NPC
 local npc = char:Clone()
 npc.Name = lp.Name.."_Enemy"
 npc.Parent = workspace
@@ -17,14 +17,14 @@ local npcRoot = npc:FindFirstChild("HumanoidRootPart")
 local npcHead = npc:FindFirstChild("Head")
 npc.PrimaryPart = npcRoot
 
--- ðŸ”¹ Disable clip tay/chÃ¢n
+-- Disable clip tay/chÃ¢n
 for _, part in ipairs(npc:GetDescendants()) do
 	if part:IsA("BasePart") and part ~= npcRoot then
 		part.CanCollide = false
 	end
 end
 
--- ðŸ”¹ Head / Neck
+-- Head / Neck
 local npcTorso = npc:FindFirstChild("Torso") or npcRoot
 local Neck = npcHead:FindFirstChild("Neck")
 if not Neck then
@@ -49,13 +49,29 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
--- ðŸ”¹ XoÃ¡ script & sound "what"
+-- Thêm SpotLight cho NPC clone
+local function addSpotLight(npcRootPart)
+    if not npcRootPart then return end
+
+    -- Tạo SpotLight
+    local spot = Instance.new("SpotLight")
+    spot.Parent = npcRootPart
+    spot.Face = Enum.NormalId.Front   -- hướng ánh sáng ra phía trước
+    spot.Brightness = 5               -- độ sáng
+    spot.Range = 15                   -- khoảng cách chiếu
+    spot.Angle = 60                   -- góc chiếu
+    spot.Shadows = true               -- tạo bóng
+end
+
+addSpotLight(npcRoot)
+
+-- script & sound "what"
 for _, v in ipairs(npc:GetDescendants()) do
 	if v:IsA("Script") or v:IsA("LocalScript") then v:Destroy() end
 	if v:IsA("Sound") and v.Name == "what" then v:Destroy() end
 end
 
--- ðŸ”¹ Animation (chá»‰ runF, jump, fall)
+-- Animation (chá»‰ runF, jump, fall)
 local Animator = npcHum:FindFirstChildOfClass("Animator") or Instance.new("Animator", npcHum)
 local function newAnim(id) local a=Instance.new("Animation") a.AnimationId=id return a end
 
@@ -306,29 +322,29 @@ if knifePart then
 	end
 end
 
--- 🔹 Khi player chết, NPC clone đi rất chậm và spam emote + sound
+--  Khi player cht, NPC clone i rt chm và spam emote + sound
 local function onPlayerDied()
-	-- Speed cực thấp
+	-- Speed cc thp
 	npcHum.WalkSpeed = 0.01
 
 	task.spawn(function()
 		while true do
-			-- Chơi emote
+			-- Chi emote
 			local emoteAnim = Instance.new("Animation")
 			emoteAnim.AnimationId = "rbxassetid://6323596869"
 			local emoteTrack = npcHum:LoadAnimation(emoteAnim)
 			emoteTrack:Play()
 
-			-- Chơi sound
+			-- Chi sound
 			local sound = Instance.new("Sound")
 			sound.SoundId = "rbxassetid://617500399"
 			sound.Volume = 1
 			sound.Parent = npcRoot
 			sound:Play()
 
-			task.wait(5.5) -- spam mỗi 0.5 giây
+			task.wait(5.5) -- spam mi 0.5 giây
 
-			-- Dừng track và sound để lặp lại
+			-- Dng track và sound  lp li
 			emoteTrack:Stop()
 			sound:Stop()
 			sound:Destroy()
@@ -336,7 +352,7 @@ local function onPlayerDied()
 	end)
 end
 
--- Kết nối với player humanoid chết
+-- Kt ni vi player humanoid cht
 if lp.Character and lp.Character:FindFirstChild("Humanoid") then
 	lp.Character.Humanoid.Died:Connect(onPlayerDied)
 end
