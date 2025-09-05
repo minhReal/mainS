@@ -206,7 +206,6 @@ end
 -- Update path liên tục
 task.spawn(function()
 		updatePath()
-	end
 end)
 
 -- Main loop
