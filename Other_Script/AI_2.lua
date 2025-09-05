@@ -102,7 +102,7 @@ end)
 
 -- Folder chứa waypoint
 local WaypointFolder = workspace:FindFirstChild("Waypoints") or Instance.new("Folder", workspace)
-WaypointFolder.Name = "Waypoints"
+WaypointFolder.Name = "Waypointss"
 local waypoints = {}
 local currentWaypointIndex = 1
 
