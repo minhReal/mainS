@@ -6,8 +6,6 @@ script with pathfindingService
 by owner 
 ]]
 
-
-
 -- Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -63,8 +61,6 @@ end)
 -- Thêm SpotLight cho NPC clone
 local function addSpotLight(npcRootPart)
     if not npcRootPart then return end
-
-    -- SpotLight
     local spot = Instance.new("SpotLight")
     spot.Parent = npcRootPart
     spot.Face = Enum.NormalId.Front
@@ -73,7 +69,6 @@ local function addSpotLight(npcRootPart)
     spot.Angle = 60
     spot.Shadows = true
 end
-
 addSpotLight(npcRoot)
 
 -- Xoá script & sound "what"
@@ -94,8 +89,8 @@ local fallAnim = Animator:LoadAnimation(newAnim("rbxassetid://6266583739"))
 local function playBlend(targetTracks)
 	for _, track in pairs({pack1.runF, pack2.runF, jumpAnim, fallAnim}) do
 		local weight = targetTracks[track] or 0
-		if weight>0 and not track.IsPlaying then track:Play(0.05) end
-		track:AdjustWeight(weight,0.05)
+		if weight>0 and not track.IsPlaying then track:Play(0.1) end
+		track:AdjustWeight(weight,0.1)
 	end
 end
 
@@ -128,10 +123,18 @@ local function clearWaypoints()
 	currentWaypointIndex = 1
 end
 
--- Pathfinding update
-local function updatePath()
+-- Biến để dự đoán vị trí player
+local lastPlayerPos = lp.Character.PrimaryPart.Position
+
+-- Pathfinding update với dự đoán vị trí
+local function updatePathPredictive()
 	if not lp.Character or not lp.Character.PrimaryPart then return end
-	local targetPos = lp.Character.PrimaryPart.Position
+	local currentPlayerPos = lp.Character.PrimaryPart.Position
+	local playerVel = currentPlayerPos - lastPlayerPos
+	lastPlayerPos = currentPlayerPos
+
+	-- Dự đoán vị trí 1.5s sau
+	local predictedPos = currentPlayerPos + playerVel * 1.5
 
 	local path = PathfindingService:CreatePath({
 		AgentRadius = 2,
@@ -140,21 +143,20 @@ local function updatePath()
 		AgentJumpHeight = 6,
 		AgentMaxSlope = 45
 	})
-	path:ComputeAsync(npcRoot.Position, targetPos)
+	path:ComputeAsync(npcRoot.Position, predictedPos)
 
 	if path.Status == Enum.PathStatus.Success then
 		clearWaypoints()
 		local lastPos = npcRoot.Position
 		for i, waypoint in ipairs(path:GetWaypoints()) do
 			local dist = (waypoint.Position - lastPos).Magnitude
-			-- spawn nhiều waypoint, xa đủ & ko gần clone
 			if dist > 2 and (waypoint.Position - npcRoot.Position).Magnitude > 5 then
 				local wp = Instance.new("Part")
 				wp.Shape = Enum.PartType.Ball
 				wp.Size = Vector3.new(1,1,1)
 				wp.Anchored = true
 				wp.CanCollide = false
-				wp.Transparency = 1
+				wp.Transparency = 0.8
 				wp.Material = Enum.Material.Neon
 				wp.BrickColor = BrickColor.new("Lime green")
 				wp.Position = waypoint.Position
@@ -206,7 +208,7 @@ local function moveTowards()
 		npcHum.WalkSpeed = 15.5
 		targetTracks[pack1.runF]=1
 	else
-		npcHum.WalkSpeed = 23.5
+		npcHum.WalkSpeed = 23.8
 		targetTracks[pack2.runF]=1
 	end
 	playBlend(targetTracks)
@@ -221,8 +223,8 @@ end
 
 -- Update path liên tục
 task.spawn(function()
-	while task.wait(0.01) do
-		updatePath()
+	while task.wait(0.1) do -- check 10 lần / giây
+		updatePathPredictive()
 	end
 end)
 
