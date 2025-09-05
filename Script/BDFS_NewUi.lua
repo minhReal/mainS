@@ -685,11 +685,11 @@ Window:AddButton({
 })
 
 Window:AddButton({
-    Title = "Be dead forever script [OLD]",
-    Description = "this is my old script",
+    Title = "Spawn a enemy ",
+    Description = "It will spawn an enemy with your skin and chase you. so becareful. ",
     Tab = miscTab,
     Callback = function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Bdfs.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/AI_2.lua"))()
 end,
 })
 
