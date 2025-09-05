@@ -204,7 +204,7 @@ local function updateWaypointsSmart()
 				wp.BrickColor = BrickColor.new("Lime green")
 				wp.Material = Enum.Material.Neon
 				wp.CastShadow = false
-                wp.Transparency = 0.8
+                wp.Transparency = 1
 				wp.Parent = WaypointFolder
 				table.insert(waypoints, wp)
 			else break end
