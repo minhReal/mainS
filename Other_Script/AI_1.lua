@@ -92,8 +92,8 @@ local fallAnim = Animator:LoadAnimation(newAnim("rbxassetid://6266583739"))
 local function playBlend(targetTracks)
 	for _, track in pairs({pack1.runF, pack2.runF, jumpAnim, fallAnim}) do
 		local weight = targetTracks[track] or 0
-		if weight>0 and not track.IsPlaying then track:Play(0.05) end
-		track:AdjustWeight(weight,0.05)
+		if weight>0 and not track.IsPlaying then track:Play(0.1) end
+		track:AdjustWeight(weight,0.1)
 	end
 end
 
