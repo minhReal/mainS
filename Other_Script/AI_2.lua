@@ -3,7 +3,7 @@ free edit please dont remove the script creator
 
 script with pathfindingService
 
-by owner 
+by owner with chatgpt;)
 ]]
 
 -- Services
@@ -156,7 +156,7 @@ local function updatePathPredictive()
 				wp.Size = Vector3.new(1,1,1)
 				wp.Anchored = true
 				wp.CanCollide = false
-				wp.Transparency = 0.8
+				wp.Transparency = 1
 				wp.Material = Enum.Material.Neon
 				wp.BrickColor = BrickColor.new("Lime green")
 				wp.Position = waypoint.Position
