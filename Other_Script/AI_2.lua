@@ -60,6 +60,22 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+-- Thêm SpotLight cho NPC clone
+local function addSpotLight(npcRootPart)
+    if not npcRootPart then return end
+
+    -- SpotLight
+    local spot = Instance.new("SpotLight")
+    spot.Parent = npcRootPart
+    spot.Face = Enum.NormalId.Front
+    spot.Brightness = 5
+    spot.Range = 15
+    spot.Angle = 60
+    spot.Shadows = true
+end
+
+addSpotLight(npcRoot)
+
 -- Xoá script & sound "what"
 for _, v in ipairs(npc:GetDescendants()) do
 	if v:IsA("Script") or v:IsA("LocalScript") then v:Destroy() end
