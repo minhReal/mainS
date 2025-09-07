@@ -14,7 +14,7 @@ b.Parent = a:WaitForChild("PlayerGui")
 -- Avatar Image
 local c = Instance.new("ImageLabel")
 c.Size = UDim2.new(0.08, 0, 0.07, 0)
-c.Position = UDim2.new(0.31, 0, -0.15, 0)
+c.Position = UDim2.new(0.31, 0, -0.25, 0)
 c.BackgroundTransparency = 1
 c.Parent = b
 
