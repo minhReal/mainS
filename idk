@@ -1,0 +1,14 @@
+// Tìm tất cả các phần tử <li> trong danh sách có lớp 'h5p-sc-alternatives'
+const alternatives = document.querySelectorAll('.h5p-sc-alternatives .h5p-sc-alternative');
+
+// Duyệt qua các phần tử và kiểm tra nếu lớp 'h5p-sc-is-correct' tồn tại
+alternatives.forEach(alternative => {
+  if (alternative.classList.contains('h5p-sc-is-correct')) {
+    // Nếu phần tử là câu trả lời đúng, kích hoạt click
+    console.log('Đã tìm thấy câu trả lời đúng:', alternative);
+
+    // Kích hoạt hành động click
+    alternative.click();
+    console.log('Đã kích hoạt click vào câu trả lời đúng.');
+  }
+});
