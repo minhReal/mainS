@@ -3,7 +3,7 @@
 -- // # BYPASSERS
 
 
-                       -- // nothing here // --
+                      -- // nothing here // --
 
 
 -- // TOGGLE GUI
@@ -625,11 +625,21 @@ minimizeButton.MouseButton1Click:Connect(function()
 })
 
 Tabs.An:AddButton({
-    Title = "audio logger",
+    Title = "Audio logger",
     Description = "Một GUI khi sound được phát, nó sẽ ghi lại | A GUI when sound is played it will record",
     Callback = function()
         loadstring(game:HttpGet(
             "https://raw.githubusercontent.com/infyiff/backup/main/audiologger.lua"
+        ))()
+    end
+})
+
+Tabs.An:AddButton({
+    Title = "Event finder",
+    Description = "Một GUI khi sound được phát, nó sẽ ghi lại | A GUI when sound is played it will record",
+    Callback = function()
+        loadstring(game:HttpGet(
+            "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Event_Finder.lua"
         ))()
     end
 })
