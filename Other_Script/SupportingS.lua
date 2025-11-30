@@ -630,7 +630,6 @@ Tabs.An:AddButton({
     Title = "Animation Dumper,
     Description = "A gui records your movements while the animation runs ",
     Callback = function()
-			Tabs.An:AddButton({
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
