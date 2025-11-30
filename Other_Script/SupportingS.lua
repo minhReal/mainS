@@ -468,10 +468,10 @@ logLayout.Parent = scrollFrame
 logLayout.SortOrder = Enum.SortOrder.LayoutOrder
 logLayout.Padding = UDim.new(0,8)
 
--- Table lưu animation: {count, frame, animation}
+-- Table to store animation: {count, frame, animation}
 local loggedAnimations = {}
 
--- Hàm log animation với số lần lặp hiển thị bên tên
+-- Log animation function with number of iterations displayed next to name
 local function logAnimation(name, anim)
 	local id = anim.AnimationId
 	if loggedAnimations[id] then
@@ -484,7 +484,7 @@ local function logAnimation(name, anim)
 		return
 	end
 
-	-- Frame chứa text + nút
+	-- Frame chứa text + btn
 	local container = Instance.new("Frame")
 	container.Size = UDim2.new(1,-16,0,60)
 	container.BackgroundColor3 = Color3.fromRGB(40,40,40)
@@ -506,8 +506,7 @@ local function logAnimation(name, anim)
 	textLabel.TextColor3 = Color3.fromRGB(255,255,255)
 	textLabel.TextXAlignment = Enum.TextXAlignment.Left
 	textLabel.Parent = container
-
-	-- Nút màu xám
+				
 	local function createButton(posX, label)
 		local btn = Instance.new("TextButton")
 		btn.Size = UDim2.new(0,28,0,28)
@@ -564,7 +563,7 @@ local function logAnimation(name, anim)
 		container.BackgroundColor3 = Color3.fromRGB(40,40,40)
 	end)
 
-	-- Lưu vào table
+	-- save to table
 	loggedAnimations[id] = {count=1, frame=container, anim=anim, textLabel=textLabel}
 
 	-- Update CanvasSize & auto-scroll
@@ -626,6 +625,208 @@ minimizeButton.MouseButton1Click:Connect(function()
       end)
     end
 })
+
+Tabs.An:AddButton({
+    Title = "Animation Dumper,
+    Description = "A gui records your movements while the animation runs ",
+    Callback = function()
+			Tabs.An:AddButton({
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local animator = humanoid:WaitForChild("Animator")
+
+player.CharacterAdded:Connect(function(newChar)
+	character = newChar
+	humanoid = newChar:WaitForChild("Humanoid")
+	animator = humanoid:WaitForChild("Animator")
+end)
+
+local function round(num)
+	return math.floor(num * 1000 + 0.5) / 1000
+end
+
+local function cfToString(cf)
+	local x, y, z = cf.Position.X, cf.Position.Y, cf.Position.Z
+	local rx, ry, rz = cf:ToEulerAnglesXYZ()
+	return string.format("CFrame.new(%s, %s, %s) * CFrame.Angles(%s, %s, %s)", 
+		round(x), round(y), round(z), 
+		round(rx), round(ry), round(rz)
+	)
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "CustomAnimDumper"
+
+if pcall(function() ScreenGui.Parent = CoreGui end) then
+	ScreenGui.Parent = CoreGui
+else
+	ScreenGui.Parent = player:WaitForChild("PlayerGui")
+end
+
+local Frame = Instance.new("Frame")
+Frame.Name = "MainFrame"
+Frame.Size = UDim2.new(0, 300, 0, 160)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -80)
+Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Draggable = true
+Frame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = Frame
+
+local Title = Instance.new("TextLabel")
+Title.Text = "ANIMATION DUMPER TOOL"
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+Title.Parent = Frame
+
+local InputBox = Instance.new("TextBox")
+InputBox.Name = "IdInput"
+InputBox.Size = UDim2.new(0.9, 0, 0, 40)
+InputBox.Position = UDim2.new(0.05, 0, 0.25, 0)
+InputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+InputBox.PlaceholderText = "Nhập Animation ID vào đây..."
+InputBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+InputBox.Font = Enum.Font.Gotham
+InputBox.TextSize = 14
+InputBox.Text = ""
+InputBox.Parent = Frame
+
+local InputCorner = Instance.new("UICorner")
+InputCorner.CornerRadius = UDim.new(0, 6)
+InputCorner.Parent = InputBox
+
+local DumpBtn = Instance.new("TextButton")
+DumpBtn.Name = "DumpButton"
+DumpBtn.Text = "CHẠY VÀ DUMP"
+DumpBtn.Size = UDim2.new(0.9, 0, 0, 40)
+DumpBtn.Position = UDim2.new(0.05, 0, 0.6, 0)
+DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0) -- Màu xanh lá
+DumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+DumpBtn.Font = Enum.Font.GothamBold
+DumpBtn.TextSize = 14
+DumpBtn.Parent = Frame
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0, 6)
+BtnCorner.Parent = DumpBtn
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Text = "X"
+CloseBtn.Size = UDim2.new(0, 25, 0, 25)
+CloseBtn.Position = UDim2.new(1, -30, 0, 5)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Parent = Frame
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 4)
+CloseCorner.Parent = CloseBtn
+
+CloseBtn.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
+
+local isDumping = false
+
+DumpBtn.MouseButton1Click:Connect(function()
+	if isDumping then return end
+	
+	local rawText = InputBox.Text
+	
+	local animId = rawText
+	if tonumber(rawText) then
+		animId = "rbxassetid://" .. rawText
+	elseif string.find(rawText, "rbxassetid://") then
+		animId = rawText
+							else
+		InputBox.Text = "INVALID ID!"
+		task.wait(1)
+		InputBox.Text = rawText
+		return
+	end
+
+	isDumping = true
+	DumpBtn.BackgroundColor3 = Color3.fromRGB(180, 180, 0)
+	DumpBtn.Text = "ĐANG TẢI..."
+
+	print("\n=== START DUMPING ID: " .. animId .. " ===")
+
+	local success, track = pcall(function()
+		local a = Instance.new("Animation")
+		a.AnimationId = animId
+		return animator:LoadAnimation(a)
+	end)
+
+	if success and track then
+		DumpBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50) -- Màu đỏ báo hiệu đang ghi
+		DumpBtn.Text = "DUMPING (DO NOT MOVE)..."
+		
+		track.Looped = false
+		track.Priority = Enum.AnimationPriority.Action
+		track:Play()
+
+		local recordedData = {}
+		local startTime = tick()
+		local motors = {}
+		
+		for _, v in pairs(character:GetDescendants()) do
+			if v:IsA("Motor6D") then table.insert(motors, v) end
+		end
+
+		local connection = RunService.RenderStepped:Connect(function()
+			local t = round(tick() - startTime)
+			local frameInfo = { Time = t, Poses = {} }
+			
+			for _, m in pairs(motors) do
+				if m.Part1 then
+					frameInfo.Poses[m.Part1.Name] = cfToString(m.Transform)
+				end
+			end
+			table.insert(recordedData, frameInfo)
+		end)
+
+		track.Stopped:Wait()
+		connection:Disconnect()
+
+		print("✅ DUMP DONE! CHECK CONSOLE (" .. #recordedData .. " frames)")
+		
+		for _, f in ipairs(recordedData) do
+			for part, cfStr in pairs(f.Poses) do
+				print(f.Time .. "s : " .. part .. " = " .. cfStr)
+			end
+		end
+		print("============================================")
+
+		DumpBtn.Text = "SUCCESS! (CHECK CONSOLE)"
+		DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+	else
+		warn("Unable to load this Animation ID! (Maybe the ID is wrong or the ID is not public)")
+		DumpBtn.Text = "ERROR ID!"
+		DumpBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+	end
+
+	task.wait(2)
+	isDumping = false
+	DumpBtn.Text = "DUMP"
+	DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+end)
+					
+    end
+})
+
 
 Tabs.An:AddButton({
     Title = "Audio logger",
