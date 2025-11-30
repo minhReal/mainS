@@ -627,7 +627,7 @@ minimizeButton.MouseButton1Click:Connect(function()
 })
 
 Tabs.An:AddButton({
-    Title = "Animation Dumper,
+    Title = "Animation Dumper",
     Description = "A gui records your movements while the animation runs ",
     Callback = function()
 local Players = game:GetService("Players")
