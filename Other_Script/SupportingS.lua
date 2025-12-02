@@ -639,27 +639,27 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local animator = humanoid:WaitForChild("Animator")
 
-player.CharacterAdded:Connect(function(newChar)
-	character = newChar
-	humanoid = newChar:WaitForChild("Humanoid")
+player.CharacterAdded:Connect(function(c)
+	character = c
+	humanoid = c:WaitForChild("Humanoid")
 	animator = humanoid:WaitForChild("Animator")
 end)
 
-local function round(num)
-	return math.floor(num * 1000 + 0.5) / 1000
+local function round3(n)
+	return math.floor(n * 1000 + 0.5) * 0.001
 end
 
-local function cfToString(cf)
-	local x, y, z = cf.Position.X, cf.Position.Y, cf.Position.Z
+local function cfToStr(cf)
+	local p = cf.Position
 	local rx, ry, rz = cf:ToEulerAnglesXYZ()
-	return string.format("CFrame.new(%s, %s, %s) * CFrame.Angles(%s, %s, %s)", 
-		round(x), round(y), round(z), 
-		round(rx), round(ry), round(rz)
-	)
+	return "CFrame.new("..
+		round3(p.X)..","..round3(p.Y)..","..round3(p.Z)..
+		") * CFrame.Angles("..
+		round3(rx)..","..round3(ry)..","..round3(rz)..")"
 end
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "CustomAnimDumper"
+ScreenGui.Name = "Cus"
 
 if pcall(function() ScreenGui.Parent = CoreGui end) then
 	ScreenGui.Parent = CoreGui
@@ -696,7 +696,7 @@ InputBox.Size = UDim2.new(0.9, 0, 0, 40)
 InputBox.Position = UDim2.new(0.05, 0, 0.25, 0)
 InputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-InputBox.PlaceholderText = "Nhập Animation ID vào đây..."
+InputBox.PlaceholderText = "Enter Animation ID here..."
 InputBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
 InputBox.Font = Enum.Font.Gotham
 InputBox.TextSize = 14
@@ -709,10 +709,10 @@ InputCorner.Parent = InputBox
 
 local DumpBtn = Instance.new("TextButton")
 DumpBtn.Name = "DumpButton"
-DumpBtn.Text = "CHẠY VÀ DUMP"
+DumpBtn.Text = "DUMP"
 DumpBtn.Size = UDim2.new(0.9, 0, 0, 40)
 DumpBtn.Position = UDim2.new(0.05, 0, 0.6, 0)
-DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0) -- Màu xanh lá
+DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
 DumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 DumpBtn.Font = Enum.Font.GothamBold
 DumpBtn.TextSize = 14
@@ -730,6 +730,7 @@ CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseBtn.Font = Enum.Font.GothamBold
 CloseBtn.Parent = Frame
+
 local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 4)
 CloseCorner.Parent = CloseBtn
@@ -738,30 +739,28 @@ CloseBtn.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
 
-local isDumping = false
+local dumping = false
 
 DumpBtn.MouseButton1Click:Connect(function()
-	if isDumping then return end
+	if dumping then return end
 	
-	local rawText = InputBox.Text
-	
-	local animId = rawText
-	if tonumber(rawText) then
-		animId = "rbxassetid://" .. rawText
-	elseif string.find(rawText, "rbxassetid://") then
-		animId = rawText
-							else
+	local raw = InputBox.Text
+	local animId
+
+	if tonumber(raw) then
+		animId = "rbxassetid://" .. raw
+	elseif raw:find("rbxassetid://") then
+		animId = raw
+	else
 		InputBox.Text = "INVALID ID!"
 		task.wait(1)
-		InputBox.Text = rawText
+		InputBox.Text = raw
 		return
 	end
 
-	isDumping = true
+	dumping = true
 	DumpBtn.BackgroundColor3 = Color3.fromRGB(180, 180, 0)
-	DumpBtn.Text = "ĐANG TẢI..."
-
-	print("\n=== START DUMPING ID: " .. animId .. " ===")
+	DumpBtn.Text = "LOADING..."
 
 	local success, track = pcall(function()
 		local a = Instance.new("Animation")
@@ -770,55 +769,57 @@ DumpBtn.MouseButton1Click:Connect(function()
 	end)
 
 	if success and track then
-		DumpBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50) -- Màu đỏ báo hiệu đang ghi
-		DumpBtn.Text = "DUMPING (DO NOT MOVE)..."
-		
+		DumpBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+		DumpBtn.Text = "DUMPING..."
+
 		track.Looped = false
 		track.Priority = Enum.AnimationPriority.Action
 		track:Play()
 
-		local recordedData = {}
-		local startTime = tick()
 		local motors = {}
-		
-		for _, v in pairs(character:GetDescendants()) do
-			if v:IsA("Motor6D") then table.insert(motors, v) end
+		for _, v in ipairs(character:GetDescendants()) do
+			if v:IsA("Motor6D") and v.Part1 then
+				motors[#motors+1] = { name = v.Part1.Name, obj = v }
+			end
 		end
 
-		local connection = RunService.RenderStepped:Connect(function()
-			local t = round(tick() - startTime)
-			local frameInfo = { Time = t, Poses = {} }
-			
-			for _, m in pairs(motors) do
-				if m.Part1 then
-					frameInfo.Poses[m.Part1.Name] = cfToString(m.Transform)
-				end
+		local data = {}
+		local count = 0
+		local start = tick()
+
+		local conn = RunService.RenderStepped:Connect(function()
+			count += 1
+			local t = round3(tick() - start)
+
+			local item = { Time = t, Poses = {} }
+
+			for i = 1, #motors do
+				local m = motors[i]
+				item.Poses[m.name] = cfToStr(m.obj.Transform)
 			end
-			table.insert(recordedData, frameInfo)
+
+			data[count] = item
 		end)
 
 		track.Stopped:Wait()
-		connection:Disconnect()
+		conn:Disconnect()
 
-		print("✅ DUMP DONE! CHECK CONSOLE (" .. #recordedData .. " frames)")
-		
-		for _, f in ipairs(recordedData) do
-			for part, cfStr in pairs(f.Poses) do
-				print(f.Time .. "s : " .. part .. " = " .. cfStr)
+		for i = 1, #data do
+			local f = data[i]
+			for part, cf in pairs(f.Poses) do
+				print(f.Time .. "s : " .. part .. " = " .. cf)
 			end
 		end
-		print("============================================")
 
-		DumpBtn.Text = "SUCCESS! (CHECK CONSOLE)"
+		DumpBtn.Text = "DONE"
 		DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
 	else
-		warn("Unable to load this Animation ID! (Maybe the ID is wrong or the ID is not public)")
-		DumpBtn.Text = "ERROR ID!"
+		DumpBtn.Text = "ERROR!"
 		DumpBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
 	end
 
 	task.wait(2)
-	isDumping = false
+	dumping = false
 	DumpBtn.Text = "DUMP"
 	DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
 end)
