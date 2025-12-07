@@ -371,7 +371,6 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
--- Main frame
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0.35, 0, 0.5, 0)
 frame.Position = UDim2.new(0.325, 0, 0.25, 0)
@@ -389,7 +388,6 @@ frameStroke.Thickness = 2
 frameStroke.Color = Color3.fromRGB(80,80,80)
 frameStroke.Parent = frame
 
--- Top bar
 local topBar = Instance.new("Frame")
 topBar.Size = UDim2.new(1,0,0,36)
 topBar.BackgroundColor3 = Color3.fromRGB(50,50,50)
@@ -399,7 +397,6 @@ local topCorner = Instance.new("UICorner")
 topCorner.CornerRadius = UDim.new(0,12)
 topCorner.Parent = topBar
 
--- Title
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, -140, 1, 0)
 titleLabel.Position = UDim2.new(0,10,0,0)
@@ -411,7 +408,6 @@ titleLabel.TextSize = 20
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Parent = topBar
 
--- Top buttons
 local clearButton = Instance.new("TextButton")
 clearButton.Size = UDim2.new(0,88,0,28)
 clearButton.Position = UDim2.new(0.8,-100,0,4)
@@ -451,7 +447,6 @@ local xCorner = Instance.new("UICorner")
 xCorner.CornerRadius = UDim.new(0,6)
 xCorner.Parent = xButton
 
--- Scroll frame
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Size = UDim2.new(1,0,1,-36)
 scrollFrame.Position = UDim2.new(0,0,0,36)
@@ -484,7 +479,6 @@ local function logAnimation(name, anim)
 		return
 	end
 
-	-- Frame chứa text + btn
 	local container = Instance.new("Frame")
 	container.Size = UDim2.new(1,-16,0,60)
 	container.BackgroundColor3 = Color3.fromRGB(40,40,40)
@@ -494,7 +488,6 @@ local function logAnimation(name, anim)
 	corner.CornerRadius = UDim.new(0,8)
 	corner.Parent = container
 
-	-- TextLabel
 	local textLabel = Instance.new("TextLabel")
 	textLabel.Size = UDim2.new(1,-100,1,0)
 	textLabel.Position = UDim2.new(0,8,0,0)
@@ -628,11 +621,14 @@ minimizeButton.MouseButton1Click:Connect(function()
 
 Tabs.An:AddButton({
     Title = "Animation Dumper",
-    Description = "A gui records your movements while the animation runs ",
+    Description = "Một giao diện người dùng đồ họa ghi lại các chuyển động của bạn trong khi hoạt ảnh chạy | A gui records your movements while the animation runs ",
     Callback = function()
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
+local StarterGui = game:GetService("StarterGui")
+local MarketplaceService = game:GetService("MarketplaceService")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
@@ -645,185 +641,404 @@ player.CharacterAdded:Connect(function(c)
 	animator = humanoid:WaitForChild("Animator")
 end)
 
-local function round3(n)
-	return math.floor(n * 1000 + 0.5) * 0.001
+local function round(n)
+	return math.floor(n * 1000 + 0.5) / 1000
+end
+
+local function getPlaceName()
+	local success, info = pcall(function()
+		return MarketplaceService:GetProductInfo(game.PlaceId)
+	end)
+	if success and info and info.Name then
+		return info.Name:gsub("[^%w%s_-]", ""):gsub("%s+", "_")
+	else
+		return "Place_" .. tostring(game.PlaceId)
+	end
+end
+
+local function makeDraggable(frame)
+	local dragging, dragInput, dragStart, startPos
+	frame.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = frame.Position
+			
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	frame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			local delta = input.Position - dragStart
+			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "AnimDu"
+if CoreGui:FindFirstChild("AnimDu") then
+	CoreGui:FindFirstChild("AnimDu"):Destroy()
+end
+pcall(function() gui.Parent = CoreGui end)
+
+local frame = Instance.new("Frame")
+frame.Name = "Main"
+frame.Size = UDim2.new(0, 330, 0, 200)
+frame.Position = UDim2.new(0.5, -165, 0.5, -130)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Parent = gui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+makeDraggable(frame)
+
+local logFrame = Instance.new("Frame")
+logFrame.Name = "Log"
+logFrame.Size = UDim2.new(0, 400, 0, 300) 
+logFrame.Position = UDim2.new(0.5, 180, 0.5, -130)
+logFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) 
+logFrame.Visible = false
+logFrame.Active = true
+logFrame.Parent = gui
+Instance.new("UICorner", logFrame).CornerRadius = UDim.new(0, 8)
+makeDraggable(logFrame)
+
+local logTitle = Instance.new("TextLabel")
+logTitle.Text = "LOG VIEWER"
+logTitle.TextSize = 13
+logTitle.Size = UDim2.new(1, 0, 0, 30)
+logTitle.BackgroundTransparency = 1
+logTitle.TextColor3 = Color3.new(1,1,1)
+logTitle.Font = Enum.Font.GothamBold
+logTitle.Parent = logFrame
+
+local logScroll = Instance.new("ScrollingFrame")
+logScroll.Size = UDim2.new(0.95, 0, 0.85, 0)
+logScroll.Position = UDim2.new(0.025, 0, 0.12, 0)
+logScroll.BackgroundTransparency = 1
+logScroll.BorderSizePixel = 0
+logScroll.ScrollBarThickness = 6
+logScroll.Parent = logFrame
+
+local listLayout = Instance.new("UIListLayout")
+listLayout.Parent = logScroll
+listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+listLayout.Padding = UDim.new(0, 0) 
+
+-- LOG LOGIZ
+local function addLog(text, colorType)
+	local label = Instance.new("TextLabel")
+	label.Text = text
+	label.Size = UDim2.new(1, 0, 0, 14) 
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.Code 
+	label.TextSize = 12 
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = logScroll
+
+	if colorType == "red" then
+		label.TextColor3 = Color3.fromRGB(255, 80, 80)
+	elseif colorType == "green" then
+		label.TextColor3 = Color3.fromRGB(80, 255, 120)
+	else
+		label.TextColor3 = Color3.fromRGB(200, 200, 200)
+	end
+	
+	logScroll.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 10)
+	logScroll.CanvasPosition = Vector2.new(0, listLayout.AbsoluteContentSize.Y)
+end
+
+local title = Instance.new("TextLabel")
+title.Text = "ANIMATION DUMPER"
+title.TextSize = 13
+title.Size = UDim2.new(1, 0, 0, 28)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.GothamBold
+title.Parent = frame
+
+local input = Instance.new("TextBox")
+input.Size = UDim2.new(0.9, 0, 0, 40)
+input.Position = UDim2.new(0.05, 0, 0.15, 0)
+input.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+input.TextColor3 = Color3.new(1,1,1)
+input.PlaceholderText = "Paste ID here"
+input.Font = Enum.Font.Gotham
+input.TextSize = 14
+input.Parent = frame
+Instance.new("UICorner", input).CornerRadius = UDim.new(0, 6)
+
+local dumpBtn = Instance.new("TextButton")
+dumpBtn.Text = "DUMP"
+dumpBtn.Size = UDim2.new(0.9, 0, 0, 40)
+dumpBtn.Position = UDim2.new(0.05, 0, 0.38, 0)
+dumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+dumpBtn.TextColor3 = Color3.new(1,1,1)
+dumpBtn.Font = Enum.Font.GothamBold
+dumpBtn.TextSize = 14
+dumpBtn.Parent = frame
+Instance.new("UICorner", dumpBtn).CornerRadius = UDim.new(0, 6)
+
+local stopBtn = Instance.new("TextButton")
+stopBtn.Text = "STOP"
+stopBtn.Size = UDim2.new(0.9, 0, 0, 25)
+stopBtn.Position = UDim2.new(0.05, 0, 0.60, 0)
+stopBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+stopBtn.TextColor3 = Color3.new(1,1,1)
+stopBtn.Font = Enum.Font.GothamBold
+stopBtn.TextSize = 13
+stopBtn.Parent = frame
+Instance.new("UICorner", stopBtn).CornerRadius = UDim.new(0, 6)
+
+local copyBtn = Instance.new("TextButton")
+copyBtn.Text = "COPY"
+copyBtn.TextSize = 11
+copyBtn.Size = UDim2.new(0.43, 0, 0, 30)
+copyBtn.Position = UDim2.new(0.05, 0, 0.77, 0)
+copyBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 200)
+copyBtn.TextColor3 = Color3.new(1,1,1)
+copyBtn.Font = Enum.Font.GothamBold
+copyBtn.Parent = frame
+Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 6)
+
+local fileBtn = Instance.new("TextButton")
+fileBtn.Text = "EXPORT"
+fileBtn.TextSize = 11
+fileBtn.Size = UDim2.new(0.43, 0, 0, 30)
+fileBtn.Position = UDim2.new(0.52, 0, 0.77, 0)
+fileBtn.BackgroundColor3 = Color3.fromRGB(160, 90, 230)
+fileBtn.TextColor3 = Color3.new(1,1,1)
+fileBtn.Font = Enum.Font.GothamBold
+fileBtn.Parent = frame
+Instance.new("UICorner", fileBtn).CornerRadius = UDim.new(0, 6)
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Text = "X"
+closeBtn.Size = UDim2.new(0, 20, 0, 20)
+closeBtn.Position = UDim2.new(1.0, -25, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+closeBtn.TextColor3 = Color3.new(1,1,1)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.Parent = frame
+Instance.new("UICorner", closeBtn)
+
+local eyeBtn = Instance.new("TextButton")
+eyeBtn.Text = "👁"
+eyeBtn.TextSize = 14
+eyeBtn.Size = UDim2.new(0, 20, 0, 20)
+eyeBtn.Position = UDim2.new(1.0, -50, 0, 5)
+eyeBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+eyeBtn.TextColor3 = Color3.new(1,1,1)
+eyeBtn.Font = Enum.Font.GothamBold
+eyeBtn.Parent = frame
+Instance.new("UICorner", eyeBtn)
+
+-- LOGIC
+local dumping = false
+local stopped = false
+local dumpData = {}
+local lastId = ""
+local currentTrack = nil
+local activeConn = nil
+local startTime = 0
+
+local function normalizeId(raw)
+	raw = tostring(raw)
+	raw = raw:gsub("rbxassetid://", "")
+	raw = raw:gsub("%D", "")
+	return raw
 end
 
 local function cfToStr(cf)
 	local p = cf.Position
 	local rx, ry, rz = cf:ToEulerAnglesXYZ()
-	return "CFrame.new("..
-		round3(p.X)..","..round3(p.Y)..","..round3(p.Z)..
-		") * CFrame.Angles("..
-		round3(rx)..","..round3(ry)..","..round3(rz)..")"
+	return "CFrame.new("..tostring(round(p.X))..","..tostring(round(p.Y))..","..tostring(round(p.Z))..") * CFrame.Angles("..tostring(round(rx))..","..tostring(round(ry))..","..tostring(round(rz))..")"
 end
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "Cus"
-
-if pcall(function() ScreenGui.Parent = CoreGui end) then
-	ScreenGui.Parent = CoreGui
-else
-	ScreenGui.Parent = player:WaitForChild("PlayerGui")
+local function generateFileContent()
+	local content = "-- Start / \"" .. lastId .. "\" --\n"
+	for _, f in ipairs(dumpData) do
+		for part, cf in pairs(f.Poses) do
+			content ..= f.Time.."s : "..part.." = "..cf.."\n"
+		end
+	end
+	content ..= "-- END --"
+	return content
 end
 
-local Frame = Instance.new("Frame")
-Frame.Name = "MainFrame"
-Frame.Size = UDim2.new(0, 300, 0, 160)
-Frame.Position = UDim2.new(0.5, -150, 0.5, -80)
-Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-Frame.BorderSizePixel = 0
-Frame.Active = true
-Frame.Draggable = true
-Frame.Parent = ScreenGui
-
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 8)
-MainCorner.Parent = Frame
-
-local Title = Instance.new("TextLabel")
-Title.Text = "ANIMATION DUMPER TOOL"
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.BackgroundTransparency = 1
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 14
-Title.Parent = Frame
-
-local InputBox = Instance.new("TextBox")
-InputBox.Name = "IdInput"
-InputBox.Size = UDim2.new(0.9, 0, 0, 40)
-InputBox.Position = UDim2.new(0.05, 0, 0.25, 0)
-InputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-InputBox.PlaceholderText = "Enter Animation ID here..."
-InputBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
-InputBox.Font = Enum.Font.Gotham
-InputBox.TextSize = 14
-InputBox.Text = ""
-InputBox.Parent = Frame
-
-local InputCorner = Instance.new("UICorner")
-InputCorner.CornerRadius = UDim.new(0, 6)
-InputCorner.Parent = InputBox
-
-local DumpBtn = Instance.new("TextButton")
-DumpBtn.Name = "DumpButton"
-DumpBtn.Text = "DUMP"
-DumpBtn.Size = UDim2.new(0.9, 0, 0, 40)
-DumpBtn.Position = UDim2.new(0.05, 0, 0.6, 0)
-DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-DumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-DumpBtn.Font = Enum.Font.GothamBold
-DumpBtn.TextSize = 14
-DumpBtn.Parent = Frame
-
-local BtnCorner = Instance.new("UICorner")
-BtnCorner.CornerRadius = UDim.new(0, 6)
-BtnCorner.Parent = DumpBtn
-
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Text = "X"
-CloseBtn.Size = UDim2.new(0, 25, 0, 25)
-CloseBtn.Position = UDim2.new(1, -30, 0, 5)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.Parent = Frame
-
-local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(0, 4)
-CloseCorner.Parent = CloseBtn
-
-CloseBtn.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
+closeBtn.MouseButton1Click:Connect(function()
+	gui:Destroy()
 end)
 
-local dumping = false
+eyeBtn.MouseButton1Click:Connect(function()
+	logFrame.Visible = not logFrame.Visible
+	if logFrame.Visible then
+		local mainAbsPos = frame.AbsolutePosition
+		logFrame.Position = UDim2.new(0, mainAbsPos.X + 340, 0, mainAbsPos.Y)
+	end
+end)
 
-DumpBtn.MouseButton1Click:Connect(function()
-	if dumping then return end
+stopBtn.MouseButton1Click:Connect(function()
+	stopped = true
+	if currentTrack then currentTrack:Stop() end
+	if activeConn then activeConn:Disconnect() end
 	
-	local raw = InputBox.Text
-	local animId
+	dumpBtn.Text = "STOPPED"
+	dumpBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
+	
+	addLog("> Stopped by user.", "red")
+	
+	task.wait(1)
+	dumpBtn.Text = "DUMP"
+	dumpBtn.BackgroundColor3 = Color3.fromRGB(0,170,0)
+	dumping = false
+end)
 
-	if tonumber(raw) then
-		animId = "rbxassetid://" .. raw
-	elseif raw:find("rbxassetid://") then
-		animId = raw
-	else
-		InputBox.Text = "INVALID ID!"
+dumpBtn.MouseButton1Click:Connect(function()
+	if dumping then return end
+	local raw = input.Text
+	local animNum = normalizeId(raw)
+
+	if animNum == "" then
+		input.Text = "INVALID"
+		addLog("> Invalid ID", "red")
 		task.wait(1)
-		InputBox.Text = raw
+		input.Text = raw
 		return
 	end
 
+	local animId = "rbxassetid://" .. animNum
+	lastId = animNum
 	dumping = true
-	DumpBtn.BackgroundColor3 = Color3.fromRGB(180, 180, 0)
-	DumpBtn.Text = "LOADING..."
+	stopped = false
+	dumpData = {}
+	
+	addLog("> Dumping...", "white")
+	
+	dumpBtn.Text = "DUMPING"
+	dumpBtn.BackgroundColor3 = Color3.fromRGB(180,180,0)
 
-	local success, track = pcall(function()
+	local ok, track = pcall(function()
 		local a = Instance.new("Animation")
 		a.AnimationId = animId
 		return animator:LoadAnimation(a)
 	end)
 
-	if success and track then
-		DumpBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-		DumpBtn.Text = "DUMPING..."
-
-		track.Looped = false
-		track.Priority = Enum.AnimationPriority.Action
-		track:Play()
-
-		local motors = {}
-		for _, v in ipairs(character:GetDescendants()) do
-			if v:IsA("Motor6D") and v.Part1 then
-				motors[#motors+1] = { name = v.Part1.Name, obj = v }
-			end
-		end
-
-		local data = {}
-		local count = 0
-		local start = tick()
-
-		local conn = RunService.RenderStepped:Connect(function()
-			count += 1
-			local t = round3(tick() - start)
-
-			local item = { Time = t, Poses = {} }
-
-			for i = 1, #motors do
-				local m = motors[i]
-				item.Poses[m.name] = cfToStr(m.obj.Transform)
-			end
-
-			data[count] = item
-		end)
-
-		track.Stopped:Wait()
-		conn:Disconnect()
-
-		for i = 1, #data do
-			local f = data[i]
-			for part, cf in pairs(f.Poses) do
-				print(f.Time .. "s : " .. part .. " = " .. cf)
-			end
-		end
-
-		DumpBtn.Text = "DONE"
-		DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-	else
-		DumpBtn.Text = "ERROR!"
-		DumpBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+	if not ok then
+		dumpBtn.Text = "ERROR"
+		dumpBtn.BackgroundColor3 = Color3.fromRGB(200,0,0)
+		addLog("> Could not load Animation ID", "red")
+		task.wait(1)
+		dumpBtn.Text = "DUMP"
+		dumpBtn.BackgroundColor3 = Color3.fromRGB(0,170,0)
+		dumping = false
+		return
 	end
 
-	task.wait(2)
+	currentTrack = track
+	track.Looped = false
+	track.Priority = Enum.AnimationPriority.Action
+
+	dumpBtn.Text = "DUMPING"
+	dumpBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
+
+	local motors = {}
+	for _, v in ipairs(character:GetDescendants()) do
+		if v:IsA("Motor6D") and v.Part1 then
+			motors[#motors+1] = { name=v.Part1.Name, obj=v }
+		end
+	end
+
+	startTime = tick()
+	track:Play()
+
+	activeConn = RunService.RenderStepped:Connect(function()
+		if stopped then return end
+		local rawTime = tick() - startTime
+		local t = tostring(round(rawTime)) 
+		local f = { Time=t, Poses={} }
+
+		for i = 1, #motors do
+			local m = motors[i]
+			f.Poses[m.name] = cfToStr(m.obj.Transform)
+		end
+		dumpData[#dumpData+1] = f
+	end)
+
+	track.Stopped:Wait()
+	if activeConn then activeConn:Disconnect() end
+
+	if stopped then return end
+	
+	local totalTime = round(tick() - startTime)
+
+	dumpBtn.Text = "DONE"
+	dumpBtn.BackgroundColor3 = Color3.fromRGB(0,170,0)
+	
+	addLog("> Dump DONE!", "green")
+	addLog("   ID: " .. lastId, "green")
+	addLog("   Frame: " .. #dumpData, "green")
+	addLog("   Time: " .. totalTime .. "s", "green")
+	
+	task.wait(1)
+	dumpBtn.Text = "DUMP"
 	dumping = false
-	DumpBtn.Text = "DUMP"
-	DumpBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
 end)
-					
+
+copyBtn.MouseButton1Click:Connect(function()
+	if #dumpData == 0 then 
+		addLog("> No data to copy", "red")
+		return 
+	end
+	
+	local text = generateFileContent()
+	
+	if setclipboard then 
+		setclipboard(text)
+		addLog("> Copied frames!", "green")
+	else
+		addLog("> Your ''executor'' not support Clipboard", "red")
+	end
+end)
+
+fileBtn.MouseButton1Click:Connect(function()
+	if #dumpData == 0 or lastId == "" then 
+		addLog("> No data to export", "red")
+		return 
+	end
+
+	local placeName = getPlaceName()
+	local fileName = lastId.."_"..placeName..".lua"
+	local text = generateFileContent()
+	
+	addLog("> Exporting...", "white")
+
+	if writefile then
+		local success, err = pcall(function()
+			writefile(fileName, text)
+		end)
+		
+		if success then
+			addLog("> Export done!", "green")
+			addLog("   Name file is " .. fileName, "green")
+		else
+			addLog("> An error occurred during the export process, Try again", "red")
+		end
+	else
+		addLog("> Your ''executor'' not support writefile", "red")
+	end
+end)
+			
     end
 })
 
