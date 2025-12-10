@@ -35,12 +35,12 @@ local Options = Fluent.Options
 -- // DEX EXPLORER
 Tabs.Dex:AddParagraph({
     Title = "DEX SCRIPTs",
-    Content = "Dùng để xem cấu trúc game như Explorer / Properties | Used to view game structure like Explorer / Properties"
+    Content = "Used to view game structure like Explorer / Properties"
 })
 
 Tabs.Dex:AddButton({
     Title = "Dex",
-    Description = "Phiên bản bình thường | Normal ver",
+    Description = "Normal ver",
     Callback = function()
         loadstring(game:HttpGet(
             "https://rawscripts.net/raw/Universal-Script-Keyless-mobile-dex-17888"
@@ -50,7 +50,7 @@ Tabs.Dex:AddButton({
 
 Tabs.Dex:AddButton({
     Title = "Dex PlusPlus",
-    Description = "Dex nhưng đẹp và nhiều tính năng hơn | Dex but more beautiful and with more features",
+    Description = "Dex but more beautiful and with more features",
     Callback = function()
         loadstring(game:HttpGet(
             "https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"
@@ -60,7 +60,7 @@ Tabs.Dex:AddButton({
 
 Tabs.Dex:AddButton({
     Title = "Dex API-less",
-    Description = "Tính năng này chỉ dành cho những người dùng gặp sự cố khi vượt qua ''Fetching API'' trong Dex hoặc không thể chờ đợi lâu | This feature is only for users who have problems getting through the ''Fetching API'' in Dex or can't wait that long",
+    Description = "This feature is only for users who have problems getting through the ''Fetching API'' in Dex or can't wait that long",
     Callback = function()
         loadstring(game:HttpGet(
             "https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"
@@ -76,7 +76,7 @@ Tabs.Spy:AddParagraph({
 
 Tabs.Spy:AddButton({
     Title = "Remote Spy",
-    Description = "Phiên bản bình thường / Normal ver. By REDz",
+    Description = "Normal ver. By REDz",
     Callback = function()
         loadstring(game:HttpGet(
             "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/RemoteSpy.lua"
@@ -125,12 +125,12 @@ Tabs.Spy:AddButton({
 Tabs.Spy:AddSection("Http Spy")
 Tabs.Spy:AddParagraph({
     Title = "HTTPSPY SCRIPTs",
-    Content = "Theo dõi các yêu cầu HTTP | Monitor HTTP requests"
+    Content = "Monitor HTTP requests"
 })
 
 Tabs.Spy:AddButton({
     Title = "HTTP Spy",
-    Description = "Theo dõi HTTP Requests | Monitor HTTP Requests",
+    Description = "Monitor HTTP Requests",
     Callback = function()
         loadstring(game:HttpGet(
             "https://raw.githubusercontent.com/Bebo-Mods/Scripts/refs/heads/master/HttpsSpy.lua"
@@ -151,7 +151,7 @@ Tabs.Spy:AddButton({
 -- OTHER THINGS
 Tabs.An:AddButton({
     Title = "Debuggers",
-    Description = "Idk how to explain it;-;",
+    Description = "Idk how to explain this ;-;",
     Callback = function()
         loadstring(game:HttpGet(
             "https://raw.githubusercontent.com/yofriendfromschool1/debugnation/main/decompilers%20and%20debugging/Debuggers.txt"
@@ -171,7 +171,7 @@ Tabs.An:AddButton({
 
 Tabs.An:AddButton({
     Title = "Universal Viewer",
-    Description = "Xem danh sách các place liên kết với place hiện tại | View a list of places linked to the current place",
+    Description = "View a list of places linked to the current place",
     Callback = function()
     
 local TeleportService = game:GetService("TeleportService")
@@ -356,7 +356,7 @@ updateGUI()
 
 Tabs.An:AddButton({
     Title = "Animation logger",
-    Description = "Một animation được phát, nó sẽ ghi lại animation đó | An animation is played, it will record that animation",
+    Description = "An animation is played, it will record that animation",
     Callback = function()
 local gui = Instance.new("ScreenGui")
 gui.Parent = game:GetService("CoreGui")
@@ -615,7 +615,7 @@ minimizeButton.MouseButton1Click:Connect(function()
 
 Tabs.An:AddButton({
     Title = "Animation Dumper",
-    Description = "Một giao diện người dùng đồ họa ghi lại các chuyển động của bạn trong khi hoạt ảnh chạy | A gui records your movements while the animation runs ",
+    Description = "A gui records your movements while the animation runs ",
     Callback = function()
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -1039,7 +1039,7 @@ end)
 
 Tabs.An:AddButton({
     Title = "Audio logger",
-    Description = "Một GUI khi sound được phát, nó sẽ ghi lại | A GUI when sound is played it will record",
+    Description = "A GUI when sound is played it will record",
     Callback = function()
         loadstring(game:HttpGet(
             "https://raw.githubusercontent.com/infyiff/backup/main/audiologger.lua"
@@ -1049,7 +1049,7 @@ Tabs.An:AddButton({
 
 Tabs.An:AddButton({
     Title = "Event finder",
-    Description = "Một GUI khi sound được phát, nó sẽ ghi lại | A GUI when sound is played it will record",
+    Description = "A GUI when sound is played it will record",
     Callback = function()
         loadstring(game:HttpGet(
             "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Event_Finder.lua"
