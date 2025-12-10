@@ -404,8 +404,3 @@ ExitButton.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 print("✅ Script is working")
 warn("⚠️ This is a test warning.")
 error("❌ This is a very long test error to check if there is a line break, look at the console!")
-
-wait(3)
-print("❤️ Thank U for using my script! ❤️")
-wait(2)
-print("Enjoy!!")
