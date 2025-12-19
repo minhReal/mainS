@@ -1,0 +1,399 @@
+-- RANDOM MAFIA 
+local player = game.Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local RepStorage = game:GetService("ReplicatedStorage")
+local workspace = game:GetService("Workspace")
+
+-- ===========================
+-- GUI MAIN
+-- ===========================
+local screenGui = Instance.new("ScreenGui")
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player.PlayerGui
+
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(0,120,0,40)
+toggleBtn.Position = UDim2.new(0,20,0,50)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(60,60,90)
+toggleBtn.Text = "Show Panel"
+toggleBtn.TextScaled = true
+toggleBtn.TextColor3 = Color3.new(1,1,1)
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.Parent = screenGui
+toggleBtn.Active = true
+toggleBtn.Draggable = true
+toggleBtn.BorderSizePixel = 0
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0,260,0,500)
+mainFrame.Position = UDim2.new(0,160,0,60)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30,30,40)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+mainFrame.Visible = true
+
+local scroll = Instance.new("ScrollingFrame")
+scroll.Size = UDim2.new(1,0,1,0)
+scroll.CanvasSize = UDim2.new(0,0,0,900)
+scroll.ScrollBarThickness = 6
+scroll.BackgroundTransparency = 1
+scroll.Parent = mainFrame
+
+local list = Instance.new("UIListLayout")
+list.Parent = scroll
+list.Padding = UDim.new(0,8)
+list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+list.SortOrder = Enum.SortOrder.LayoutOrder
+
+toggleBtn.MouseButton1Click:Connect(function()
+    mainFrame.Visible = not mainFrame.Visible
+    toggleBtn.Text = mainFrame.Visible and "Hide Panel" or "Show Panel"
+end)
+
+-- ===========================
+-- CREATE BUTTON FUNCTION
+-- ===========================
+local function createButton(text)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0,220,0,45)
+    btn.Text = text
+    btn.TextScaled = true
+    btn.Font = Enum.Font.GothamBold
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.BackgroundColor3 = Color3.fromRGB(70,70,90)
+    btn.BorderSizePixel = 0
+    btn.Parent = scroll
+    btn.MouseEnter:Connect(function() btn.BackgroundColor3 = Color3.fromRGB(90,90,120) end)
+    btn.MouseLeave:Connect(function() btn.BackgroundColor3 = Color3.fromRGB(70,70,90) end)
+    return btn
+end
+
+-- ===========================
+-- BUTTONS
+-- ===========================
+local tpBtn = createButton("Tp to Platform")
+local resetBtn = createButton("Reset Platform")
+local autobankBtn = createButton("Autobank: OFF")
+local sellBtn = createButton("Sell")
+local sellnotsBtn = createButton("Sell ko an toàn")
+local zeroStarsBtn = createButton("0 Stars")
+local autoCashBtn = createButton("AutoCash: OFF")
+local speedBtn = createButton("Speedwalk: OFF")
+local noclipBtn = createButton("Noclip: OFF")
+
+-- ===========================
+-- VARIABLES
+-- ===========================
+local char, hrp, humanoid, cam
+local OFFSET_PLATFORM, OFFSET_TELEPORT = 13, 13
+local platform = Instance.new("Part")
+platform.Size = Vector3.new(11,1,11)
+platform.Anchored = true
+platform.CanCollide = true
+platform.Color = Color3.fromRGB(0,255,0)
+platform.Material = Enum.Material.Neon
+platform.Parent = workspace
+local platformY = 0
+local platformFrozen = false
+local onTop = false
+
+local autobankEnabled, autoCashEnabled = false, false
+local speedEnabled, noclipEnabled = false, false
+local oldSpeed = 16
+local valuablesFolder = workspace:WaitForChild("Valuables")
+local MAX_DISTANCE = 30
+local ppPart -- PP part
+
+-- ===========================
+-- INIT CHAR / CREATE PP / REMOVE NOCOLLP DETECTOR
+-- ===========================
+local function createPP()
+    if workspace:FindFirstChild("PP") then
+        ppPart = workspace.PP
+    else
+        ppPart = Instance.new("Part")
+        ppPart.Name = "PP"
+        ppPart.Size = Vector3.new(1,1,1)
+        ppPart.CFrame = CFrame.new(-58.7230568, 37.6898499, -419.777069, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+        ppPart.Anchored = true
+        ppPart.Parent = workspace
+    end
+end
+
+local function initChar()
+    char = player.Character or player.CharacterAdded:Wait()
+    hrp = char:WaitForChild("HumanoidRootPart")
+    humanoid = char:WaitForChild("Humanoid")
+    cam = workspace.CurrentCamera
+    oldSpeed = humanoid.WalkSpeed
+
+    -- Xóa NoclipDetector
+    local noclipDetector = char:FindFirstChild("NoclipDetector")
+    if noclipDetector then noclipDetector:Destroy() end
+    
+    -- Xoá 1 vài thứ
+do
+    local t1=CFrame.new(-66.904274,31.9279213,-428.400024,0,0,1,0,1,0,-1,0,0)
+    local t2=CFrame.new(-54,41.4484673,-419.462158,-1.19e-07,0,-1,0,1,0,1,0,-1.19e-07)
+
+    local function cfClose(a,b)
+        return (a.Position-b.Position).Magnitude<0.1
+        and (a.LookVector-b.LookVector).Magnitude<0.1
+        and (a.RightVector-b.RightVector).Magnitude<0.1
+        and (a.UpVector-b.UpVector).Magnitude<0.1
+    end
+
+    for _,v in ipairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") then
+            local cf=v.CFrame
+            if cfClose(cf,t1) or cfClose(cf,t2) then
+                v:Destroy()
+            end
+        end
+    end
+end
+    
+    -- Platform
+    platformY = hrp.Position.Y - OFFSET_PLATFORM
+    platform.Position = Vector3.new(hrp.Position.X, platformY, hrp.Position.Z)
+    platformFrozen = false
+    onTop = false
+
+    createPP()
+end
+initChar()
+player.CharacterAdded:Connect(initChar)
+
+-- ===========================
+-- PLATFORM FOLLOW
+-- ===========================
+RunService.RenderStepped:Connect(function()
+    if not hrp then return end
+    local y = hrp.Position.Y - OFFSET_PLATFORM
+    if platformFrozen and hrp.Position.Y < platform.Position.Y - 1 then
+        platformFrozen = false
+        onTop = false
+    end
+    if not platformFrozen then
+        if y > platformY then platformY = y end
+    end
+    platform.Position = Vector3.new(hrp.Position.X, platformY, hrp.Position.Z)
+end)
+
+-- ===========================
+-- TP / RESET PLATFORM
+-- ===========================
+tpBtn.MouseButton1Click:Connect(function()
+    if not hrp or not ppPart then return end
+    if not onTop then
+        hrp.CFrame = CFrame.new(platform.Position.X, platform.Position.Y + OFFSET_TELEPORT, platform.Position.Z)
+        platformFrozen = true
+        onTop = true
+    else
+        hrp.CFrame = CFrame.new(platform.Position.X, platform.Position.Y + 3, platform.Position.Z)
+        platformFrozen = false
+        onTop = false
+    end
+end)
+
+resetBtn.MouseButton1Click:Connect(function()
+    if not hrp then return end
+    platformY = hrp.Position.Y - OFFSET_PLATFORM
+    platform.Position = Vector3.new(hrp.Position.X, platformY, hrp.Position.Z)
+    platformFrozen = false
+    onTop = false
+end)
+
+-- ===========================
+-- AUTO CASH
+-- ===========================
+autoCashBtn.MouseButton1Click:Connect(function()
+    autoCashEnabled = not autoCashEnabled
+    autoCashBtn.Text = "AutoCash: " .. (autoCashEnabled and "ON" or "OFF")
+    if autoCashEnabled then
+        task.spawn(function()
+            local lootFolder = workspace:WaitForChild("Map"):WaitForChild("MapModel"):WaitForChild("CargoShip"):WaitForChild("Loot")
+            
+            while autoCashEnabled and char and hrp and hrp.Parent do
+                for _, v in ipairs(valuablesFolder:GetDescendants()) do
+                    if v:IsA("ProximityPrompt") and v.Enabled then
+                        v.HoldDuration = 0
+                        pcall(function() fireproximityprompt(v) end)
+                    end
+                end
+
+                for _, obj in pairs(lootFolder:GetDescendants()) do
+                    if obj:IsA("ProximityPrompt") and obj.Enabled then
+                        obj.HoldDuration = 0
+                        obj.MaxActivationDistance = 70
+                        pcall(function() fireproximityprompt(obj) end)
+                    end
+                end
+
+                task.wait(0.05)
+            end
+        end)
+    end
+end)
+
+-- ===========================
+-- SPEED WALK
+-- ===========================
+speedBtn.MouseButton1Click:Connect(function()
+    speedEnabled = not speedEnabled
+    speedBtn.Text = "Speedwalk: " .. (speedEnabled and "ON" or "OFF")
+    if speedEnabled then
+        humanoid.WalkSpeed = 31
+        task.spawn(function()
+            while speedEnabled and humanoid and humanoid.Parent do
+                if humanoid.WalkSpeed ~= 31 then humanoid.WalkSpeed = 31 end
+                task.wait(0.3)
+            end
+        end)
+    else
+        if humanoid then humanoid.WalkSpeed = oldSpeed end
+    end
+end)
+
+-- ===========================
+-- NOCLIP
+-- ===========================
+noclipBtn.MouseButton1Click:Connect(function()
+    noclipEnabled = not noclipEnabled
+    noclipBtn.Text = "Noclip: " .. (noclipEnabled and "ON" or "OFF")
+    task.spawn(function()
+        while noclipEnabled and hrp and hrp.Parent do
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+            task.wait(0.3)
+        end
+        if char and char.Parent then
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+    end)
+end)
+
+-- ===========================
+-- SELL & 0 STARS
+-- ===========================
+zeroStarsBtn.MouseButton1Click:Connect(function()
+    local s = workspace.PP
+    if s and hrp then
+        hrp.CFrame = CFrame.new(s.Position + Vector3.new(0, 2, 0))
+    end
+end)
+
+sellnotsBtn.MouseButton1Click:Connect(function()
+local s = workspace.Map.MapModel.Hideout.ScriptedElements:FindFirstChild("SellPod")
+    if s and hrp then hrp.CFrame = CFrame.new(s.Position) end
+end)
+
+sellBtn.MouseButton1Click:Connect(function()
+    local s = workspace.Map.MapModel.Hideout.ScriptedElements:FindFirstChild("SellZone")
+    if s and hrp and humanoid then
+        -- Lấy đáy part
+        local bottom = s.Position.Y - (s.Size.Y / 2)
+        -- Vị trí 4 studs dưới đáy
+        local targetY = bottom - 3.1
+        -- Xoay 180 độ dọc
+        local rot = CFrame.Angles(math.rad(180), 0, 0)
+        -- Teleport + xoay
+        hrp.CFrame = CFrame.new(
+            s.Position.X,
+            targetY,
+            s.Position.Z
+        ) * rot
+        -- === TẠO WELD ĐỂ CHO DÍNH ===
+        local weld = Instance.new("WeldConstraint")
+        weld.Part0 = hrp
+        weld.Part1 = s
+        weld.Parent = hrp
+        -- Gỡ weld sau 1 giây
+        task.delay(1, function()
+            if weld and weld.Parent then
+                weld:Destroy()
+            end
+        end)
+
+    end
+end)
+
+-- ===========================
+-- AUTOBANK LOGIC
+-- ===========================
+local function lookAt(pos)
+    if cam then cam.CFrame = CFrame.new(cam.CFrame.Position, pos) end
+end
+
+local function flyTo(part)
+    if not part or not hrp then return end
+    while (part.Position - hrp.Position).Magnitude > 3 and autobankEnabled do
+        lookAt(part.Position)
+        local dir = (part.Position - hrp.Position).Unit
+        hrp.CFrame = hrp.CFrame + dir * 12 * RunService.Heartbeat:Wait()
+    end
+end
+
+local function getGoldPart(model)
+    for _, d in ipairs(model:GetDescendants()) do
+        if d:IsA("BasePart") then return d end
+    end
+end
+
+local function runBank()
+    local door = workspace.POIs.Bank1.Doors.ValveDoor
+    local doorPart = door.PrimaryPart or door:FindFirstChildWhichIsA("BasePart")
+    local health = door:FindFirstChild("Health")
+
+    while autobankEnabled and health and health.Parent do
+        if health.Value > 0 then
+            if ppPart then
+                hrp.CFrame = CFrame.new(ppPart.Position.X, ppPart.Position.Y + 13, ppPart.Position.Z)
+                platformFrozen = true
+                onTop = true
+            end
+            for i = 1,30 do
+                lookAt(doorPart.Position)
+                RepStorage.InputEvents.Fire:Fire("67")
+                task.wait(0.8)
+            end
+            RepStorage.InputEvents.Reload:Fire("67")
+            task.wait(4)
+        else
+            -- find near gold 
+            local nearby = {}
+            for _, gold in ipairs(valuablesFolder:GetChildren()) do
+                local g = getGoldPart(gold)
+                if g and (g.Position - hrp.Position).Magnitude <= MAX_DISTANCE then
+                    table.insert(nearby, g)
+                end
+            end
+            if #nearby > 0 then
+                for _, g in ipairs(nearby) do
+                    flyTo(g)
+                    task.wait(0.4)
+                end
+            else
+                if ppPart then
+                    hrp.CFrame = CFrame.new(ppPart.Position.X, ppPart.Position.Y + 3, ppPart.Position.Z)
+                end
+                task.wait(10)
+            end
+        end
+    end
+end
+
+autobankBtn.MouseButton1Click:Connect(function()
+    autobankEnabled = not autobankEnabled
+    autobankBtn.Text = "Autobank: " .. (autobankEnabled and "ON" or "OFF")
+    if autobankEnabled then
+        task.spawn(runBank)
+    end
+end)
