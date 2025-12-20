@@ -3,7 +3,7 @@ local RunService = game:GetService("RunService")
 local a = Players.LocalPlayer
 
 local b = Instance.new("ScreenGui")
-b.Name = "PlayerViewer"
+b.Name = "PVS"
 b.ResetOnSpawn = false
 b.Parent = a:WaitForChild("PlayerGui")
 
