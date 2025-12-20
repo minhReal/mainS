@@ -1057,6 +1057,16 @@ Tabs.An:AddButton({
     end
 })
 
+Tabs.An:AddButton({
+    Title = "Console gui",
+    Description = "",
+    Callback = function()
+        loadstring(game:HttpGet(
+            "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/console_gui.lua"
+        ))()
+    end
+})
+
 
 -- // SETTINGS
 Tabs.Settings:AddParagraph({
