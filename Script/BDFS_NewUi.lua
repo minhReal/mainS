@@ -1,12 +1,20 @@
 --      _By Hydro_gen_
---   _Bản #2 / Version #2_
---        _4/1/2025_
+--   _Bản #2.7 / Version #2.7_
+--        _25/12/2025_
+--   _Fixed: ESP Red Dot in Torso + Real Scale + Toggle GUI Fix_
 
 --// Script Start #1
 loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
 
---// Toggle 
+--// Services
+local UserInputService = game:GetService("UserInputService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local player = game.Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+
+--// Create Toggle Button GUI
 local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+gui.Name = "HydroToggleGUI"
 
 local Line = Instance.new("ImageButton")
 Line.Size = UDim2.new(0.075, 0, 0.2, 0)
@@ -23,18 +31,6 @@ local uicornerGuiS = Instance.new("UICorner")
 uicornerGuiS.CornerRadius = UDim.new(0.5, 0)
 uicornerGuiS.Parent = Line
 
-local UserInputService = game:GetService("UserInputService")
-
-UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-    if not gameProcessedEvent then
-        if input.KeyCode == Enum.KeyCode.LeftAlt then
-        end
-    end
-end)
-
---// Services
-local UserInputService = game:GetService("UserInputService");
-
 --// Library
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lxte/lates-lib/main/Main.lua"))()
 local Window = Library:CreateWindow({
@@ -46,16 +42,26 @@ local Window = Library:CreateWindow({
     MinimizeKeybind = Enum.KeyCode.LeftAlt,
 })
 
+local isGuiVisible = true
+Line.MouseButton1Click:Connect(function()
+    isGuiVisible = not isGuiVisible
+    local coreGui = game:GetService("CoreGui")
+    for _, child in pairs(coreGui:GetChildren()) do
+        if child:FindFirstChild("Main") and child:FindFirstChild("Shadow") then
+            child.Enabled = isGuiVisible
+        end
+    end
+end)
+
 local Themes = { 
     Light = { Primary = Color3.fromRGB(232, 232, 232), Secondary = Color3.fromRGB(255, 255, 255), Component = Color3.fromRGB(245, 245, 245), Interactables = Color3.fromRGB(235, 235, 235), Tab = Color3.fromRGB(50, 50, 50), Title = Color3.fromRGB(0, 0, 0), Description = Color3.fromRGB(100, 100, 100), Shadow = Color3.fromRGB(255, 255, 255), Outline = Color3.fromRGB(210, 210, 210), Icon = Color3.fromRGB(100, 100, 100), },
     Dark = { Primary = Color3.fromRGB(30, 30, 30), Secondary = Color3.fromRGB(35, 35, 35), Component = Color3.fromRGB(40, 40, 40), Interactables = Color3.fromRGB(45, 45, 45), Tab = Color3.fromRGB(200, 200, 200), Title = Color3.fromRGB(240,240,240), Description = Color3.fromRGB(200,200,200), Shadow = Color3.fromRGB(0, 0, 0), Outline = Color3.fromRGB(40, 40, 40), Icon = Color3.fromRGB(220, 220, 220), }, 
     Void = { Primary = Color3.fromRGB(15, 15, 15), Secondary = Color3.fromRGB(20, 20, 20), Component = Color3.fromRGB(25, 25, 25), Interactables = Color3.fromRGB(30, 30, 30), Tab = Color3.fromRGB(200, 200, 200), Title = Color3.fromRGB(240,240,240), Description = Color3.fromRGB(200,200,200), Shadow = Color3.fromRGB(0, 0, 0), Outline = Color3.fromRGB(40, 40, 40), Icon = Color3.fromRGB(220, 220, 220), }, 
 }
 
---// Set the default theme
 Window:SetTheme(Themes.Void)
 
---// Script Loaded Successfully  #2
+--// Script Loaded Successfully
 game:GetService("StarterGui"):SetCore("SendNotification", {
       Title = "Notification",
       Text = "Script has been loaded successfully!",
@@ -63,13 +69,6 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
       Duration = 10
 })
         
-local player = game.Players.LocalPlayer
-local VirtualInputManager = game:GetService("VirtualInputManager")
-
-Line.MouseButton1Click:Connect(function()
-    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.LeftAlt, false, player.Character and player.Character:FindFirstChild("Humanoid"))
-end)
-
 --// Delete something
 local Sk = game.Workspace.Spawns:FindFirstChild("Spawn15")
 if Sk then
@@ -77,7 +76,6 @@ if Sk then
 end
 
 --// Safebox
-local Workspace = game:GetService("Workspace")
 local origin = Vector3.new(26.25, 14.25, -154.500031)
 local farPosition = origin + Vector3.new(10000, 0, 0)
 local SafeBox = Instance.new("Model")
@@ -113,9 +111,6 @@ end
 if foundPart then
     foundPart.CanCollide = false
 end
-
-local player = game.Players.LocalPlayer
-local moneyHitbox = workspace.Buildings.DeadBurger.DumpsterMoneyMaker.MoneyHitbox
 
 --// Animation Script 
 local currentAnimation
@@ -177,7 +172,7 @@ local Settings = Window:AddTab({
 	Icon = "rbxassetid://11293977610",
 })
 
---// settings [TAB]
+--// Settings [TAB]
 Window:AddDropdown({
 	Title = "Set Theme",
 	Description = "Set the theme of the library!",
@@ -209,7 +204,7 @@ Window:AddButton({
     Tab = Settings,
     Callback = function()
         local TeleportService = game:GetService("TeleportService")
-    TeleportService:Teleport(game.PlaceId, player)
+        TeleportService:Teleport(game.PlaceId, player)
     end,
 })
 
@@ -226,8 +221,8 @@ Window:AddButton({
 })
 
 Window:AddParagraph({
-	Title = "Update date: Friday, January 31, 2025",
-	Description = "-a stressful time-",
+	Title = "December 25, 2025",
+	Description = "-☃️ Merry Christmas ❄️-",
 	Tab = Main
 }) 
 
@@ -238,20 +233,17 @@ Window:AddButton({
 	Description = "shows player status (JOY) and whether autofarm should be used ",
 	Tab = Main,
 	Callback = function() 
-		local player = game.Players.LocalPlayer
-local joyValue = player.Character and player.Character.Values and player.Character.Values.Joy and player.Character.Values.Joy.Value or 0
-
-local formattedJoyValue = string.format("%.2f", joyValue)
-local statusMessage = joyValue < 50 and " | Not good" or " | Good"
-
-Window:Notify({
-    Title = "Notification",
-    Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
-    Duration = 10
-})
-
+		local joyValue = player.Character and player.Character.Values and player.Character.Values.Joy and player.Character.Values.Joy.Value or 0
+        local formattedJoyValue = string.format("%.2f", joyValue)
+        local statusMessage = joyValue < 50 and " | Not good" or " | Good"
+        Window:Notify({
+            Title = "Notification",
+            Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
+            Duration = 10
+        })
 	end,
 }) 
+
 Window:AddButton({
     Title = "Reset",
     Description = "isekai-",
@@ -283,7 +275,6 @@ Window:AddSlider({
     end,
 })
 
-
 Window:AddSlider({
     Title = "Gravity",
     Description = "Normal gravity is 196.2",
@@ -295,24 +286,18 @@ Window:AddSlider({
     end,
 })
 
-
-
 --// Tools [TAB]
 Window:AddParagraph({ Title = "WARNING", Description = "If you click on a tool, the script will automatically buy that tool!", Tab = toolTab })
 Window:AddSection({ Name = "Food", Tab = toolTab }) 
 
--- script autoBuy
 local function autoBuy()
     wait(0.1)
-    local player = game:GetService("Players").LocalPlayer
     local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
     local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
-
     if buyButton and buyButton:IsA("RemoteEvent") then
         buyButton:FireServer()
     end
 end
-
 
 Window:AddButton({
     Title = "Dead burger is 30$",
@@ -361,9 +346,9 @@ Window:AddButton({
     Description = "Destroy",
     Tab = toolTab,
     Callback = function()
-        local handleDetector = workspace:FindFirstChild("Handle") and workspace.Handle:FindFirstChild("ClickDetector")
-        if handleDetector then
-            fireclickdetector(handleDetector)
+        local h = workspace:FindFirstChild("Handle") and workspace.Handle:FindFirstChild("ClickDetector")
+        if h then
+            fireclickdetector(h)
             autoBuy()
         end
     end,
@@ -492,13 +477,93 @@ Window:AddButton({
     end,
 })
 
-
 Window:AddSection({ Name = "Utilities", Tab = miscTab }) 
 
 local toggled = false
 local corpsesFolder = workspace:WaitForChild("StuffOfTheDead"):WaitForChild("Corpses")
+
+local function addHighlight(model)
+    local torso = model:FindFirstChild("Torso")
+    if not torso then return end
+
+    if not model:FindFirstChild("Highlight") then
+        local highlight = Instance.new("Highlight")
+        highlight.Name = "Highlight"
+        highlight.FillColor = Color3.fromRGB(255, 0, 0)
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.FillTransparency = 0.85
+        highlight.OutlineTransparency = 0.35
+        highlight.Parent = model
+    end
+
+    if not torso:FindFirstChild("ESP_Tag") then
+        local bb = Instance.new("BillboardGui")
+        bb.Name = "ESP_Tag"
+        bb.Adornee = torso
+        bb.Parent = torso
+        bb.AlwaysOnTop = true
+        
+        bb.Size = UDim2.new(2, 0, 2, 0) 
+        
+        local dot = Instance.new("Frame")
+        dot.Name = "RedDot"
+        dot.Size = UDim2.new(0.4, 0, 0.4, 0)
+        dot.Position = UDim2.new(0.3, 0, 0.3, 0)
+        dot.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        dot.BorderSizePixel = 0
+        dot.Parent = bb
+        
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(1, 0)
+        corner.Parent = dot
+    end
+end
+
+local function removeHighlight(model)
+    local highlight = model:FindFirstChild("Highlight")
+    if highlight then
+        highlight:Destroy()
+    end
+    
+    local torso = model:FindFirstChild("Torso")
+    if torso then
+        local espTag = torso:FindFirstChild("HydroESP_Tag")
+        if espTag then
+            espTag:Destroy()
+        end
+    end
+end
+
+local function updateHighlights()
+    for _, corpse in pairs(corpsesFolder:GetChildren()) do
+        if corpse:IsA("Model") then
+            if toggled then
+                addHighlight(corpse)
+            else
+                removeHighlight(corpse)
+            end
+        end
+    end
+end
+
+corpsesFolder.ChildAdded:Connect(function(child)
+    if toggled and child:IsA("Model") then
+        addHighlight(child)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if toggled then
+            updateHighlights()
+        end
+    end
+end)
+--// ----------------------
+
 Window:AddToggle({
-    Title = "Esp the dead [BUG]",
+    Title = "Esp the dead [FIXED]",
     Description = "Highlights dead bodies but some will be inactive",
     Tab = miscTab,
     Callback = function(Boolean)
@@ -551,7 +616,7 @@ Window:AddToggle({
 
 Window:AddToggle({
     Title = "No Car",
-    Description = "[]",
+    Description = "not working",
     Tab = miscTab,
     Callback = function(Boolean) 
         if Boolean then
@@ -568,15 +633,13 @@ Window:AddButton({
 	Description = "No die in the vent",
 	Tab = miscTab,
 	Callback = function()
-	local targetCFrame = CFrame.new(29.75, -6.3500042, 215, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-
-for _, part in pairs(workspace:GetDescendants()) do
-    if part:IsA("Part") and part.Name == "Button" and part.CFrame == targetCFrame then
-        part:Destroy()
-        break
-    end
-end
-
+	    local targetCFrame = CFrame.new(29.75, -6.3500042, 215, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+        for _, part in pairs(workspace:GetDescendants()) do
+            if part:IsA("Part") and part.Name == "Button" and part.CFrame == targetCFrame then
+                part:Destroy()
+                break
+            end
+        end
 	end,
 }) 
 
@@ -585,35 +648,26 @@ Window:AddButton({
     Description = "🧟",
     Tab = miscTab,
     Callback = function()
-        local infectionLiquid = workspace:FindFirstChild("Infection Liquid")
-        if infectionLiquid then
-            firetouchinterest(player.Character.HumanoidRootPart, infectionLiquid, 0)
+        local l = workspace:FindFirstChild("Infection Liquid")
+        if l then
+            firetouchinterest(player.Character.HumanoidRootPart, l, 0)
         end
     end,
 })
 
 Window:AddButton({
     Title = "No blur",
-    Description = "This script is only used when you turn into a zombie cuz when you turn into one your screen willbe blurr",
+    Description = "Remove zombie blur",
     Tab = miscTab,
     Callback = function()
         local lighting = game:GetService("Lighting")
         local blurEffect = lighting:FindFirstChild("Blur")
-
         if blurEffect then
             if blurEffect.Enabled then
                 blurEffect.Enabled = false
-                Window:Notify({
-                    Title = "Notification",
-                    Description = "Blur is off",
-                    Duration = 10
-                })
+                Window:Notify({ Title = "Notification", Description = "Blur is off", Duration = 10 })
             else
-                Window:Notify({
-                    Title = "Notification",
-                    Description = "Blur was turned off before",
-                    Duration = 10
-                })
+                Window:Notify({ Title = "Notification", Description = "Blur was turned off before", Duration = 10 })
             end
         end
     end,
@@ -642,17 +696,16 @@ Window:AddButton({
     Description = "",
     Tab = miscTab,
     Callback = function()
-	mouse = game.Players.LocalPlayer:GetMouse()
-tool = Instance.new("Tool")
-tool.RequiresHandle = false
-tool.Name = "Teleport Tool"
-tool.Activated:connect(function()
-local pos = mouse.Hit+Vector3.new(0,2.5,0)
-pos = CFrame.new(pos.X,pos.Y,pos.Z)
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
-end)
-tool.Parent = game.Players.LocalPlayer.Backpack
-
+    	mouse = game.Players.LocalPlayer:GetMouse()
+        tool = Instance.new("Tool")
+        tool.RequiresHandle = false
+        tool.Name = "Teleport Tool"
+        tool.Activated:connect(function()
+            local pos = mouse.Hit+Vector3.new(0,2.5,0)
+            pos = CFrame.new(pos.X,pos.Y,pos.Z)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+        end)
+        tool.Parent = game.Players.LocalPlayer.Backpack
     end,
 })
 
@@ -661,10 +714,9 @@ Window:AddButton({
     Description = "",
     Tab = miscTab,
     Callback = function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Spectator_ByHydro_gen.lua"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/Spectator_ByHydro_gen.lua"))()
     end,
 })
-
 
 Window:AddButton({
     Title = "Shiftlock",
@@ -686,20 +738,20 @@ Window:AddButton({
 
 Window:AddButton({
     Title = "Spawn a enemy ",
-    Description = "It will spawn an enemy with your skin and chase you. so becareful. ",
+    Description = "Spawns clone enemy",
     Tab = miscTab,
     Callback = function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/AI_2.lua"))()
-end,
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/AI_2.lua"))()
+    end,
 })
 
 --// farm [TAB]
 Window:AddSection({ Name = "Dead burger", Tab = farmTab }) 
 
 Window:AddParagraph({
-	Title = "❗IMPORTANT NOTICE❗",
-	Description = "Don't turn it on and off constantly because of bugs",
-	Tab = farmTab,
+    Title = "❗IMPORTANT NOTICE❗",
+    Description = "Don't turn it on and off constantly because of bugs",
+    Tab = farmTab,
 }) 
 
 Window:AddButton({
@@ -707,20 +759,16 @@ Window:AddButton({
 	Description = "shows player status (JOY) and whether autofarm should be used ",
 	Tab = Main,
 	Callback = function() 
-		local player = game.Players.LocalPlayer
-local joyValue = player.Character and player.Character.Values and player.Character.Values.Joy and player.Character.Values.Joy.Value or 0
-
-local formattedJoyValue = string.format("%.2f", joyValue)
-local statusMessage = joyValue < 35 and " | Not good" or " | Good"
-
-Window:Notify({
-    Title = "Notification",
-    Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
-    Duration = 10
+		local joyValue = player.Character and player.Character.Values and player.Character.Values.Joy and player.Character.Values.Joy.Value or 0
+        local formattedJoyValue = string.format("%.2f", joyValue)
+        local statusMessage = joyValue < 35 and " | Not good" or " | Good"
+        Window:Notify({
+            Title = "Notification",
+            Description = "Current Joy Value: " .. formattedJoyValue .. statusMessage, 
+            Duration = 10
+        })
+	end,
 })
-
-		end,
-	})
 
 Window:AddToggle({
     Title = "Autofarm ",
@@ -751,14 +799,12 @@ Window:AddToggle({
 })
 
 local running = false
-
 Window:AddToggle({
     Title = "Monitor",
     Description = "test",
     Tab = farmTab,
     Callback = function(Boolean)
         running = Boolean
-        warn("Auto Fire: ", running)
         if running then
             task.spawn(function()
                 while running do
@@ -768,7 +814,6 @@ Window:AddToggle({
                             if part then
                                 local cd = part:FindFirstChildOfClass("ClickDetector")
                                 if cd then
-                                    print("Clicking:", cd:GetFullName())
                                     fireclickdetector(cd)
                                     task.wait(0.1)
                                 end
@@ -782,9 +827,7 @@ Window:AddToggle({
     end,
 })
 
-local player = game.Players.LocalPlayer
 local autoEatEnabled = false
-
 Window:AddToggle({
     Title = "Auto eat",
     Description = "If you have less than 50 hunger, the script will run",
@@ -797,43 +840,29 @@ Window:AddToggle({
     end,
 })
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+-- Script Logic for Auto Happy
 local RNing = false
 local triggered = false
-
 local model = workspace:WaitForChild(player.Name)
 local joyValue = model:WaitForChild("Values"):WaitForChild("Joy")
 
-local function autoPay()
-    task.wait(0.1)
-    local popUpUI = player.PlayerGui:FindFirstChild("PopUpUI")
-    if not popUpUI then
-        warn("PopUpUI chưa xuất hiện!")
-        return
-    end
-
-    local buyButton = popUpUI.SettingsFrame:WaitForChild("BuyButton"):FindFirstChild("Buy")
-    if buyButton and buyButton:IsA("RemoteEvent") then
-        buyButton:FireServer()
-    else
-        warn("Không tìm thấy BuyButton hoặc RemoteEvent!")
-    end
-end
-
 local function equipAndUseGlee()
-    local backpack = player:WaitForChild("Backpack")
-    local glee = backpack:FindFirstChild("glee")
+    local glee = player:WaitForChild("Backpack"):FindFirstChild("glee")
     if glee and glee:IsA("Tool") then
         player.Character.Humanoid:EquipTool(glee)
         task.wait(0.2)
         if glee.Activate then
             glee:Activate()
-        else
-            warn("Tool 'glee' không có hàm Activate()")
         end
-    else
-        warn("Không tìm thấy tool 'glee' trong Backpack!")
+    end
+end
+
+local function autoBuyNEat()
+    wait(0.1)
+    local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
+    local b = popUpUI:FindFirstChild("SettingsFrame") and popUpUI.SettingsFrame:FindFirstChild("BuyButton") and popUpUI.SettingsFrame.BuyButton:FindFirstChild("Buy")
+    if b and b:IsA("RemoteEvent") then
+        b:FireServer()
     end
 end
 
@@ -843,23 +872,18 @@ Window:AddToggle({
     Tab = farmTab,
     Callback = function(Boolean) 
         RNing = Boolean
-        warn("Auto Glee: ", RNing)
-
         if RNing then
             task.spawn(function()
                 while RNing do
                     if joyValue.Value < 30 and not triggered then
                         triggered = true
-                        
                         local gleeTool = workspace:WaitForChild("Buyables"):WaitForChild("Tools"):WaitForChild("glee")
                         local detector = gleeTool:FindFirstChildOfClass("ClickDetector")
                         if detector then
                             fireclickdetector(detector)
                         end
-
                         task.wait(0.5)
-                        autoPay()
-
+                        autoBuy()
                         task.wait(1)
                         equipAndUseGlee()
                     elseif joyValue.Value >= 30 then
@@ -875,30 +899,30 @@ Window:AddToggle({
 Window:AddSection({ Name = "DVSC", Tab = farmTab }) 
 
 Window:AddButton({
-	Title = "clean up a dead body",
-	Description = "",
-	Tab = farmTab,
-	Callback = function()
-loadstring(game:HttpGet(('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/clean_up_deadBody.lua'),true))()
-	end,
+    Title = "clean up a dead body",
+    Description = "",
+    Tab = farmTab,
+    Callback = function()
+        loadstring(game:HttpGet(('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/clean_up_deadBody.lua'),true))()
+    end,
 }) 
 
 Window:AddButton({
-	Title = "Bring blood",
-	Description = "",
-	Tab = farmTab,
-	Callback = function()
-loadstring(game:HttpGet(('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/Bring_blood.lua'),true))()
-	end,
+    Title = "Bring blood",
+    Description = "",
+    Tab = farmTab,
+    Callback = function()
+        loadstring(game:HttpGet(('https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/Bring_blood.lua'),true))()
+    end,
 }) 
 
 Window:AddButton({
-	Title = "Get job",
-	Description = "",
-	Tab = farmTab,
-	Callback = function() 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/Get_job.lua"))()
-	end,
+    Title = "Get job",
+    Description = "",
+    Tab = farmTab,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/BDFS_script/Get_job.lua"))()
+    end,
 }) 
 
 --// teleport [TAB]
@@ -907,14 +931,11 @@ Window:AddButton({
     Description = "",
     Tab = teleportTab,
     Callback = function()
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local hrp = character:WaitForChild("HumanoidRootPart")
-
-local safeBox = workspace:FindFirstChild("SafeBox")
-if safeBox and safeBox:FindFirstChild("GhK") then
-    hrp.CFrame = safeBox.GhK.CFrame + Vector3.new(0, 5, 0)
-end
+        local h = player.Character.HumanoidRootPart
+        local s = workspace:FindFirstChild("SafeBox")
+        if s and s:FindFirstChild("GhK") then
+            h.CFrame = s.GhK.CFrame + Vector3.new(0, 5, 0)
+        end
     end,
 })
 
@@ -923,9 +944,7 @@ Window:AddButton({
     Description = "",
     Tab = teleportTab,
     Callback = function()
-    local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-character:SetPrimaryPartCFrame(CFrame.new(233.55099487304688, 70.5, 857.654052734375))
+        player.Character:SetPrimaryPartCFrame(CFrame.new(233.55099487304688, 70.5, 857.654052734375))
     end,
 }) 
 
@@ -934,20 +953,11 @@ Window:AddButton({
     Description = "",
     Tab = teleportTab,
     Callback = function()
-    local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-character:SetPrimaryPartCFrame(CFrame.new(-25.858579635620117, 16.999996185302734, 144.6079864501953))
+        player.Character:SetPrimaryPartCFrame(CFrame.new(-25.858579635620117, 16.999996185302734, 144.6079864501953))
     end,
 })
 
-
-
-
-
-
-
---// Scripts
---// antimods / admin (maybe)
+--// Scripts Logic Area
 local playersToBlock = {
     "mad_hhhh", "Maxim_L1111", "mmmax1", "Electr0nic_Person", "ElectroMotiveDev",
     "TheRealJ4YD3N", "Sk3tchYT", "Jayingee", "KenvinEdwardsJr", "forstaken",
@@ -957,27 +967,16 @@ local playersToBlock = {
 }
 
 local _toggleActive = false
-
-print("Players to block:")
-for _, name in ipairs(playersToBlock) do
-    print(" • " .. name)
-end
-
 local function checkPlayers()
-    local localPlayer = game.Players.LocalPlayer
-    if localPlayer then
-        for _, player in ipairs(game.Players:GetPlayers()) do
-            for _, blockedName in ipairs(playersToBlock) do
-                if player.Name == blockedName then
-
-                    localPlayer:Kick("Blocked player detected: " .. player.Name)
-                    return
-                end
+    for _, p in ipairs(game.Players:GetPlayers()) do
+        for _, b in ipairs(playersToBlock) do
+            if p.Name == b then
+                player:Kick("Blocked player detected: " .. p.Name)
+                return
             end
         end
     end
 end
-
 
 spawn(function()
     while true do
@@ -992,163 +991,72 @@ function setToggleState(state)
     _toggleActive = state
 end
 
---// Auto eat script
+--// Auto eat logic
 local function checkAndEquipBurger()
-    local backpack = player:WaitForChild("Backpack")
-    local burger = backpack:FindFirstChild("burger")
-
-    if burger and burger:IsA("Tool") then
-        player.Character.Humanoid:EquipTool(burger)
-        wait(0.1) -- Đợi 0.1 giây sau khi trang bị
-    end
-end
-
-local function autoBuyNEat()
-    wait(0.1)
-    local popUpUI = player.PlayerGui:WaitForChild("PopUpUI")
-    
-    local settingsFrame = popUpUI:FindFirstChild("SettingsFrame")
-    if not settingsFrame then return end
-    
-    local buyButton = settingsFrame:FindFirstChild("BuyButton")
-    if not buyButton then return end
-    
-    local buyRemote = buyButton:FindFirstChild("Buy")
-
-    if buyRemote and buyRemote:IsA("RemoteEvent") then
-        buyRemote:FireServer()
+    local b = player:WaitForChild("Backpack"):FindFirstChild("burger")
+    if b and b:IsA("Tool") then
+        player.Character.Humanoid:EquipTool(b)
+        wait(0.1)
     end
 end
 
 local function eat()
-    local burgerClickDetector = workspace.Buyables.Tools.burgre.ClickDetector
-
+    local burgerCD = workspace.Buyables.Tools.burgre.ClickDetector
     while true do
         wait(0.5)
         if autoEatEnabled then
             if player.PlayerGui.Hunger.Hunger.Value < 50 then
                 checkAndEquipBurger()
-
-                local burgerInCharacter = player.Character:FindFirstChild("burger")
-                if burgerInCharacter then
-                    wait(0.1) -- Đợi 0.1 giây trước khi kích hoạt công cụ
-                    burgerInCharacter:Activate()
-                    wait(1.5) -- Thời gian chờ sau khi kích hoạt
+                local bc = player.Character:FindFirstChild("burger")
+                if bc then
+                    wait(0.1)
+                    bc:Activate()
+                    wait(1.5)
                 else
-                    if not player.Backpack:FindFirstChild("burger") then
-                        if burgerClickDetector then
-                            fireclickdetector(burgerClickDetector)
-                            autoBuyNEat() -- Gọi hàm mua burger ngay lập tức
-                            wait(5) -- Chờ một chút sau khi mua
-                        end
+                    if not player.Backpack:FindFirstChild("burger") and burgerCD then
+                        fireclickdetector(burgerCD)
+                        autoBuyNEat()
+                        wait(5)
                     end
                 end
             end
         else
-            wait(0.5) -- Đợi một chút trước khi kiểm tra lại trạng thái toggle
+            wait(0.5)
         end
     end
 end
+spawn(eat)
 
-eat()
-
---// Hydro check player and workspace once
-local Players = game:GetService("Players")
-local localPlayer = Players.LocalPlayer
+--// Hydro Alert
 local targetName = "glitchglitchg48"
-local alerted = false  -- Biến để đảm bảo chỉ thông báo 1 lần
-
-local function sendMessage(message)
-    Window:Notify({
-        Title = "Hydro Alert",
-        Description = message,
-        Duration = 5
-    })
-end
-
+local alerted = false
 local function alertOnce()
     if not alerted then
         alerted = true
-        sendMessage("hydro(owner) in this server")
+        Window:Notify({
+            Title = "Hydro Alert",
+            Description = "hydro(owner) in this server",
+            Duration = 5
+        })
         task.delay(2, function()
-            sendMessage("don't kill him.")
+            Window:Notify({
+                Title = "Hydro Alert",
+                Description = "don't kill him.",
+                Duration = 5
+            })
         end)
     end
 end
 
--- Kiểm tra player trong server
-for _, player in pairs(Players:GetPlayers()) do
-    if player.Name == targetName then
+for _, p in pairs(game.Players:GetPlayers()) do
+    if p.Name == targetName then
         alertOnce()
         break
     end
 end
 
--- Kiểm tra model trong workspace
-for _, obj in pairs(workspace:GetDescendants()) do
-    if obj.Name == targetName then
+game.Players.PlayerAdded:Connect(function(p)
+    if p.Name == targetName then
         alertOnce()
-        break
-    end
-end
-
--- Kiểm tra player mới vào server
-Players.PlayerAdded:Connect(function(player)
-    if player.Name == targetName then
-        alertOnce()
-    end
-end)
-
--- Kiểm tra model mới xuất hiện trong workspace
-workspace.DescendantAdded:Connect(function(obj)
-    if obj.Name == targetName then
-        alertOnce()
-    end
-end)
-
--- ESP corpses
-local function addHighlight(model)
-    if not model:FindFirstChild("Highlight") then
-        local highlight = Instance.new("Highlight")
-        highlight.Name = "Highlight"
-        highlight.FillColor = Color3.fromRGB(255, 0, 0)
-        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-        highlight.FillTransparency = 0.85
-        highlight.OutlineTransparency = 0.35
-        highlight.Parent = model
-    end
-end
-
-local function removeHighlight(model)
-    local highlight = model:FindFirstChild("Highlight")
-    if highlight then
-        highlight:Destroy()
-    end
-end
-
-local function updateHighlights()
-    for _, corpse in pairs(corpsesFolder:GetChildren()) do
-        if corpse:IsA("Model") then
-            if toggled then
-                addHighlight(corpse)
-            else
-                removeHighlight(corpse)
-            end
-        end
-    end
-end
-
-corpsesFolder.ChildAdded:Connect(function(child)
-    if toggled and child:IsA("Model") then
-        addHighlight(child)
-    end
-end)
-
-task.spawn(function()
-    while true do
-        task.wait(1)
-        if toggled then
-            updateHighlights()
-        end
     end
 end)
