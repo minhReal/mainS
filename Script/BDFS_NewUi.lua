@@ -13,7 +13,7 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 local player = game.Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
 
---// Create Toggle Button GUI
+--// Toggle
 local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
 gui.Name = "HydroToggleGUI"
 
