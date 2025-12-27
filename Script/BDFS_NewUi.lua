@@ -1,7 +1,8 @@
---      _By Hydro_gen_
---   _Bản #2.7 / Version #2.7_
---        _25/12/2025_
---   _Fixed: ESP Red Dot in Torso + Real Scale + Toggle GUI Fix_
+--[[
+              _By Hydro_gen_
+          _Bản #2.8 / Version #2.8_
+               _25/12/2025_
+]]
 
 --// Script Start #1
 loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/Script_start.lua"))()
