@@ -1,67 +1,4 @@
 -- By owner --
---[[
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-
-local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-if not humanoidRootPart then
-    return
-end
-
-local function setPlayerCollide()
-    for _, part in pairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = false
-        end
-    end
-end
-
-local function teleportModelsToPlayer()
-    for _, obj in pairs(workspace:GetChildren()) do
-        if obj:IsA("Model") and obj ~= character then
-            if obj.PrimaryPart then
-                local newPosition = humanoidRootPart.Position + humanoidRootPart.CFrame.LookVector * 50
-                obj:SetPrimaryPartCFrame(CFrame.new(newPosition))
-                for _, part in pairs(obj:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                    end
-                end
-            end
-        end
-    end
-end
-
-teleportModelsToPlayer()
-
-workspace.ChildAdded:Connect(function(child)
-    if child:IsA("Model") and child ~= character then
-        if child.PrimaryPart then
-            local newPosition = humanoidRootPart.Position + humanoidRootPart.CFrame.LookVector * 50
-            child:SetPrimaryPartCFrame(CFrame.new(newPosition))
-            for _, part in pairs(child:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = false
-                end
-            end
-        end
-    end
-end)
-
-player.CharacterAdded:Connect(function(newCharacter)
-    newCharacter:WaitForChild("Humanoid").Died:Wait()
-end)
-
-while wait(0.01) do
-    if character and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0 then
-        teleportModelsToPlayer()
-        setPlayerCollide()
-    else
-        break
-    end
-end
-]]
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -141,7 +78,7 @@ CloseBtn.Size = UDim2.new(0, 12, 0, 12); CloseBtn.Text = ""
 Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
 
 local MinBtn = Instance.new("TextButton", TopBar)
-MinBtn.BackgroundColor3 = Color3.fromRGB(255, 190, 60)
+MinBtn.BackgroundColor3 = Color3.fromRGB(0,160,255)
 MinBtn.Position = UDim2.new(1, -45, 0.5, -6)
 MinBtn.Size = UDim2.new(0, 12, 0, 12); MinBtn.Text = ""
 Instance.new("UICorner", MinBtn).CornerRadius = UDim.new(1, 0)
