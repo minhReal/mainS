@@ -15,7 +15,7 @@ local Workspace = game:GetService("Workspace")
 
 --// Toggle
 local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-gui.Name = "HydroToggleGUI"
+gui.Name = "ToggleGUI"
 
 local Line = Instance.new("ImageButton")
 Line.Size = UDim2.new(0.075, 0, 0.2, 0)
@@ -31,6 +31,17 @@ Line.Parent = gui
 local uicornerGuiS = Instance.new("UICorner")
 uicornerGuiS.CornerRadius = UDim.new(0.5, 0)
 uicornerGuiS.Parent = Line
+
+Line.MouseButton1Click:Connect(function()
+    isGuiVisible = not isGuiVisible
+    local coreGui = game:GetService("CoreGui")
+    for _, child in pairs(coreGui:GetChildren()) do
+        if child:FindFirstChild("Main") and child:FindFirstChild("Shadow") then
+            child.Enabled = isGuiVisible
+        end
+    end
+end)
+
 
 --// Library
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/library.lua"))()
