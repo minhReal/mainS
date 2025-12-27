@@ -33,7 +33,7 @@ uicornerGuiS.CornerRadius = UDim.new(0.5, 0)
 uicornerGuiS.Parent = Line
 
 --// Library
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lxte/lates-lib/main/Main.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Script/library.lua"))()
 local Window = Library:CreateWindow({
     Title = "HYDRA | Be Dead Forever Simulator",
     Theme = "Void",
