@@ -144,7 +144,7 @@ local function ToggleCamera()
     end
 end
 
-CreateButton("Get Badge (Start)", 1, function(btn)
+CreateButton("Get badge", 1, function(btn)
     StartBoulderSequence()
 end)
 
