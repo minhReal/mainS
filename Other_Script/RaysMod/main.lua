@@ -1,4 +1,4 @@
--- by owner
+-- By owner
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
