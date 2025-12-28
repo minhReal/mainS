@@ -23,8 +23,8 @@ local Settings = {
     CurrentTab = "Farm"
 }
 
-if CoreGui:FindFirstChild("GeminiFinalUI") then
-    CoreGui.GeminiFinalUI:Destroy()
+if CoreGui:FindFirstChild("u") then
+    CoreGui.u:Destroy()
 end
 
 local ScreenGui = Instance.new("ScreenGui")
