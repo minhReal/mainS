@@ -9,8 +9,8 @@ local Settings = {
     UIMinimized = false
 }
 
-if CoreGui:FindFirstChild("HydroGeminiRedesignV2") then
-    CoreGui.HydroGeminiRedesignV2:Destroy()
+if CoreGui:FindFirstChild("v") then
+    CoreGui.v:Destroy()
 end
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -112,9 +112,9 @@ local function ToggleESP(state)
     
     if state then
         for _, part in pairs(PagesFolder:GetChildren()) do
-            if part:IsA("BasePart") and not part:FindFirstChild("HydroHighlight") then
+            if part:IsA("BasePart") and not part:FindFirstChild("Highlight") then
                 local hl = Instance.new("Highlight")
-                hl.Name = "HydroHighlight"; hl.Adornee = part; hl.FillTransparency = 1
+                hl.Name = "Highlight"; hl.Adornee = part; hl.FillTransparency = 1
                 hl.OutlineColor = Color3.fromRGB(255, 255, 0); hl.OutlineTransparency = 0; hl.Parent = part
                 
                 local bbg = Instance.new("BillboardGui")
@@ -139,8 +139,8 @@ local function ToggleESP(state)
         end
     else
         for _, part in pairs(PagesFolder:GetChildren()) do
-            if part:FindFirstChild("Highlight") then part.HydroHighlight:Destroy() end
-            if part:FindFirstChild("Billboard") then part.HydroBillboard:Destroy() end
+            if part:FindFirstChild("Highlight") then part.Highlight:Destroy() end
+            if part:FindFirstChild("Billboard") then part.Billboard:Destroy() end
         end
     end
 end
