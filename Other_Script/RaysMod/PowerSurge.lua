@@ -232,7 +232,7 @@ local function LoadFarmTab()
         LoadFarmTab()
     end)
 
-    CreateButton(Settings.LoopBringPlayers and "Type: PLAYER" or "Bring: NPC", 4.1, Settings.LoopBringPlayers and Color3.fromRGB(0, 180, 110), Settings.LoopBringPlayers and 0, function(btn)
+    CreateButton(Settings.LoopBringPlayers and "Type: PLAYER" or "Type: NPC", 4.1, Settings.LoopBringPlayers and Color3.fromRGB(0, 180, 110), Settings.LoopBringPlayers and 0, function(btn)
         Settings.LoopBringPlayers = not Settings.LoopBringPlayers
         if Settings.LoopBringPlayers then Settings.LoopBringModels = false end
         LoadFarmTab()
