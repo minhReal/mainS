@@ -62,9 +62,9 @@ Tabs.Dex:AddButton({
     Title = "Dex API-less",
     Description = "This feature is only for users who have problems getting through the ''Fetching API'' in Dex or can't wait that long",
     Callback = function()
-        loadstring(game:HttpGet(
-            "https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"
-        ))()
+         loadstring(game:HttpGet(
+			"https://raw.githubusercontent.com/UltraFEmotes/im-bored/refs/heads/main/dexnoapi.lua"
+		))()
     end
 })
 -- // REMOTE SPY 
