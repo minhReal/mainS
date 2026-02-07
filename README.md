@@ -1,7 +1,6 @@
 # HYDRA SCRIPT
 **SUPPORT GAMES:**
 - Be dead forever simulator
-- Slendytubbies VS Redux
 - Coming soon..
 ``` lua
 -- If it doesn't work, executor again! --
