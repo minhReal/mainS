@@ -617,7 +617,6 @@ Tabs.An:AddButton({
     Title = "Animation Dumper",
     Description = "A gui records your movements while the animation runs ",
     Callback = function()
-end)
    loadstring(game:HttpGet(
           "https://raw.githubusercontent.com/minhReal/mainS/refs/heads/main/Other_Script/AnimationD.lua"
       ))()
