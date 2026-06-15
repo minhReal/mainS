@@ -243,6 +243,18 @@ eyeBtn.Font = Enum.Font.GothamBold
 eyeBtn.Parent = frame
 Instance.new("UICorner", eyeBtn).CornerRadius = UDim.new(0, 6)
 
+-- Converter toggle button
+local convBtn = Instance.new("TextButton")
+convBtn.Text = "🔄"
+convBtn.TextSize = 11
+convBtn.Size = UDim2.new(0, 16, 0, 16)
+convBtn.Position = UDim2.new(1, -60, 0, 4)
+convBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+convBtn.TextColor3 = Color3.new(1, 1, 1)
+convBtn.Font = Enum.Font.GothamBold
+convBtn.Parent = frame
+Instance.new("UICorner", convBtn).CornerRadius = UDim.new(0, 6)
+
 ----------------------------------------------------------------
 -- Export customization popup
 ----------------------------------------------------------------
@@ -322,9 +334,17 @@ helpText.Text =
 	"Sample: export every Nth frame. Higher value = smaller file, less smooth playback.\n\n" ..
 	"Header/Footer: adds comment lines marking the start/end of the dump. Type custom text to replace the default header.\n\n" ..
 	"Folder: if ON, the exported file is saved inside an \"AnimationD\" folder (created automatically). If OFF, the file is saved directly in the workspace root.\n\n" ..
-	"Parts: choose which body parts to include in the export. Unchecked parts are skipped."
+	"Parts: choose which body parts to include in the export. Unchecked parts are skipped.\n\n" ..
+	"Converter (🔄): pick a file from your \"AnimationD\" folder and convert it into a KeyframeSequence.\n\n" ..
+	"Convert FPS: resamples the animation to a target frame rate (Original = no change). Lower FPS = fewer keyframes (smaller, less smooth).\n\n" ..
+	"Loop: sets the KeyframeSequence.Loop property on the result.\n\n" ..
+	"Trim Start/End: removes N frames from the beginning/end (useful for cutting startup poses or fixing loops).\n\n" ..
+	"Save to: where the converted KeyframeSequence is placed (Workspace, ReplicatedStorage, or Lighting).\n\n" ..
+	"Parts (in Convert options): choose which parts to include for this file.\n\n" ..
+	"Convert Selected: converts only the highlighted file using the options above.\n\n" ..
+	"Convert ALL: converts every file in \"AnimationD\" with the same FPS/Loop/Trim settings, placed in a \"ConvertedAll\" folder."
 helpText.TextSize = 12
-helpText.Size = UDim2.new(1, 0, 0, 360)
+helpText.Size = UDim2.new(1, 0, 0, 760)
 helpText.BackgroundTransparency = 1
 helpText.TextColor3 = Color3.fromRGB(220, 220, 220)
 helpText.Font = Enum.Font.Gotham
@@ -334,7 +354,265 @@ helpText.TextYAlignment = Enum.TextYAlignment.Top
 helpText.ZIndex = 5
 helpText.Parent = helpScroll
 
-helpScroll.CanvasSize = UDim2.new(0, 0, 0, 370)
+helpScroll.CanvasSize = UDim2.new(0, 0, 0, 770)
+
+----------------------------------------------------------------
+-- Converter panel (file -> KeyframeSequence)
+----------------------------------------------------------------
+local convFrame = Instance.new("Frame")
+convFrame.Name = "ConverterPanel"
+convFrame.Size = UDim2.new(0, 220, 0, 260)
+convFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+convFrame.Visible = false
+convFrame.Active = true
+convFrame.ZIndex = 5
+convFrame.Parent = gui
+Instance.new("UICorner", convFrame).CornerRadius = UDim.new(0, 8)
+makeDraggable(convFrame)
+
+local convTitle = Instance.new("TextLabel")
+convTitle.Text = "CONVERT TO KEYFRAMESEQUENCE"
+convTitle.TextSize = 11
+convTitle.Size = UDim2.new(1, 0, 0, 20)
+convTitle.Position = UDim2.new(0, 0, 0, 4)
+convTitle.BackgroundTransparency = 1
+convTitle.TextColor3 = Color3.new(1, 1, 1)
+convTitle.Font = Enum.Font.GothamBold
+convTitle.ZIndex = 5
+convTitle.Parent = convFrame
+
+local convSubLabel = Instance.new("TextLabel")
+convSubLabel.Text = "AnimationD files:"
+convSubLabel.TextSize = 11
+convSubLabel.Size = UDim2.new(0.9, 0, 0, 14)
+convSubLabel.Position = UDim2.new(0.05, 0, 0, 26)
+convSubLabel.BackgroundTransparency = 1
+convSubLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+convSubLabel.Font = Enum.Font.Gotham
+convSubLabel.TextXAlignment = Enum.TextXAlignment.Left
+convSubLabel.ZIndex = 5
+convSubLabel.Parent = convFrame
+
+-- File list (scrollable)
+local convScroll = Instance.new("ScrollingFrame")
+convScroll.Size = UDim2.new(0.9, 0, 0, 160)
+convScroll.Position = UDim2.new(0.05, 0, 0, 44)
+convScroll.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+convScroll.BorderSizePixel = 0
+convScroll.ScrollBarThickness = 4
+convScroll.ZIndex = 5
+convScroll.Parent = convFrame
+Instance.new("UICorner", convScroll).CornerRadius = UDim.new(0, 6)
+
+local convListLayout = Instance.new("UIListLayout")
+convListLayout.Parent = convScroll
+convListLayout.SortOrder = Enum.SortOrder.Name
+convListLayout.Padding = UDim.new(0, 2)
+
+-- Convert button (opens options popup)
+local convertBtn = Instance.new("TextButton")
+convertBtn.Text = "Convert..."
+convertBtn.Size = UDim2.new(0.9, 0, 0, 28)
+convertBtn.Position = UDim2.new(0.05, 0, 0, 210)
+convertBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+convertBtn.TextColor3 = Color3.new(1, 1, 1)
+convertBtn.Font = Enum.Font.GothamBold
+convertBtn.TextSize = 12
+convertBtn.ZIndex = 5
+convertBtn.Parent = convFrame
+Instance.new("UICorner", convertBtn).CornerRadius = UDim.new(0, 6)
+
+-- Close converter button
+local convCloseBtn = Instance.new("TextButton")
+convCloseBtn.Text = "✕"
+convCloseBtn.TextSize = 11
+convCloseBtn.Size = UDim2.new(0, 16, 0, 16)
+convCloseBtn.Position = UDim2.new(1, -20, 0, 4)
+convCloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+convCloseBtn.TextColor3 = Color3.new(1, 1, 1)
+convCloseBtn.Font = Enum.Font.GothamBold
+convCloseBtn.ZIndex = 5
+convCloseBtn.Parent = convFrame
+Instance.new("UICorner", convCloseBtn).CornerRadius = UDim.new(0, 6)
+
+----------------------------------------------------------------
+-- Convert options popup
+----------------------------------------------------------------
+local convOptFrame = Instance.new("Frame")
+convOptFrame.Name = "ConvertOptions"
+convOptFrame.Size = UDim2.new(0, 240, 0, 380)
+convOptFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+convOptFrame.Visible = false
+convOptFrame.Active = true
+convOptFrame.ZIndex = 6
+convOptFrame.Parent = gui
+Instance.new("UICorner", convOptFrame).CornerRadius = UDim.new(0, 8)
+makeDraggable(convOptFrame)
+
+local convOptTitle = Instance.new("TextLabel")
+convOptTitle.Text = "CONVERT OPTIONS"
+convOptTitle.TextSize = 12
+convOptTitle.Size = UDim2.new(1, -26, 0, 20)
+convOptTitle.Position = UDim2.new(0, 0, 0, 4)
+convOptTitle.BackgroundTransparency = 1
+convOptTitle.TextColor3 = Color3.new(1, 1, 1)
+convOptTitle.Font = Enum.Font.GothamBold
+convOptTitle.ZIndex = 6
+convOptTitle.Parent = convOptFrame
+
+-- Small "X" close/cancel button (top-right corner)
+local convOptXBtn = Instance.new("TextButton")
+convOptXBtn.Text = "X"
+convOptXBtn.TextSize = 12
+convOptXBtn.Size = UDim2.new(0, 18, 0, 18)
+convOptXBtn.Position = UDim2.new(1, -22, 0, 4)
+convOptXBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+convOptXBtn.TextColor3 = Color3.new(1, 1, 1)
+convOptXBtn.Font = Enum.Font.GothamBold
+convOptXBtn.ZIndex = 6
+convOptXBtn.Parent = convOptFrame
+Instance.new("UICorner", convOptXBtn).CornerRadius = UDim.new(0, 6)
+
+local convOptFileLabel = Instance.new("TextLabel")
+convOptFileLabel.Text = ""
+convOptFileLabel.TextSize = 10
+convOptFileLabel.Size = UDim2.new(0.9, 0, 0, 14)
+convOptFileLabel.Position = UDim2.new(0.05, 0, 0, 24)
+convOptFileLabel.BackgroundTransparency = 1
+convOptFileLabel.TextColor3 = Color3.fromRGB(150, 200, 255)
+convOptFileLabel.Font = Enum.Font.Gotham
+convOptFileLabel.TextXAlignment = Enum.TextXAlignment.Left
+convOptFileLabel.TextTruncate = Enum.TextTruncate.AtEnd
+convOptFileLabel.ZIndex = 6
+convOptFileLabel.Parent = convOptFrame
+
+-- FPS / resample cycle button
+local fpsBtn = Instance.new("TextButton")
+fpsBtn.TextSize = 12
+fpsBtn.Size = UDim2.new(0.9, 0, 0, 22)
+fpsBtn.Position = UDim2.new(0.05, 0, 0, 42)
+fpsBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+fpsBtn.TextColor3 = Color3.new(1, 1, 1)
+fpsBtn.Font = Enum.Font.Gotham
+fpsBtn.ZIndex = 6
+fpsBtn.Parent = convOptFrame
+Instance.new("UICorner", fpsBtn).CornerRadius = UDim.new(0, 6)
+
+-- Loop toggle button
+local loopBtn = Instance.new("TextButton")
+loopBtn.TextSize = 12
+loopBtn.Size = UDim2.new(0.9, 0, 0, 22)
+loopBtn.Position = UDim2.new(0.05, 0, 0, 66)
+loopBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+loopBtn.TextColor3 = Color3.new(1, 1, 1)
+loopBtn.Font = Enum.Font.Gotham
+loopBtn.ZIndex = 6
+loopBtn.Parent = convOptFrame
+Instance.new("UICorner", loopBtn).CornerRadius = UDim.new(0, 6)
+
+-- Trim start cycle button
+local trimStartBtn = Instance.new("TextButton")
+trimStartBtn.TextSize = 12
+trimStartBtn.Size = UDim2.new(0.9, 0, 0, 22)
+trimStartBtn.Position = UDim2.new(0.05, 0, 0, 90)
+trimStartBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+trimStartBtn.TextColor3 = Color3.new(1, 1, 1)
+trimStartBtn.Font = Enum.Font.Gotham
+trimStartBtn.ZIndex = 6
+trimStartBtn.Parent = convOptFrame
+Instance.new("UICorner", trimStartBtn).CornerRadius = UDim.new(0, 6)
+
+-- Trim end cycle button
+local trimEndBtn = Instance.new("TextButton")
+trimEndBtn.TextSize = 12
+trimEndBtn.Size = UDim2.new(0.9, 0, 0, 22)
+trimEndBtn.Position = UDim2.new(0.05, 0, 0, 114)
+trimEndBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+trimEndBtn.TextColor3 = Color3.new(1, 1, 1)
+trimEndBtn.Font = Enum.Font.Gotham
+trimEndBtn.ZIndex = 6
+trimEndBtn.Parent = convOptFrame
+Instance.new("UICorner", trimEndBtn).CornerRadius = UDim.new(0, 6)
+
+-- Destination cycle button
+local destBtn = Instance.new("TextButton")
+destBtn.TextSize = 12
+destBtn.Size = UDim2.new(0.9, 0, 0, 22)
+destBtn.Position = UDim2.new(0.05, 0, 0, 138)
+destBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+destBtn.TextColor3 = Color3.new(1, 1, 1)
+destBtn.Font = Enum.Font.Gotham
+destBtn.ZIndex = 6
+destBtn.Parent = convOptFrame
+Instance.new("UICorner", destBtn).CornerRadius = UDim.new(0, 6)
+
+-- Parts label
+local convPartsLabel = Instance.new("TextLabel")
+convPartsLabel.Text = "Parts:"
+convPartsLabel.TextSize = 11
+convPartsLabel.Size = UDim2.new(0.9, 0, 0, 14)
+convPartsLabel.Position = UDim2.new(0.05, 0, 0, 164)
+convPartsLabel.BackgroundTransparency = 1
+convPartsLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+convPartsLabel.Font = Enum.Font.Gotham
+convPartsLabel.TextXAlignment = Enum.TextXAlignment.Left
+convPartsLabel.ZIndex = 6
+convPartsLabel.Parent = convOptFrame
+
+-- Parts scroll list (checkboxes)
+local convPartsScroll = Instance.new("ScrollingFrame")
+convPartsScroll.Size = UDim2.new(0.9, 0, 0, 80)
+convPartsScroll.Position = UDim2.new(0.05, 0, 0, 180)
+convPartsScroll.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+convPartsScroll.BorderSizePixel = 0
+convPartsScroll.ScrollBarThickness = 4
+convPartsScroll.ZIndex = 6
+convPartsScroll.Parent = convOptFrame
+Instance.new("UICorner", convPartsScroll).CornerRadius = UDim.new(0, 6)
+
+local convPartsListLayout = Instance.new("UIListLayout")
+convPartsListLayout.Parent = convPartsScroll
+convPartsListLayout.SortOrder = Enum.SortOrder.Name
+convPartsListLayout.Padding = UDim.new(0, 2)
+
+-- Convert selected (apply options to the chosen file)
+local convOptOkBtn = Instance.new("TextButton")
+convOptOkBtn.Text = "Convert Selected"
+convOptOkBtn.Size = UDim2.new(0.9, 0, 0, 28)
+convOptOkBtn.Position = UDim2.new(0.05, 0, 0, 266)
+convOptOkBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+convOptOkBtn.TextColor3 = Color3.new(1, 1, 1)
+convOptOkBtn.Font = Enum.Font.GothamBold
+convOptOkBtn.TextSize = 12
+convOptOkBtn.ZIndex = 6
+convOptOkBtn.Parent = convOptFrame
+Instance.new("UICorner", convOptOkBtn).CornerRadius = UDim.new(0, 6)
+
+-- Convert ALL (apply options to every file in the list), placed below
+local convOptAllBtn = Instance.new("TextButton")
+convOptAllBtn.Text = "Convert ALL"
+convOptAllBtn.Size = UDim2.new(0.9, 0, 0, 28)
+convOptAllBtn.Position = UDim2.new(0.05, 0, 0, 298)
+convOptAllBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 200)
+convOptAllBtn.TextColor3 = Color3.new(1, 1, 1)
+convOptAllBtn.Font = Enum.Font.GothamBold
+convOptAllBtn.TextSize = 12
+convOptAllBtn.ZIndex = 6
+convOptAllBtn.Parent = convOptFrame
+Instance.new("UICorner", convOptAllBtn).CornerRadius = UDim.new(0, 6)
+
+-- Cancel
+local convOptCancelBtn = Instance.new("TextButton")
+convOptCancelBtn.Text = "Cancel"
+convOptCancelBtn.Size = UDim2.new(0.9, 0, 0, 26)
+convOptCancelBtn.Position = UDim2.new(0.05, 0, 0, 330)
+convOptCancelBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+convOptCancelBtn.TextColor3 = Color3.new(1, 1, 1)
+convOptCancelBtn.Font = Enum.Font.GothamBold
+convOptCancelBtn.TextSize = 12
+convOptCancelBtn.ZIndex = 6
+convOptCancelBtn.Parent = convOptFrame
+Instance.new("UICorner", convOptCancelBtn).CornerRadius = UDim.new(0, 6)
 
 -- Filename
 local exportNameBox = Instance.new("TextBox")
@@ -484,6 +762,7 @@ local dumping = false
 local stopped = false
 local dumpData = {}
 local lastId = ""
+local lastHierarchy = {} -- childPartName -> parentPartName (from Motor6D Part1 -> Part0)
 local currentTrack = nil
 local activeConn = nil
 local startTime = 0
@@ -501,6 +780,25 @@ local skipIndex = 1
 local headerOn = true
 local folderOn = true
 local selectedParts = {} -- partName -> bool
+
+-- Converter state
+local selectedConvFile = nil
+local pendingFrames = nil
+local pendingHierarchy = nil
+
+local convFpsOptions = { 0, 60, 30, 24, 15, 10, 5 } -- 0 = original (no resample)
+local convFpsIndex = 1
+
+local convTrimOptions = { 0, 1, 2, 3, 5, 10 }
+local convTrimStartIndex = 1
+local convTrimEndIndex = 1
+
+local convLoopOn = false
+
+local convDestOptions = { "Workspace", "ReplicatedStorage", "Lighting" }
+local convDestIndex = 1
+
+local convSelectedParts = {} -- partName -> bool (for the selected file)
 
 local function refreshExtBtn()
 	extBtn.Text = "Ext: " .. extOptions[extIndex]
@@ -527,11 +825,41 @@ local function refreshFolderBtn()
 	folderBtn.Text = "Folder \"AnimationD\": " .. (folderOn and "ON" or "OFF")
 end
 
+local function refreshFpsBtn()
+	local v = convFpsOptions[convFpsIndex]
+	if v == 0 then
+		fpsBtn.Text = "FPS: Original"
+	else
+		fpsBtn.Text = "FPS: " .. v
+	end
+end
+
+local function refreshLoopBtn()
+	loopBtn.Text = "Loop: " .. (convLoopOn and "ON" or "OFF")
+end
+
+local function refreshTrimStartBtn()
+	trimStartBtn.Text = "Trim Start: -" .. tostring(convTrimOptions[convTrimStartIndex]) .. " frames"
+end
+
+local function refreshTrimEndBtn()
+	trimEndBtn.Text = "Trim End: -" .. tostring(convTrimOptions[convTrimEndIndex]) .. " frames"
+end
+
+local function refreshDestBtn()
+	destBtn.Text = "Save to: " .. convDestOptions[convDestIndex]
+end
+
 refreshExtBtn()
 refreshPrecBtn()
 refreshSkipBtn()
 refreshHeaderBtn()
 refreshFolderBtn()
+refreshFpsBtn()
+refreshLoopBtn()
+refreshTrimStartBtn()
+refreshTrimEndBtn()
+refreshDestBtn()
 
 extBtn.MouseButton1Click:Connect(function()
 	extIndex = extIndex + 1
@@ -565,6 +893,43 @@ end)
 folderBtn.MouseButton1Click:Connect(function()
 	folderOn = not folderOn
 	refreshFolderBtn()
+end)
+
+fpsBtn.MouseButton1Click:Connect(function()
+	convFpsIndex = convFpsIndex + 1
+	if convFpsIndex > #convFpsOptions then
+		convFpsIndex = 1
+	end
+	refreshFpsBtn()
+end)
+
+loopBtn.MouseButton1Click:Connect(function()
+	convLoopOn = not convLoopOn
+	refreshLoopBtn()
+end)
+
+trimStartBtn.MouseButton1Click:Connect(function()
+	convTrimStartIndex = convTrimStartIndex + 1
+	if convTrimStartIndex > #convTrimOptions then
+		convTrimStartIndex = 1
+	end
+	refreshTrimStartBtn()
+end)
+
+trimEndBtn.MouseButton1Click:Connect(function()
+	convTrimEndIndex = convTrimEndIndex + 1
+	if convTrimEndIndex > #convTrimOptions then
+		convTrimEndIndex = 1
+	end
+	refreshTrimEndBtn()
+end)
+
+destBtn.MouseButton1Click:Connect(function()
+	convDestIndex = convDestIndex + 1
+	if convDestIndex > #convDestOptions then
+		convDestIndex = 1
+	end
+	refreshDestBtn()
 end)
 
 -- Build the parts checkbox list from the latest dump
@@ -622,6 +987,443 @@ local function getAllPartsSet()
 	return set
 end
 
+----------------------------------------------------------------
+-- Converter helpers
+----------------------------------------------------------------
+
+-- Refreshes the file list shown in the converter panel, reading
+-- the "AnimationD" folder via the executor's filesystem functions.
+local function refreshConvList()
+	for _, child in ipairs(convScroll:GetChildren()) do
+		if child:IsA("TextButton") then
+			child:Destroy()
+		end
+	end
+	selectedConvFile = nil
+
+	if not (isfolder and listfiles) then
+		local lbl = Instance.new("TextLabel")
+		lbl.Text = "Filesystem not supported"
+		lbl.Size = UDim2.new(1, 0, 0, 18)
+		lbl.BackgroundTransparency = 1
+		lbl.TextColor3 = Color3.fromRGB(255, 120, 120)
+		lbl.Font = Enum.Font.Gotham
+		lbl.TextSize = 11
+		lbl.ZIndex = 5
+		lbl.Parent = convScroll
+		convScroll.CanvasSize = UDim2.new(0, 0, 0, 20)
+		return
+	end
+
+	if not isfolder("AnimationD") then
+		local lbl = Instance.new("TextLabel")
+		lbl.Text = '"AnimationD" folder not found'
+		lbl.Size = UDim2.new(1, 0, 0, 18)
+		lbl.BackgroundTransparency = 1
+		lbl.TextColor3 = Color3.fromRGB(255, 120, 120)
+		lbl.Font = Enum.Font.Gotham
+		lbl.TextSize = 11
+		lbl.ZIndex = 5
+		lbl.Parent = convScroll
+		convScroll.CanvasSize = UDim2.new(0, 0, 0, 20)
+		return
+	end
+
+	local files = listfiles("AnimationD")
+	if #files == 0 then
+		local lbl = Instance.new("TextLabel")
+		lbl.Text = "No files found"
+		lbl.Size = UDim2.new(1, 0, 0, 18)
+		lbl.BackgroundTransparency = 1
+		lbl.TextColor3 = Color3.fromRGB(200, 200, 200)
+		lbl.Font = Enum.Font.Gotham
+		lbl.TextSize = 11
+		lbl.ZIndex = 5
+		lbl.Parent = convScroll
+		convScroll.CanvasSize = UDim2.new(0, 0, 0, 20)
+		return
+	end
+
+	for _, path in ipairs(files) do
+		local fileName = path:match("([^/\\]+)$") or path
+
+		local btn = Instance.new("TextButton")
+		btn.Name = fileName
+		btn.Text = fileName
+		btn.Size = UDim2.new(1, 0, 0, 18)
+		btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		btn.TextColor3 = Color3.new(1, 1, 1)
+		btn.Font = Enum.Font.Gotham
+		btn.TextSize = 11
+		btn.TextXAlignment = Enum.TextXAlignment.Left
+		btn.ZIndex = 5
+		btn.Parent = convScroll
+
+		btn.MouseButton1Click:Connect(function()
+			selectedConvFile = path
+			for _, c in ipairs(convScroll:GetChildren()) do
+				if c:IsA("TextButton") then
+					c.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+				end
+			end
+			btn.BackgroundColor3 = Color3.fromRGB(0, 110, 60)
+		end)
+	end
+
+	convScroll.CanvasSize = UDim2.new(0, 0, 0, convListLayout.AbsoluteContentSize.Y + 4)
+end
+
+-- Builds the parts checkbox list inside the convert options popup,
+-- based on the parts present in the selected file's first frame.
+local function refreshConvPartsList(frames)
+	for _, child in ipairs(convPartsScroll:GetChildren()) do
+		if child:IsA("TextButton") then
+			child:Destroy()
+		end
+	end
+	convSelectedParts = {}
+
+	if not frames or #frames == 0 then
+		convPartsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+		return
+	end
+
+	local names = {}
+	for part, _ in pairs(frames[1].poses) do
+		names[#names + 1] = part
+		convSelectedParts[part] = true
+	end
+	table.sort(names)
+
+	for _, name in ipairs(names) do
+		local btn = Instance.new("TextButton")
+		btn.Name = name
+		btn.Text = "[x] " .. name
+		btn.Size = UDim2.new(1, 0, 0, 18)
+		btn.BackgroundColor3 = Color3.fromRGB(0, 110, 60)
+		btn.TextColor3 = Color3.new(1, 1, 1)
+		btn.Font = Enum.Font.Gotham
+		btn.TextSize = 11
+		btn.TextXAlignment = Enum.TextXAlignment.Left
+		btn.ZIndex = 6
+		btn.Parent = convPartsScroll
+
+		btn.MouseButton1Click:Connect(function()
+			convSelectedParts[name] = not convSelectedParts[name]
+			btn.Text = (convSelectedParts[name] and "[x] " or "[ ] ") .. name
+			btn.BackgroundColor3 = convSelectedParts[name] and Color3.fromRGB(0, 110, 60) or Color3.fromRGB(50, 50, 50)
+		end)
+	end
+
+	convPartsScroll.CanvasSize = UDim2.new(0, 0, 0, convPartsListLayout.AbsoluteContentSize.Y + 4)
+end
+
+-- Extracts a CFrame from a string of the form
+-- "CFrame.new(x,y,z) * CFrame.Angles(rx,ry,rz)"
+local function parsePoseString(str)
+	local posStr = str:match("CFrame%.new%(([^%)]*)%)")
+	local rotStr = str:match("CFrame%.Angles%(([^%)]*)%)")
+	if not posStr or not rotStr then
+		return nil
+	end
+
+	local nums = {}
+	for n in posStr:gmatch("[%-%d%.]+") do
+		nums[#nums + 1] = tonumber(n)
+	end
+
+	local rnums = {}
+	for n in rotStr:gmatch("[%-%d%.]+") do
+		rnums[#rnums + 1] = tonumber(n)
+	end
+
+	if #nums < 3 or #rnums < 3 then
+		return nil
+	end
+
+	return CFrame.new(nums[1], nums[2], nums[3]) * CFrame.Angles(rnums[1], rnums[2], rnums[3])
+end
+
+-- Reads and parses a dump file (.lua/.txt or .json) into a sorted
+-- array of frames: { {time = number, poses = {part = CFrame, ...}}, ... }
+-- and a hierarchy table: { childPartName = parentPartName, ... }
+local function parseDumpFile(path)
+	local okRead, content = pcall(readfile, path)
+	if not okRead or not content or content == "" then
+		return nil, nil, "Could not read file"
+	end
+
+	local isJson = path:lower():match("%.json$") ~= nil
+
+	if isJson then
+		local okDecode, data = pcall(function()
+			return HttpService:JSONDecode(content)
+		end)
+		if not okDecode or not data or not data.frames then
+			return nil, nil, "Invalid JSON"
+		end
+
+		local frames = {}
+		for _, f in ipairs(data.frames) do
+			local poses = {}
+			for part, p in pairs(f.poses or {}) do
+				if p.pos and p.rot then
+					poses[part] = CFrame.new(p.pos[1], p.pos[2], p.pos[3])
+						* CFrame.Angles(p.rot[1], p.rot[2], p.rot[3])
+				end
+			end
+			frames[#frames + 1] = { time = tonumber(f.time) or 0, poses = poses }
+		end
+
+		table.sort(frames, function(a, b)
+			return a.time < b.time
+		end)
+
+		if #frames == 0 then
+			return nil, nil, "No frames found"
+		end
+		return frames, data.hierarchy or {}
+	end
+
+	-- .lua / .txt format: "<time>s : <part> = CFrame.new(...) * CFrame.Angles(...)"
+	local framesMap = {}
+	local order = {}
+	local hierarchy = {}
+
+	for line in content:gmatch("[^\r\n]+") do
+		-- Hierarchy lines: "-- H:Child=Parent"
+		local childName, parentName = line:match("^%-%-%s*H:(%S+)=(%S+)%s*$")
+		if childName and parentName then
+			hierarchy[childName] = parentName
+		elseif not line:match("^%s*%-%-") then
+			local timeStr, part, rest = line:match("^%s*([%d%.]+)s%s*:%s*(.-)%s*=%s*(.+)$")
+			if timeStr and part and rest then
+				local cf = parsePoseString(rest)
+				if cf then
+					local t = tonumber(timeStr)
+					if not framesMap[t] then
+						framesMap[t] = { time = t, poses = {} }
+						order[#order + 1] = t
+					end
+					framesMap[t].poses[part] = cf
+				end
+			end
+		end
+	end
+
+	if #order == 0 then
+		return nil, nil, "No frames found"
+	end
+
+	table.sort(order)
+
+	local frames = {}
+	for _, t in ipairs(order) do
+		frames[#frames + 1] = framesMap[t]
+	end
+
+	return frames, hierarchy
+end
+
+-- Default rig hierarchies (childPartName -> parentPartName) used as a
+-- fallback for older dump files that don't embed hierarchy info.
+local DEFAULT_HIERARCHY_R6 = {
+	Torso = "HumanoidRootPart",
+	Head = "Torso",
+	Left_Arm = "Torso",
+	Right_Arm = "Torso",
+	Left_Leg = "Torso",
+	Right_Leg = "Torso",
+	["Left Arm"] = "Torso",
+	["Right Arm"] = "Torso",
+	["Left Leg"] = "Torso",
+	["Right Leg"] = "Torso",
+}
+
+local DEFAULT_HIERARCHY_R15 = {
+	LowerTorso = "HumanoidRootPart",
+	UpperTorso = "LowerTorso",
+	Head = "UpperTorso",
+	LeftUpperArm = "UpperTorso",
+	LeftLowerArm = "LeftUpperArm",
+	LeftHand = "LeftLowerArm",
+	RightUpperArm = "UpperTorso",
+	RightLowerArm = "RightUpperArm",
+	RightHand = "RightLowerArm",
+	LeftUpperLeg = "LowerTorso",
+	LeftLowerLeg = "LeftUpperLeg",
+	LeftFoot = "LeftLowerLeg",
+	RightUpperLeg = "LowerTorso",
+	RightLowerLeg = "RightUpperLeg",
+	RightFoot = "RightLowerLeg",
+}
+
+-- Builds a KeyframeSequence Instance from parsed frame data, rebuilding
+-- the Pose hierarchy (HumanoidRootPart -> Torso/limbs, etc.) so the
+-- animation plays back correctly on the rig, including arms and legs.
+local function buildKeyframeSequence(frames, hierarchy, name)
+	-- Merge: defaults (based on detected rig) <- embedded hierarchy (overrides)
+	local sample = (frames[1] and frames[1].poses) or {}
+	local defaults = sample["LowerTorso"] and DEFAULT_HIERARCHY_R15 or DEFAULT_HIERARCHY_R6
+
+	local merged = {}
+	for child, parent in pairs(defaults) do
+		merged[child] = parent
+	end
+	if hierarchy then
+		for child, parent in pairs(hierarchy) do
+			merged[child] = parent
+		end
+	end
+
+	-- Build parent -> children map
+	local childrenMap = {}
+	local isChild = {}
+	for child, parent in pairs(merged) do
+		childrenMap[parent] = childrenMap[parent] or {}
+		table.insert(childrenMap[parent], child)
+		isChild[child] = true
+	end
+
+	-- Determine root part (referenced as a parent but never as a child)
+	local root = "HumanoidRootPart"
+	if not childrenMap[root] then
+		for parent, _ in pairs(childrenMap) do
+			if not isChild[parent] then
+				root = parent
+				break
+			end
+		end
+	end
+
+	local kfs = Instance.new("KeyframeSequence")
+	kfs.Name = name
+	kfs.Loop = false
+
+	for _, f in ipairs(frames) do
+		local kf = Instance.new("Keyframe")
+		kf.Name = "Keyframe"
+		kf.Time = f.time
+
+		local created = {}
+
+		local function createPose(partName, parentInstance)
+			local pose = Instance.new("Pose")
+			pose.Name = partName
+			pose.CFrame = f.poses[partName] or CFrame.new()
+			pose.Weight = 1
+			pose.EasingDirection = Enum.PoseEasingDirection.InOut
+			pose.EasingStyle = Enum.PoseEasingStyle.Linear
+			pose.Parent = parentInstance
+			created[partName] = true
+
+			if childrenMap[partName] then
+				for _, childName in ipairs(childrenMap[partName]) do
+					createPose(childName, pose)
+				end
+			end
+
+			return pose
+		end
+
+		local rootPose = createPose(root, kf)
+
+		-- Any captured part not covered by the hierarchy is attached
+		-- directly under the root pose so nothing gets lost.
+		for partName, cf in pairs(f.poses) do
+			if not created[partName] then
+				local pose = Instance.new("Pose")
+				pose.Name = partName
+				pose.CFrame = cf
+				pose.Weight = 1
+				pose.EasingDirection = Enum.PoseEasingDirection.InOut
+				pose.EasingStyle = Enum.PoseEasingStyle.Linear
+				pose.Parent = rootPose
+			end
+		end
+
+		kf.Parent = kfs
+	end
+
+	return kfs
+end
+
+-- Removes N frames from the start and N frames from the end.
+-- Mirrors the "cut start/end" logic from the older V8 script.
+local function trimFrames(frames, trimStart, trimEnd)
+	local total = #frames
+	if total <= trimStart + trimEnd then
+		return frames
+	end
+
+	local result = {}
+	for i = trimStart + 1, total - trimEnd do
+		result[#result + 1] = frames[i]
+	end
+	return result
+end
+
+-- Resamples frames to a target FPS by picking the nearest captured
+-- frame for each target timestamp. Lower FPS = fewer keyframes
+-- (a simple form of compression).
+local function resampleFrames(frames, fps)
+	if fps <= 0 or #frames < 2 then
+		return frames
+	end
+
+	local dt = 1 / fps
+	local firstT = frames[1].time
+	local lastT = frames[#frames].time
+
+	local result = {}
+	local idx = 1
+	local t = firstT
+
+	while t <= lastT + 1e-6 do
+		while idx < #frames and math.abs(frames[idx + 1].time - t) <= math.abs(frames[idx].time - t) do
+			idx = idx + 1
+		end
+		result[#result + 1] = { time = round(t, 4), poses = frames[idx].poses }
+		t = t + dt
+	end
+
+	if result[#result].time < lastT - 1e-6 then
+		result[#result + 1] = { time = lastT, poses = frames[#frames].poses }
+	end
+
+	return result
+end
+
+-- Keeps only the parts present (and true) in partsSet
+local function filterFramesByParts(frames, partsSet)
+	local result = {}
+	for _, f in ipairs(frames) do
+		local poses = {}
+		for part, cf in pairs(f.poses) do
+			if partsSet == nil or partsSet[part] then
+				poses[part] = cf
+			end
+		end
+		result[#result + 1] = { time = f.time, poses = poses }
+	end
+	return result
+end
+
+-- Resolves the chosen destination option to an actual Instance
+local function getDestParent(idx)
+	local name = convDestOptions[idx]
+	if name == "ReplicatedStorage" then
+		return game:GetService("ReplicatedStorage")
+	elseif name == "Lighting" then
+		return game:GetService("Lighting")
+	end
+	return workspace
+end
+
+local function sanitizeName(name)
+	return tostring(name):gsub("%s+", "_")
+end
+
 local function normalizeId(raw)
 	raw = tostring(raw)
 	raw = raw:gsub("rbxassetid://", "")
@@ -666,7 +1468,7 @@ local function generateFileContent(ext, precision, skipFrame, headerEnabled, hea
 			end
 		end
 
-		local data = { id = lastId, frames = frames }
+		local data = { id = lastId, hierarchy = lastHierarchy, frames = frames }
 		local ok, json = pcall(function()
 			return HttpService:JSONEncode(data)
 		end)
@@ -686,6 +1488,12 @@ local function generateFileContent(ext, precision, skipFrame, headerEnabled, hea
 		else
 			lines[#lines + 1] = '-- Start / "' .. lastId .. '" --'
 		end
+	end
+
+	-- Embed the part hierarchy (Motor6D Part1 -> Part0) so the
+	-- converter can rebuild a proper Pose tree later
+	for child, parent in pairs(lastHierarchy) do
+		lines[#lines + 1] = "-- H:" .. child .. "=" .. parent
 	end
 
 	for i, f in ipairs(dumpData) do
@@ -793,11 +1601,18 @@ dumpBtn.MouseButton1Click:Connect(function()
 	dumpBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 
 	local motors = {}
+	lastHierarchy = {}
 	for _, v in ipairs(character:GetDescendants()) do
 		if v:IsA("Motor6D") and v.Part1 then
-			motors[#motors + 1] = { name = v.Part1.Name, obj = v }
+			local childName = sanitizeName(v.Part1.Name)
+			motors[#motors + 1] = { name = childName, obj = v }
+			if v.Part0 then
+				lastHierarchy[childName] = sanitizeName(v.Part0.Name)
+			end
 		end
 	end
+
+	addLog("> Rig: " .. tostring(humanoid.RigType), "white")
 
 	startTime = tick()
 	track:Play()
@@ -935,4 +1750,169 @@ exportOkBtn.MouseButton1Click:Connect(function()
 
 	exportFrame.Visible = false
 	helpFrame.Visible = false
+end)
+
+----------------------------------------------------------------
+-- Converter panel events
+----------------------------------------------------------------
+convBtn.MouseButton1Click:Connect(function()
+	convFrame.Visible = not convFrame.Visible
+	if convFrame.Visible then
+		local mainAbsPos = frame.AbsolutePosition
+		convFrame.Position = UDim2.new(0, mainAbsPos.X + 10, 0, mainAbsPos.Y - 20)
+		refreshConvList()
+	end
+end)
+
+convCloseBtn.MouseButton1Click:Connect(function()
+	convFrame.Visible = false
+end)
+
+convertBtn.MouseButton1Click:Connect(function()
+	if not selectedConvFile then
+		addLog("> Select a file first", "red")
+		return
+	end
+
+	addLog("> Loading file...", "white")
+
+	local frames, hierarchy, err = parseDumpFile(selectedConvFile)
+	if not frames then
+		addLog("> " .. tostring(err), "red")
+		return
+	end
+
+	pendingFrames = frames
+	pendingHierarchy = hierarchy
+
+	local fileName = selectedConvFile:match("([^/\\]+)$") or selectedConvFile
+	convOptFileLabel.Text = "File: " .. fileName
+
+	refreshConvPartsList(frames)
+
+	local mainAbsPos = frame.AbsolutePosition
+	convOptFrame.Position = UDim2.new(0, mainAbsPos.X + 250, 0, mainAbsPos.Y - 20)
+	convOptFrame.Visible = true
+end)
+
+convOptCancelBtn.MouseButton1Click:Connect(function()
+	convOptFrame.Visible = false
+end)
+
+convOptXBtn.MouseButton1Click:Connect(function()
+	convOptFrame.Visible = false
+end)
+
+convOptOkBtn.MouseButton1Click:Connect(function()
+	if not pendingFrames then
+		addLog("> No file loaded", "red")
+		return
+	end
+
+	addLog("> Converting...", "white")
+
+	local frames = pendingFrames
+
+	frames = trimFrames(frames, convTrimOptions[convTrimStartIndex], convTrimOptions[convTrimEndIndex])
+	frames = resampleFrames(frames, convFpsOptions[convFpsIndex])
+	frames = filterFramesByParts(frames, convSelectedParts)
+
+	if #frames == 0 then
+		addLog("> No frames left (check trim/parts)", "red")
+		return
+	end
+
+	local baseName = (selectedConvFile:match("([^/\\]+)$") or selectedConvFile):gsub("%.%w+$", "")
+
+	local okBuild, kfs = pcall(buildKeyframeSequence, frames, pendingHierarchy, baseName)
+	if not okBuild or not kfs then
+		addLog("> Failed to build KeyframeSequence", "red")
+		return
+	end
+
+	kfs.Loop = convLoopOn
+	kfs.Parent = getDestParent(convDestIndex)
+
+	addLog("> Created KeyframeSequence!", "green")
+	addLog("   Name: " .. kfs.Name, "green")
+	addLog("   Frames: " .. #frames, "green")
+	addLog("   Location: " .. convDestOptions[convDestIndex], "green")
+
+	convOptFrame.Visible = false
+	convFrame.Visible = false
+end)
+
+convOptAllBtn.MouseButton1Click:Connect(function()
+	if not (isfolder and listfiles) then
+		addLog("> Filesystem not supported", "red")
+		return
+	end
+
+	if not isfolder("AnimationD") then
+		addLog('> "AnimationD" folder not found', "red")
+		return
+	end
+
+	local files = listfiles("AnimationD")
+	if #files == 0 then
+		addLog("> No files found", "red")
+		return
+	end
+
+	addLog("> Converting ALL (" .. #files .. " files)...", "white")
+
+	local destParent = getDestParent(convDestIndex)
+	local folder = destParent:FindFirstChild("ConvertedAll")
+	if not folder then
+		folder = Instance.new("Folder")
+		folder.Name = "ConvertedAll"
+		folder.Parent = destParent
+	end
+
+	local trimStart = convTrimOptions[convTrimStartIndex]
+	local trimEnd = convTrimOptions[convTrimEndIndex]
+	local fps = convFpsOptions[convFpsIndex]
+
+	local okCount = 0
+	local failCount = 0
+
+	for i, path in ipairs(files) do
+		local fileName = path:match("([^/\\]+)$") or path
+		addLog("> [" .. i .. "/" .. #files .. "] " .. fileName .. "...", "white")
+
+		local frames, hierarchy, parseErr = parseDumpFile(path)
+
+		if frames then
+			frames = trimFrames(frames, trimStart, trimEnd)
+			frames = resampleFrames(frames, fps)
+		end
+
+		if frames and #frames > 0 then
+			local baseName = fileName:gsub("%.%w+$", "")
+			local okBuild, kfs = pcall(buildKeyframeSequence, frames, hierarchy, baseName)
+			if okBuild and kfs then
+				kfs.Loop = convLoopOn
+				kfs.Parent = folder
+				okCount = okCount + 1
+				addLog("   OK (" .. #frames .. " frames)", "green")
+			else
+				failCount = failCount + 1
+				addLog("   Failed: " .. fileName .. " (build error)", "red")
+			end
+		else
+			failCount = failCount + 1
+			addLog("   Failed: " .. fileName .. " (" .. tostring(parseErr or "no frames") .. ")", "red")
+		end
+
+		if i % 5 == 0 then
+			task.wait()
+		end
+	end
+
+	addLog("> Convert ALL done!", "green")
+	addLog("   OK: " .. okCount .. " | Failed: " .. failCount, "green")
+	addLog("   Location: " .. convDestOptions[convDestIndex] .. "/ConvertedAll", "green")
+
+	convOptFrame.Visible = false
+	convFrame.Visible = false
 end)
