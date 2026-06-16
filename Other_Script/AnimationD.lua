@@ -106,7 +106,7 @@ Instance.new("UICorner", logFrame).CornerRadius = UDim.new(0, 8)
 makeDraggable(logFrame)
 
 local logTitle = Instance.new("TextLabel")
-logTitle.Text = "LOG"
+logTitle.Text = "LOG VIEWER"
 logTitle.TextSize = 12
 logTitle.Size = UDim2.new(1, 0, 0, 22)
 logTitle.BackgroundTransparency = 1
@@ -197,7 +197,7 @@ Instance.new("UICorner", stopBtn).CornerRadius = UDim.new(0, 6)
 
 -- Copy button (outside frame, left side)
 local copyBtn = Instance.new("TextButton")
-copyBtn.Text = "📋"
+copyBtn.Text = "COPY KFS"
 copyBtn.TextSize = 12
 copyBtn.Size = UDim2.new(0, 60, 0, 26)
 copyBtn.Position = UDim2.new(0, -70, 0.50, 0)
@@ -209,7 +209,7 @@ Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 6)
 
 -- Export button (outside frame, left side, below copy)
 local fileBtn = Instance.new("TextButton")
-fileBtn.Text = "💾"
+fileBtn.Text = "EXPORT KFS"
 fileBtn.TextSize = 12
 fileBtn.Size = UDim2.new(0, 60, 0, 26)
 fileBtn.Position = UDim2.new(0, -70, 0.72, 0)
@@ -221,7 +221,7 @@ Instance.new("UICorner", fileBtn).CornerRadius = UDim.new(0, 6)
 
 -- Close button (smaller)
 local closeBtn = Instance.new("TextButton")
-closeBtn.Text = "✕"
+closeBtn.Text = "X"
 closeBtn.TextSize = 11
 closeBtn.Size = UDim2.new(0, 16, 0, 16)
 closeBtn.Position = UDim2.new(1, -20, 0, 4)
@@ -233,7 +233,7 @@ Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
 
 -- Eye/log toggle button (smaller)
 local eyeBtn = Instance.new("TextButton")
-eyeBtn.Text = "👁"
+eyeBtn.Text = "👁️"
 eyeBtn.TextSize = 11
 eyeBtn.Size = UDim2.new(0, 16, 0, 16)
 eyeBtn.Position = UDim2.new(1, -40, 0, 4)
@@ -328,21 +328,21 @@ helpScroll.Parent = helpFrame
 
 local helpText = Instance.new("TextLabel")
 helpText.Text =
-	"Filename: name of the exported file (without extension).\n\n" ..
-	"Ext: file format. .lua/.txt save Lua code, .json saves structured JSON data.\n\n" ..
-	"Decimals: number of decimal places for position/rotation values. Higher = more precise, bigger file.\n\n" ..
-	"Sample: export every Nth frame. Higher value = smaller file, less smooth playback.\n\n" ..
-	"Header/Footer: adds comment lines marking the start/end of the dump. Type custom text to replace the default header.\n\n" ..
-	"Folder: if ON, the exported file is saved inside an \"AnimationD\" folder (created automatically). If OFF, the file is saved directly in the workspace root.\n\n" ..
-	"Parts: choose which body parts to include in the export. Unchecked parts are skipped.\n\n" ..
-	"Converter (🔄): pick a file from your \"AnimationD\" folder and convert it into a KeyframeSequence.\n\n" ..
-	"Convert FPS: resamples the animation to a target frame rate (Original = no change). Lower FPS = fewer keyframes (smaller, less smooth).\n\n" ..
-	"Loop: sets the KeyframeSequence.Loop property on the result.\n\n" ..
-	"Trim Start/End: removes N frames from the beginning/end (useful for cutting startup poses or fixing loops).\n\n" ..
-	"Save to: where the converted KeyframeSequence is placed (Workspace, ReplicatedStorage, or Lighting).\n\n" ..
-	"Parts (in Convert options): choose which parts to include for this file.\n\n" ..
-	"Convert Selected: converts only the highlighted file using the options above.\n\n" ..
-	"Convert ALL: converts every file in \"AnimationD\" with the same FPS/Loop/Trim settings, placed in a \"ConvertedAll\" folder."
+	"• Filename: name of the exported file (without extension).\n\n" ..
+	"• Ext: file format. .lua/.txt save Lua code, .json saves structured JSON data.\n\n" ..
+	"• Decimals: number of decimal places for position/rotation values. Higher = more precise, bigger file.\n\n" ..
+	"• Sample: export every Nth frame. Higher value = smaller file, less smooth playback.\n\n" ..
+	"• Header/Footer: adds comment lines marking the start/end of the dump. Type custom text to replace the default header.\n\n" ..
+	"• Folder: if ON, the exported file is saved inside an \"AnimationD\" folder (created automatically). If OFF, the file is saved directly in the workspace root.\n\n" ..
+	"• Parts: choose which body parts to include in the export. Unchecked parts are skipped.\n\n" ..
+	"• Converter (🔄): pick a file from your \"AnimationD\" folder and convert it into a KeyframeSequence.\n\n" ..
+	"• Convert FPS: resamples the animation to a target frame rate (Original = no change). Lower FPS = fewer keyframes (smaller, less smooth).\n\n" ..
+	"• Loop: sets the KeyframeSequence.Loop property on the result.\n\n" ..
+	"• Trim Start/End: removes N frames from the beginning/end (useful for cutting startup poses or fixing loops).\n\n" ..
+	"• Save to: where the converted KeyframeSequence is placed (Workspace, ReplicatedStorage, or Lighting).\n\n" ..
+	"• Parts (in Convert options): choose which parts to include for this file.\n\n" ..
+	"• Convert Selected: converts only the highlighted file using the options above.\n\n" ..
+	"• Convert ALL: converts every file in \"AnimationD\" with the same FPS/Loop/Trim settings, placed in a \"ConvertedAll\" folder."
 helpText.TextSize = 12
 helpText.Size = UDim2.new(1, 0, 0, 760)
 helpText.BackgroundTransparency = 1
@@ -383,7 +383,7 @@ convTitle.Parent = convFrame
 
 -- Back button (navigate to parent folder)
 local convBackBtn = Instance.new("TextButton")
-convBackBtn.Text = "⬅️"
+convBackBtn.Text = "🔙"
 convBackBtn.TextSize = 11
 convBackBtn.Size = UDim2.new(0, 22, 0, 16)
 convBackBtn.Position = UDim2.new(0.05, 0, 0, 26)
@@ -439,7 +439,7 @@ Instance.new("UICorner", convertBtn).CornerRadius = UDim.new(0, 6)
 
 -- Close converter button
 local convCloseBtn = Instance.new("TextButton")
-convCloseBtn.Text = "✕"
+convCloseBtn.Text = "X"
 convCloseBtn.TextSize = 11
 convCloseBtn.Size = UDim2.new(0, 16, 0, 16)
 convCloseBtn.Position = UDim2.new(1, -20, 0, 4)
@@ -747,7 +747,7 @@ partsListLayout.Padding = UDim.new(0, 2)
 
 -- OK / Cancel
 local exportOkBtn = Instance.new("TextButton")
-exportOkBtn.Text = "OK"
+exportOkBtn.Text = "EXPORT"
 exportOkBtn.Size = UDim2.new(0.43, 0, 0, 28)
 exportOkBtn.Position = UDim2.new(0.05, 0, 0, 326)
 exportOkBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
@@ -843,7 +843,7 @@ end
 local function refreshFpsBtn()
 	local v = convFpsOptions[convFpsIndex]
 	if v == 0 then
-		fpsBtn.Text = "FPS: Original"
+		fpsBtn.Text = "FPS: Original (Quite lag)"
 	else
 		fpsBtn.Text = "FPS: " .. v
 	end
