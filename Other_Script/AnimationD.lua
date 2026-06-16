@@ -381,15 +381,30 @@ convTitle.Font = Enum.Font.GothamBold
 convTitle.ZIndex = 5
 convTitle.Parent = convFrame
 
+-- Back button (navigate to parent folder)
+local convBackBtn = Instance.new("TextButton")
+convBackBtn.Text = "⬅️"
+convBackBtn.TextSize = 11
+convBackBtn.Size = UDim2.new(0, 22, 0, 16)
+convBackBtn.Position = UDim2.new(0.05, 0, 0, 26)
+convBackBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+convBackBtn.TextColor3 = Color3.new(1, 1, 1)
+convBackBtn.Font = Enum.Font.GothamBold
+convBackBtn.Visible = false
+convBackBtn.ZIndex = 5
+convBackBtn.Parent = convFrame
+Instance.new("UICorner", convBackBtn).CornerRadius = UDim.new(0, 6)
+
 local convSubLabel = Instance.new("TextLabel")
-convSubLabel.Text = "AnimationD files:"
+convSubLabel.Text = "AnimationD/"
 convSubLabel.TextSize = 11
-convSubLabel.Size = UDim2.new(0.9, 0, 0, 14)
-convSubLabel.Position = UDim2.new(0.05, 0, 0, 26)
+convSubLabel.Size = UDim2.new(0.9, -26, 0, 14)
+convSubLabel.Position = UDim2.new(0.05, 26, 0, 28)
 convSubLabel.BackgroundTransparency = 1
 convSubLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
 convSubLabel.Font = Enum.Font.Gotham
 convSubLabel.TextXAlignment = Enum.TextXAlignment.Left
+convSubLabel.TextTruncate = Enum.TextTruncate.AtEnd
 convSubLabel.ZIndex = 5
 convSubLabel.Parent = convFrame
 
@@ -991,68 +1006,73 @@ end
 -- Converter helpers
 ----------------------------------------------------------------
 
--- Refreshes the file list shown in the converter panel, reading
--- the "AnimationD" folder via the executor's filesystem functions.
+-- Navigation state
+local convCurrentPath = "AnimationD"
+local convPathStack = {} -- stack of previous paths for back navigation
+
+local function convMakeLabel(text, color)
+	local lbl = Instance.new("TextLabel")
+	lbl.Text = text
+	lbl.Size = UDim2.new(1, 0, 0, 18)
+	lbl.BackgroundTransparency = 1
+	lbl.TextColor3 = color or Color3.fromRGB(200, 200, 200)
+	lbl.Font = Enum.Font.Gotham
+	lbl.TextSize = 11
+	lbl.ZIndex = 5
+	lbl.Parent = convScroll
+	convScroll.CanvasSize = UDim2.new(0, 0, 0, 20)
+end
+
+-- Refreshes the file/folder list for convCurrentPath
 local function refreshConvList()
 	for _, child in ipairs(convScroll:GetChildren()) do
-		if child:IsA("TextButton") then
+		if child:IsA("TextButton") or child:IsA("TextLabel") then
 			child:Destroy()
 		end
 	end
 	selectedConvFile = nil
 
+	-- Update path label and back button
+	convSubLabel.Text = convCurrentPath .. "/"
+	convBackBtn.Visible = #convPathStack > 0
+
 	if not (isfolder and listfiles) then
-		local lbl = Instance.new("TextLabel")
-		lbl.Text = "Filesystem not supported"
-		lbl.Size = UDim2.new(1, 0, 0, 18)
-		lbl.BackgroundTransparency = 1
-		lbl.TextColor3 = Color3.fromRGB(255, 120, 120)
-		lbl.Font = Enum.Font.Gotham
-		lbl.TextSize = 11
-		lbl.ZIndex = 5
-		lbl.Parent = convScroll
-		convScroll.CanvasSize = UDim2.new(0, 0, 0, 20)
+		convMakeLabel("Filesystem not supported", Color3.fromRGB(255, 120, 120))
 		return
 	end
 
-	if not isfolder("AnimationD") then
-		local lbl = Instance.new("TextLabel")
-		lbl.Text = '"AnimationD" folder not found'
-		lbl.Size = UDim2.new(1, 0, 0, 18)
-		lbl.BackgroundTransparency = 1
-		lbl.TextColor3 = Color3.fromRGB(255, 120, 120)
-		lbl.Font = Enum.Font.Gotham
-		lbl.TextSize = 11
-		lbl.ZIndex = 5
-		lbl.Parent = convScroll
-		convScroll.CanvasSize = UDim2.new(0, 0, 0, 20)
+	if not isfolder(convCurrentPath) then
+		convMakeLabel('"' .. convCurrentPath .. '" not found', Color3.fromRGB(255, 120, 120))
 		return
 	end
 
-	local files = listfiles("AnimationD")
-	if #files == 0 then
-		local lbl = Instance.new("TextLabel")
-		lbl.Text = "No files found"
-		lbl.Size = UDim2.new(1, 0, 0, 18)
-		lbl.BackgroundTransparency = 1
-		lbl.TextColor3 = Color3.fromRGB(200, 200, 200)
-		lbl.Font = Enum.Font.Gotham
-		lbl.TextSize = 11
-		lbl.ZIndex = 5
-		lbl.Parent = convScroll
-		convScroll.CanvasSize = UDim2.new(0, 0, 0, 20)
+	local entries = listfiles(convCurrentPath)
+	if #entries == 0 then
+		convMakeLabel("(empty folder)", Color3.fromRGB(150, 150, 150))
 		return
 	end
 
-	for _, path in ipairs(files) do
-		local fileName = path:match("([^/\\]+)$") or path
+	-- Separate folders and files, sort each group
+	local folders = {}
+	local files = {}
+	for _, path in ipairs(entries) do
+		local name = path:match("([^/\\]+)$") or path
+		if isfolder(path) then
+			folders[#folders + 1] = { name = name, path = path }
+		else
+			files[#files + 1] = { name = name, path = path }
+		end
+	end
+	table.sort(folders, function(a, b) return a.name < b.name end)
+	table.sort(files,   function(a, b) return a.name < b.name end)
 
+	local function makeRow(name, path, isDir)
 		local btn = Instance.new("TextButton")
-		btn.Name = fileName
-		btn.Text = fileName
+		btn.Name = name
+		btn.Text = (isDir and "📁 " or "   ") .. name
 		btn.Size = UDim2.new(1, 0, 0, 18)
-		btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-		btn.TextColor3 = Color3.new(1, 1, 1)
+		btn.BackgroundColor3 = isDir and Color3.fromRGB(60, 50, 20) or Color3.fromRGB(50, 50, 50)
+		btn.TextColor3 = isDir and Color3.fromRGB(255, 210, 100) or Color3.new(1, 1, 1)
 		btn.Font = Enum.Font.Gotham
 		btn.TextSize = 11
 		btn.TextXAlignment = Enum.TextXAlignment.Left
@@ -1060,15 +1080,28 @@ local function refreshConvList()
 		btn.Parent = convScroll
 
 		btn.MouseButton1Click:Connect(function()
-			selectedConvFile = path
-			for _, c in ipairs(convScroll:GetChildren()) do
-				if c:IsA("TextButton") then
-					c.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+			if isDir then
+				-- Navigate into folder
+				convPathStack[#convPathStack + 1] = convCurrentPath
+				convCurrentPath = path
+				refreshConvList()
+			else
+				-- Select file
+				selectedConvFile = path
+				for _, c in ipairs(convScroll:GetChildren()) do
+					if c:IsA("TextButton") then
+						c.BackgroundColor3 = isfolder(c.Name == name and path or convCurrentPath .. "/" .. c.Name)
+							and Color3.fromRGB(60, 50, 20)
+							or Color3.fromRGB(50, 50, 50)
+					end
 				end
+				btn.BackgroundColor3 = Color3.fromRGB(0, 110, 60)
 			end
-			btn.BackgroundColor3 = Color3.fromRGB(0, 110, 60)
 		end)
 	end
+
+	for _, e in ipairs(folders) do makeRow(e.name, e.path, true) end
+	for _, e in ipairs(files)   do makeRow(e.name, e.path, false) end
 
 	convScroll.CanvasSize = UDim2.new(0, 0, 0, convListLayout.AbsoluteContentSize.Y + 4)
 end
@@ -1760,6 +1793,10 @@ convBtn.MouseButton1Click:Connect(function()
 	if convFrame.Visible then
 		local mainAbsPos = frame.AbsolutePosition
 		convFrame.Position = UDim2.new(0, mainAbsPos.X + 10, 0, mainAbsPos.Y - 20)
+		-- Reset to root on open
+		convCurrentPath = "AnimationD"
+		convPathStack = {}
+		selectedConvFile = nil
 		refreshConvList()
 	end
 end)
@@ -1768,27 +1805,39 @@ convCloseBtn.MouseButton1Click:Connect(function()
 	convFrame.Visible = false
 end)
 
+convBackBtn.MouseButton1Click:Connect(function()
+	if #convPathStack > 0 then
+		convCurrentPath = convPathStack[#convPathStack]
+		convPathStack[#convPathStack] = nil
+		refreshConvList()
+	end
+end)
+
 convertBtn.MouseButton1Click:Connect(function()
-	if not selectedConvFile then
-		addLog("> Select a file first", "red")
-		return
+	if selectedConvFile then
+		-- A specific file is selected: load it for the options popup
+		addLog("> Loading file...", "white")
+
+		local frames, hierarchy, err = parseDumpFile(selectedConvFile)
+		if not frames then
+			addLog("> " .. tostring(err), "red")
+			return
+		end
+
+		pendingFrames = frames
+		pendingHierarchy = hierarchy
+
+		local fileName = selectedConvFile:match("([^/\\]+)$") or selectedConvFile
+		convOptFileLabel.Text = "File: " .. fileName
+
+		refreshConvPartsList(frames)
+	else
+		-- No file selected: will convert current folder when OK is pressed
+		pendingFrames = nil
+		pendingHierarchy = nil
+		convOptFileLabel.Text = "Folder: " .. (convCurrentPath:match("([^/\\]+)$") or convCurrentPath)
+		refreshConvPartsList(nil)
 	end
-
-	addLog("> Loading file...", "white")
-
-	local frames, hierarchy, err = parseDumpFile(selectedConvFile)
-	if not frames then
-		addLog("> " .. tostring(err), "red")
-		return
-	end
-
-	pendingFrames = frames
-	pendingHierarchy = hierarchy
-
-	local fileName = selectedConvFile:match("([^/\\]+)$") or selectedConvFile
-	convOptFileLabel.Text = "File: " .. fileName
-
-	refreshConvPartsList(frames)
 
 	local mainAbsPos = frame.AbsolutePosition
 	convOptFrame.Position = UDim2.new(0, mainAbsPos.X + 250, 0, mainAbsPos.Y - 20)
@@ -1804,39 +1853,94 @@ convOptXBtn.MouseButton1Click:Connect(function()
 end)
 
 convOptOkBtn.MouseButton1Click:Connect(function()
-	if not pendingFrames then
-		addLog("> No file loaded", "red")
-		return
+	local trimStart = convTrimOptions[convTrimStartIndex]
+	local trimEnd   = convTrimOptions[convTrimEndIndex]
+	local fps       = convFpsOptions[convFpsIndex]
+	local destParent = getDestParent(convDestIndex)
+
+	-- Helper: convert a single frames+hierarchy pair into a KFS
+	local function doConvert(frames, hierarchy, name, parent)
+		frames = trimFrames(frames, trimStart, trimEnd)
+		frames = resampleFrames(frames, fps)
+		frames = filterFramesByParts(frames, pendingFrames and convSelectedParts or nil)
+		if #frames == 0 then return false, "no frames left" end
+		local ok, kfs = pcall(buildKeyframeSequence, frames, hierarchy, name)
+		if not ok or not kfs then return false, "build error" end
+		kfs.Loop = convLoopOn
+		kfs.Parent = parent
+		return true
 	end
 
-	addLog("> Converting...", "white")
+	if pendingFrames then
+		-- Single file conversion
+		addLog("> Converting...", "white")
+		local baseName = (selectedConvFile and selectedConvFile:match("([^/\\]+)$") or "Anim"):gsub("%.%w+$", "")
+		local ok, err2 = doConvert(pendingFrames, pendingHierarchy, baseName, destParent)
+		if ok then
+			addLog("> Created KeyframeSequence!", "green")
+			addLog("   Name: " .. baseName, "green")
+			addLog("   Location: " .. convDestOptions[convDestIndex], "green")
+		else
+			addLog("> Failed: " .. tostring(err2), "red")
+		end
+	else
+		-- No file selected → convert all files in current folder
+		if not (isfolder and listfiles) then
+			addLog("> Filesystem not supported", "red")
+			return
+		end
 
-	local frames = pendingFrames
+		local folder = destParent:FindFirstChild("ConvertedAll")
+		if not folder then
+			folder = Instance.new("Folder")
+			folder.Name = "ConvertedAll"
+			folder.Parent = destParent
+		end
 
-	frames = trimFrames(frames, convTrimOptions[convTrimStartIndex], convTrimOptions[convTrimEndIndex])
-	frames = resampleFrames(frames, convFpsOptions[convFpsIndex])
-	frames = filterFramesByParts(frames, convSelectedParts)
+		local function collectFiles(path)
+			local result = {}
+			for _, p in ipairs(listfiles(path)) do
+				if isfolder(p) then
+					for _, sub in ipairs(collectFiles(p)) do
+						result[#result + 1] = sub
+					end
+				else
+					result[#result + 1] = p
+				end
+			end
+			return result
+		end
 
-	if #frames == 0 then
-		addLog("> No frames left (check trim/parts)", "red")
-		return
+		local allFiles = collectFiles(convCurrentPath)
+		addLog("> Converting " .. #allFiles .. " files in " .. (convCurrentPath:match("([^/\\]+)$") or convCurrentPath) .. "...", "white")
+
+		local okCount, failCount = 0, 0
+		for i, path in ipairs(allFiles) do
+			local fileName = path:match("([^/\\]+)$") or path
+			addLog("> [" .. i .. "/" .. #allFiles .. "] " .. fileName .. "...", "white")
+
+			local frames, hierarchy, parseErr = parseDumpFile(path)
+			if frames then
+				local baseName = fileName:gsub("%.%w+$", "")
+				local ok2, err2 = doConvert(frames, hierarchy, baseName, folder)
+				if ok2 then
+					okCount = okCount + 1
+					addLog("   OK", "green")
+				else
+					failCount = failCount + 1
+					addLog("   Failed: " .. tostring(err2), "red")
+				end
+			else
+				failCount = failCount + 1
+				addLog("   Failed: " .. tostring(parseErr or "read error"), "red")
+			end
+
+			if i % 5 == 0 then task.wait() end
+		end
+
+		addLog("> Done! OK: " .. okCount .. " | Failed: " .. failCount, "green")
+		addLog("   Location: " .. convDestOptions[convDestIndex] .. "/ConvertedAll", "green")
 	end
-
-	local baseName = (selectedConvFile:match("([^/\\]+)$") or selectedConvFile):gsub("%.%w+$", "")
-
-	local okBuild, kfs = pcall(buildKeyframeSequence, frames, pendingHierarchy, baseName)
-	if not okBuild or not kfs then
-		addLog("> Failed to build KeyframeSequence", "red")
-		return
-	end
-
-	kfs.Loop = convLoopOn
-	kfs.Parent = getDestParent(convDestIndex)
-
-	addLog("> Created KeyframeSequence!", "green")
-	addLog("   Name: " .. kfs.Name, "green")
-	addLog("   Frames: " .. #frames, "green")
-	addLog("   Location: " .. convDestOptions[convDestIndex], "green")
 
 	convOptFrame.Visible = false
 	convFrame.Visible = false
@@ -1848,20 +1952,36 @@ convOptAllBtn.MouseButton1Click:Connect(function()
 		return
 	end
 
-	if not isfolder("AnimationD") then
-		addLog('> "AnimationD" folder not found', "red")
+	if not isfolder(convCurrentPath) then
+		addLog('> "' .. convCurrentPath .. '" not found', "red")
 		return
 	end
 
-	local files = listfiles("AnimationD")
-	if #files == 0 then
+	local function collectFiles(path)
+		local result = {}
+		for _, p in ipairs(listfiles(path)) do
+			if isfolder(p) then
+				for _, sub in ipairs(collectFiles(p)) do
+					result[#result + 1] = sub
+				end
+			else
+				result[#result + 1] = p
+			end
+		end
+		return result
+	end
+
+	local allFiles = collectFiles(convCurrentPath)
+	if #allFiles == 0 then
 		addLog("> No files found", "red")
 		return
 	end
 
-	addLog("> Converting ALL (" .. #files .. " files)...", "white")
-
+	local trimStart = convTrimOptions[convTrimStartIndex]
+	local trimEnd   = convTrimOptions[convTrimEndIndex]
+	local fps       = convFpsOptions[convFpsIndex]
 	local destParent = getDestParent(convDestIndex)
+
 	local folder = destParent:FindFirstChild("ConvertedAll")
 	if not folder then
 		folder = Instance.new("Folder")
@@ -1869,16 +1989,13 @@ convOptAllBtn.MouseButton1Click:Connect(function()
 		folder.Parent = destParent
 	end
 
-	local trimStart = convTrimOptions[convTrimStartIndex]
-	local trimEnd = convTrimOptions[convTrimEndIndex]
-	local fps = convFpsOptions[convFpsIndex]
+	addLog("> Converting ALL (" .. #allFiles .. " files)...", "white")
 
-	local okCount = 0
-	local failCount = 0
+	local okCount, failCount = 0, 0
 
-	for i, path in ipairs(files) do
+	for i, path in ipairs(allFiles) do
 		local fileName = path:match("([^/\\]+)$") or path
-		addLog("> [" .. i .. "/" .. #files .. "] " .. fileName .. "...", "white")
+		addLog("> [" .. i .. "/" .. #allFiles .. "] " .. fileName .. "...", "white")
 
 		local frames, hierarchy, parseErr = parseDumpFile(path)
 
@@ -1888,7 +2005,7 @@ convOptAllBtn.MouseButton1Click:Connect(function()
 		end
 
 		if frames and #frames > 0 then
-			local baseName = fileName:gsub("%.%w+$", "")
+			local baseName = fileName:gsub("%%.%w+$", "")
 			local okBuild, kfs = pcall(buildKeyframeSequence, frames, hierarchy, baseName)
 			if okBuild and kfs then
 				kfs.Loop = convLoopOn
